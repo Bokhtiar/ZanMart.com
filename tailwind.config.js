@@ -7,6 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: '#3abfef',
+      },
+      boxShadow: {
+        'custom': '5px 5px 20px 0px rgba(0, 0, 0, 0.11)',
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
