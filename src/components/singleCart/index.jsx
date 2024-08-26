@@ -3,7 +3,6 @@ import React from 'react';
 const SingleCart = ({ item }) => {
   const { name, category, price, discount_price, image } = item
   return (
-
     <div className='w-full  rounded-[15px]  shadow-lg '>
       <div className='overflow-hidden w-full  rounded-t-[15px]'>
         <img
