@@ -1,3 +1,4 @@
+import Searchbar from '@/components/searchabr';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -28,6 +29,7 @@ export const Navbar = () => {
   const [active,setActive]=useState('')
 
     return <>
+     <div>
      <nav className=" py-3 flex container mx-auto justify-between items-center">
      <div>
       <img className='h-14 w-14' src="logo.png" alt="" />
@@ -60,5 +62,7 @@ export const Navbar = () => {
        </div>
      </div>
     </nav>
+    <Searchbar></Searchbar>
+     </div>
     </>
 }

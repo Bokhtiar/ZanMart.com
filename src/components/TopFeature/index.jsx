@@ -11,9 +11,8 @@ useEffect(() => {
       .then(data => setData(data))
       .catch(error => console.error('Error fetching the data:', error));
   }, []);
-  console.log(data)
   return (
-    <div className='container mx-auto'>
+    <div className='container pb-5 mx-auto'>
       <h1 className='font-bold  my-10 text-[25px] flex justify-between text-primary'>{title} <span> <AllViewButton></AllViewButton> </span> </h1>
       <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 sm:gap-4 md:gap-8 lg:gap-12'>
         {
