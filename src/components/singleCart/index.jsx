@@ -4,10 +4,10 @@ const SingleCart = ({ item }) => {
   const { name, category, price, discount_price, image } = item
   return (
     <div className='w-full  rounded-[15px]  shadow-lg '>
-      <div className='overflow-hidden w-full  rounded-t-[15px]'>
+      <div className='overflow-hidden w-full  rounded-t-[15px] bg-red-500'>
         <img
-          class="w-full  transition-transform duration-500 hover:scale-125"
-          src="images/cloth.svg"
+          class="w-full object-cover h-40 transition-transform duration-500 hover:scale-125"
+          src={image}
           alt=""
         />
       </div>

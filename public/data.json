@@ -1,73 +1,72 @@
 [
-    {
-      "name": "Stylish T-Shirt",
-      "category": "Clothing",
-      "price": 25.99,
-      "discount_price": 19.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Wireless Headphones",
-      "category": "Electronics",
-      "price": 149.99,
-      "discount_price": 129.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Elegant Wristwatch",
-      "category": "Accessories",
-      "price": 89.99,
-      "discount_price": 69.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Running Shoes",
-      "category": "Footwear",
-      "price": 75.00,
-      "discount_price": 59.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Backpack",
-      "category": "Bags",
-      "price": 49.99,
-      "discount_price": 39.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Smartphone",
-      "category": "Electronics",
-      "price": 699.99,
-      "discount_price": 649.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Office Chair",
-      "category": "Furniture",
-      "price": 129.99,
-      "discount_price": 109.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Sunglasses",
-      "category": "Accessories",
-      "price": 45.00,
-      "discount_price": 35.00,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Coffee Maker",
-      "category": "Home Appliances",
-      "price": 59.99,
-      "discount_price": 49.99,
-      "image": "images/tshirt.svg"
-    },
-    {
-      "name": "Bluetooth Speaker",
-      "category": "Electronics",
-      "price": 99.99,
-      "discount_price": 79.99,
-      "image": "images/tshirt.svg"
-    }
-  ]
-  
+  {
+    "name": "Stylish T-Shirt",
+    "category": "Clothing",
+    "price": 25.99,
+    "discount_price": 19.99,
+    "image": "images/cloth.svg"
+  },
+  {
+    "name": "Wireless Headphones",
+    "category": "Electronics",
+    "price": 149.99,
+    "discount_price": 129.99,
+    "image": "images/headphone.jpg"
+  },
+  {
+    "name": "Elegant Wristwatch",
+    "category": "Accessories",
+    "price": 89.99,
+    "discount_price": 69.99,
+    "image": "images/medical.svg"
+  },
+  {
+    "name": "Running Shoes",
+    "category": "Footwear",
+    "price": 75.00,
+    "discount_price": 59.99,
+    "image": "images/tshirt2.png"
+  },
+  {
+    "name": "Backpack",
+    "category": "Bags",
+    "price": 49.99,
+    "discount_price": 39.99,
+    "image": "images/tshirt2.png"
+  },
+  {
+    "name": "Smartphone",
+    "category": "Electronics",
+    "price": 699.99,
+    "discount_price": 649.99,
+    "image": "images/medical.svg"
+  },
+  {
+    "name": "Office Chair",
+    "category": "Furniture",
+    "price": 129.99,
+    "discount_price": 109.99,
+    "image": "images/tshirt2.png"
+  },
+  {
+    "name": "Sunglasses",
+    "category": "Accessories",
+    "price": 45.00,
+    "discount_price": 35.00,
+    "image": "images/tshirt2.png"
+  },
+  {
+    "name": "Coffee Maker",
+    "category": "Home Appliances",
+    "price": 59.99,
+    "discount_price": 49.99,
+    "image": "images/tshirt2.png"
+  },
+  {
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 99.99,
+    "discount_price": 79.99,
+    "image": "images/tshirt2.png"
+  }
+]
