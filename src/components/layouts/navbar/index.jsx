@@ -17,11 +17,11 @@ const navList = [
   },
   {
     name: "Log In",
-    href: "/log-in",
+    href: "/auth/log-in",
   },
   {
     name: "Sign Up",
-    href: "/support",
+    href: "/auth/register",
   },
 ];
 export const Navbar = () => {
@@ -32,7 +32,7 @@ export const Navbar = () => {
      <div>
      <nav className=" py-3 flex container mx-auto justify-between items-center">
      <div>
-      <img className='h-14 w-14' src="logo.png" alt="" />
+      <img className='h-14 w-14' src="/logo.png" alt="" />
      </div>
      <div className="hidden   md:flex gap-10">
             {navList.map((item, index) => (
