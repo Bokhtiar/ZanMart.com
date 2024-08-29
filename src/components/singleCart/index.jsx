@@ -4,7 +4,7 @@ import React from 'react';
 const SingleCart = ({ item }) => {
   const { name, category, price, discount_price, image } = item
   return (
-    <Link href={`/product-details/${item.id}`} className='w-full  rounded-[15px]  shadow-lg '>
+    <Link href={`/product-details/${item.id}`} className='w-full h-fit rounded-[15px]  shadow-lg '>
       <div className='overflow-hidden w-full  rounded-t-[15px] '>
         <img
           class="w-full object-cover h-40 transition-transform duration-500 hover:scale-125"

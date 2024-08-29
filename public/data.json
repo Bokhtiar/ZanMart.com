@@ -108,5 +108,60 @@
     "sizes": [],
     "colors": ["black", "blue", "red"],
     "stock": 60
+  },
+  {
+    "id": 11,
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 99.99,
+    "discount_price": 79.99,
+    "image": "/images/tshirt2.png",
+    "sizes": [],
+    "colors": ["black", "blue", "red"],
+    "stock": 60
+  },
+  {
+    "id": 12,
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 99.99,
+    "discount_price": 79.99,
+    "image": "/images/tshirt2.png",
+    "sizes": [],
+    "colors": ["black", "blue", "red"],
+    "stock": 60
+  },
+  {
+    "id": 13,
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 99.99,
+    "discount_price": 79.99,
+    "image": "/images/tshirt2.png",
+    "sizes": [],
+    "colors": ["black", "blue", "red"],
+    "stock": 60
+  },
+  {
+    "id": 14,
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 99.99,
+    "discount_price": 79.99,
+    "image": "/images/tshirt2.png",
+    "sizes": [],
+    "colors": ["black", "blue", "red"],
+    "stock": 60
+  },
+  {
+    "id": 15,
+    "name": "Bluetooth Speaker",
+    "category": "Electronics",
+    "price": 99.99,
+    "discount_price": 79.99,
+    "image": "/images/tshirt2.png",
+    "sizes": [],
+    "colors": ["black", "blue", "red"],
+    "stock": 60
   }
 ]

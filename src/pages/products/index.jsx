@@ -38,7 +38,7 @@ const Products = () => {
     return (
         <div className=''>
             <ProductsBanner category={category} subCategory={subCategory}></ProductsBanner>
-            <div className='flex container mx-auto gap-5 w-full'>
+            <div className='flex container mx-auto items-start gap-10 w-full'>
                 <div className='w-1/4  mt-24'>
                     <div>
                         <p className='text-base font-semibold leading-6'>Price Range</p>
@@ -58,13 +58,14 @@ const Products = () => {
                     <div className='mt-10'>
                         <p className='text-base font-semibold leading-6'>Filter by color</p>
                         {
-                            colors.map(color => <p key={color.index} className='flex py-1 text-xs font-normal leading-4 items-center gap-2'>
-                                <span className='h-[13px] overflow-hidden w-[13px]'><PiRectangle className={`${color.color}  border-none  w-[20px] h-[20px] `} /></span>
+                            colors.map(color => <button key={color.index} className='flex py-1 text-xs font-normal leading-4 items-center gap-2'>
+                                <span className='h-[13px] border overflow-hidden w-[13px]'><PiRectangle className={`${color.color}     w-[30px] h-[50px] `} /></span>
                                 {color.name}
-                            </p>)
+                            </button>)
                         }
 
                     </div>
+                    <img className=' mt-10 w-full'src="/images/filterbanner.svg" alt="" />
                 </div>
                 <div className='w-full  gap-10 grid grid-cols-4 justify-between'>
                     {

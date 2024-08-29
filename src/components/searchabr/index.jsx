@@ -6,9 +6,13 @@ import { RxAvatar } from "react-icons/rx";
 import Link from 'next/link';
 
 const Searchbar = () => {
-    const [openCategory, setOpenCategory] = useState(false);
+    const [openCategory, setOpenCategory] = useState(true);
+    const [selected, setSelected] = useState(true);
     const handleCategory = () => {
         setOpenCategory(!openCategory);
+    };
+    const handleSelect = (data) => {
+        setSelected(data)
     };
     const categoris = [
         { name: "Clothing" },
@@ -32,7 +36,7 @@ const Searchbar = () => {
                         <ul className='bg-white'>
                             {
                                 categoris.map(category =>
-                                    <Link href={`/products/?category=${category.name}`} className='flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4'>
+                                    <Link onClick={()=>(handleSelect(category.name))} href={`/products/?category=${category.name}`} className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected===category.name ? 'bg-primary text-white font-extrabold':'bg-white'}`}>
                                         {category.name} <MdKeyboardArrowRight />
                                     </Link>
                                 )
