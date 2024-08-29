@@ -3,6 +3,7 @@ import { MdKeyboardArrowDown, MdOutlineKeyboardArrowUp, MdKeyboardArrowRight } f
 import { IoSearch } from "react-icons/io5";
 import { TbShoppingBag } from "react-icons/tb";
 import { RxAvatar } from "react-icons/rx";
+import Link from 'next/link';
 
 const Searchbar = () => {
     const [openCategory, setOpenCategory] = useState(false);
@@ -31,9 +32,9 @@ const Searchbar = () => {
                         <ul className='bg-white'>
                             {
                                 categoris.map(category =>
-                                    <li className='flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4'>
+                                    <Link href={`/products/?category=${category.name}`} className='flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4'>
                                         {category.name} <MdKeyboardArrowRight />
-                                    </li>
+                                    </Link>
                                 )
                             }
 
