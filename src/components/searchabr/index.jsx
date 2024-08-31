@@ -25,8 +25,8 @@ const Searchbar = () => {
     return (
         <div className='bg-primary '>
             <div className='flex justify-between items-center container mx-auto py-2'>
-                <div className='relative'>
-                    <button onClick={handleCategory} className='flex items-center text-white text-base'>
+                <div className='relative lg:flex hidden'>
+                    <button onClick={handleCategory} className=' flex items-center text-white text-base'>
                         <span className='me-2'>Categories</span>
                         {openCategory ? <MdOutlineKeyboardArrowUp /> : <MdKeyboardArrowDown />}
                     </button>
@@ -45,9 +45,9 @@ const Searchbar = () => {
                         </ul>
                     </div>
                 </div>
-                <div className='flex rounded-full relative items-center'>
-                    <input className='rounded-full text-center w-[658px] h-12' type="text" name="search" id="" />
-                    <button className='flex absolute right-0 rounded-full bg-black h-12 text-white w-40 items-center justify-center gap-2'>
+                <div className='flex rounded-full md:w-[658px] sm:w-80 relative items-center'>
+                    <input className='rounded-full text-center w-full  h-12' type="text" name="search" id="" />
+                    <button className='flex absolute right-0 rounded-full bg-black h-12 text-white sm:w-[75px] lg:w-40 items-center justify-center gap-2'>
                         search <IoSearch className='h-4 w-4' />
                     </button>
                 </div>

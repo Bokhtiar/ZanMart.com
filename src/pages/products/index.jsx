@@ -36,7 +36,7 @@ const Products = () => {
         setMaxValue(value);
     };
     return (
-        <div className=''>
+        <div className='mt-36'>
             <ProductsBanner category={category} subCategory={subCategory}></ProductsBanner>
             <div className='flex container mx-auto items-start gap-10 w-full'>
                 <div className='w-1/4  mt-24'>

@@ -21,7 +21,7 @@ const ProductDetails = () => {
     const sizes = ['M', 'L', 'XL'];
 
     return (
-        <div className='mx-auto container mt-10'>
+        <div className='mx-auto container mt-36 pt-5'>
             <div className='flex justify-between'>
                 <div className='max-w-[540px] max-h-[540px]'>
                 <Image
