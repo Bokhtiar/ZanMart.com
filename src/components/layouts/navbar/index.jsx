@@ -15,7 +15,7 @@ const navList = [
 ];
 
 export const Navbar = () => {
-  const pathName = usePathname();
+  const pathName = usePathname('');
   const [active, setActive] = useState('');
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState('');
@@ -82,7 +82,7 @@ export const Navbar = () => {
         </nav>
         <div className='bg-primary'>
           <div className='flex justify-between items-center container mx-auto py-2'>
-            <div className='relative lg:flex hidden'>
+            <div className='relative lg:flex md:flex hidden'>
               <button onClick={handleCategory} className='flex items-center text-white text-base'>
                 <span className='me-2'>Categories</span>
                 {openCategory ? <MdOutlineKeyboardArrowUp /> : <MdKeyboardArrowDown />}
@@ -104,14 +104,14 @@ export const Navbar = () => {
                 </ul>
               </div>
             </div>
-            <div className='flex rounded-full md:w-[658px] sm:w-80 relative items-center'>
-              <input className='rounded-full text-center w-full h-12' type="text" name="search" id="" />
-              <button className='flex absolute right-0 rounded-full bg-black h-12 text-white sm:w-[75px] lg:w-40 items-center justify-center gap-2'>
+            <div className='flex rounded-full md:w-[658px] w-80 relative items-center'>
+              <input className='rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full h-12' type="text" name="search" id="" placeholder='search your product hare' />
+              <button className='flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white w-[75px]  lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2'>
                 search <IoSearch className='h-4 w-4' />
               </button>
             </div>
             <div>
-              <p className='flex items-center gap-5'>
+              <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>
                 <TbShoppingBag className='h-5 w-5' />
                 <RxAvatar className='h-5 w-5' />
               </p>
@@ -128,14 +128,17 @@ export const Navbar = () => {
           </button>
           <h2 className='text-lg font-bold mb-4'>Categories</h2>
           <ul className='bg-white'>
-            {categories.map(category => (
+            {navList.map(nav => (
               <Link
-                key={category.name}
-                onClick={() => handleSelect(category.name)}
-                href={`/products/?category=${category.name}`}
-                className={`flex items-center shadow-md mt-2 h-16 justify-between px-4 ${selected === category.name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
+                key={nav.name}
+                onClick={() => handleSelect(nav.name)}
+                href={nav.href}
+                className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none after:absolute after:w-0 after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0 ${pathName === nav?.href
+                  ? "after:w-full after:left-0"
+                  : "after:left-1/2"
+                  }`}
               >
-                {category.name} <MdKeyboardArrowRight />
+                {nav.name} 
               </Link>
             ))}
           </ul>

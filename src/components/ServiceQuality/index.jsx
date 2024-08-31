@@ -8,7 +8,7 @@ const ServiceQuality = () => {
         {logo:'Returns.svg', title:"Cash Back policy",comment:"Guaranteed Cover Up"},
     ]
   return (
-    <div className='container mx-auto md:gap-12 lg:gap-12 mt-10 sm:grid-cols-1  grid md:grid-cols-4'>
+    <div className='container  mx-auto gap-4 md:gap-8 lg:gap-12 mt-10 grid-cols-1 grid lg:grid-cols-4  md:grid-cols-2'>
       {
         data.map(item=><div className='flex gap-4 items-center rounded-xl justify-center py-5 shadow-custom'>
             <img src={item.logo} alt="authentic" />
