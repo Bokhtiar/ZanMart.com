@@ -21,72 +21,73 @@ const ProductDetails = () => {
     const sizes = ['M', 'L', 'XL'];
 
     return (
-        <div className='mx-auto container mt-36 pt-5'>
-            <div className='flex justify-between'>
-                <div className='max-w-[540px] max-h-[540px]'>
-                <Image
-              src={product?.image}
-              alt={product?.name}
-              width={540}
-              height={540}
-              className='w-full  h-full'
-            />
+        <div className='mx-auto container px-2 mt-36 pt-5'>
+            <div className='flex md:justify-between  flex-col lg:flex-row lg:justify-between  '>
+                <div className='flex flex-col contents-between' >
+                    <div className='max-w-[540px] max-h-[540px]'>
+                        <Image
+                            src={product?.image}
+                            alt={product?.name}
+                            width={540}
+                            height={540}
+                            className='w-full  h-full'
+                        />
+                    </div>
+                    <div className='flex py-5 gap-4 w-1/2'>
+                        <Image height={500} width={500} className='h-20 w-20' src="/images/single.svg" alt="Thumbnail 1" />
+                        <Image height={500} width={500} className='h-20 w-20' src="/images/single.svg" alt="Thumbnail 2" />
+                        <Image height={500} width={500} className='h-20 w-20' src="/images/single.svg" alt="Thumbnail 3" />
+                    </div>
                 </div>
-                <div className='flex flex-col w-1/2'>
-                    <h1 className='font-medium text-3xl text-start leading-10'>{product?.name}</h1>
-                    <p className='text-lg pt-4 pb-3 leading-4 font-bold text-secondary'>{product?.category}</p>
-                    <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
-                        Available Size: <br />
-                        {product?.sizes.map((size, index) => (
-                            <span className='font-semibold' key={index}>{size}, </span>
-                        ))}
-                    </p>
-                    <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
-                        Available Colors: <br />
-                        {product?.colors.map((color, index) => (
-                            <span className='font-bold ' key={index}>{color}, </span>
-                        ))}
-                    </p>
-                    <p className='flex text-center w-24 border items-center text-primary border-primary px-1'>
-                        <IoMdCheckmarkCircleOutline /> In Stock
-                    </p>
-                    <p className='flex py-3 items-center w-2/5 justify-between'>
-                        <span className='text-primary text-5xl font-bold'>
-                            {product?.discount_price}<span className='text-2xl font-normal text-black'>tk</span>
-                        </span>
-                        <span className='text-secondary text-2xl line-through'>{product?.price} tk</span>
-                    </p>
+                <div className='flex flex-col content-between items- w-full lg:w-1/2'>
                     <div>
-                        <p className='rounded-xl font-medium items-center text-xl border justify-between flex w-3/5 border-[#D9D9D9] p-3'>
-                            <span className='flex items-center gap-2'>
-                                Qty:
-                                <span className='border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]'>
-                                    <button className='p-1'>-</button> 1
-                                    <button className='p-1'>+</button>
-                                </span>
+                        <h1 className='font-medium text-3xl text-start leading-10'>{product?.name}</h1>
+                        <p className='text-lg pt-4 pb-3 leading-4 font-bold text-secondary'>{product?.category}</p>
+                        <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
+                            Available Size: <br />
+                            {product?.sizes.map((size, index) => (
+                                <span className='font-semibold' key={index}>{size}, </span>
+                            ))}
+                        </p>
+                        <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
+                            Available Colors: <br />
+                            {product?.colors.map((color, index) => (
+                                <span className='font-bold ' key={index}>{color}, </span>
+                            ))}
+                        </p>
+                        <p className='flex text-center w-24 border items-center text-primary border-primary px-1'>
+                            <IoMdCheckmarkCircleOutline /> In Stock
+                        </p>
+                        <p className='flex py-3 flex-row items-center w-1/2 lg:w-2/5 justify-between'>
+                            <span className='text-primary md:text-3xl text-2xl lg:text-5xl font-bold'>
+                                {product?.discount_price} <span className='md:text-2xl text-lg lg:text-2xl  font-normal text-black'>tk</span>
                             </span>
-                            <button className='py-2 px-3 text-white bg-primary rounded-xl'>Add To Cart</button>
+                            <span className='text-secondary flex lg:text-2xl line-through'>{product?.price} tk</span>
+                        </p>
+                        <div className=''>
+                            <p className='rounded-xl font-medium lg:items-center text-lg lg:text-xl md:border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 border-[#D9D9D9] lg:p-3'>
+                                <span className='flex items-center gap-2'>
+                                    Qty:
+                                    <span className='border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]'>
+                                        <button className='p-1'>-</button> 1
+                                        <button className='p-1'>+</button>
+                                    </span>
+                                </span>
+                                <button className='p-1 lg:py-2 text-base lg:px-3 text-white bg-primary rounded-xl'>Add To Cart</button>
+                            </p>
+                        </div>
+                    </div>
+                    <div className='flex flex-col  lg:w-1/2 justify-center'>
+                        <h1 className='font-normal py-2 lg:p-2 text-xl'>Share this item to social media:</h1>
+                        <p className="flex lg:text-[40px] gap-5 text-[#AAAAAA]">
+                            <FaFacebookF />
+                            <FaLinkedinIn />
+                            <FaInstagram />
+                            <FaTwitter />
                         </p>
                     </div>
                 </div>
             </div>
-            <div className='flex justify-between'>
-                <div className='flex py-5 gap-4 w-1/2'>
-                    <Image height={500} width={500} className='h-20 w-20' src="/images/single.svg" alt="Thumbnail 1" />
-                    <Image height={500} width={500} className='h-20 w-20' src="/images/single.svg" alt="Thumbnail 2" />
-                    <Image height={500} width={500} className='h-20 w-20' src="/images/single.svg" alt="Thumbnail 3" />
-                </div>
-                <div className='flex flex-col w-1/2 justify-center'>
-                    <h1 className='font-normal p-2 text-xl'>Share this item to social media:</h1>
-                    <p className="flex text-[40px] gap-5 text-[#AAAAAA]">
-                        <FaFacebookF />
-                        <FaLinkedinIn />
-                        <FaInstagram />
-                        <FaTwitter />
-                    </p>
-                </div>
-            </div>
-
             <div>
                 <h1 className='text-2xl font-medium'>Detail</h1>
                 <hr className='border-2 my-5' />

@@ -12,7 +12,7 @@ const poppins = Poppins({ weight: ["100", "200", "300", "400", "500", "600", "70
 
 export default function Home() {
   return (
-    <section className={`${poppins.className} pt-36 `}>
+    <section className={`${poppins.className} px-2 pt-36 `}>
       <Banner></Banner>
       <ServiceQuality></ServiceQuality>
       <TopFeature title="FLASH SALE" dataUrl={'/data.json'} itemLimit={5}></TopFeature>

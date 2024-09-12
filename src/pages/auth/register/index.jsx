@@ -3,7 +3,7 @@ import React from 'react';
 
 const Register = () => {
   return (
-    <div className='container mx-auto py-10 justify-center flex'>
+    <div className='container mt-36  mx-auto py-10 justify-center flex'>
       <div className='items-center flex flex-col'>
         <h1 className='font-semibold text-2xl text-center pb-10 leading-4'>
           Create your Zanmart Account

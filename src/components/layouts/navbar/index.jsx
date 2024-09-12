@@ -21,6 +21,7 @@ export const Navbar = () => {
   const [selected, setSelected] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+
   const handleCategory = () => {
     setOpenCategory(!openCategory);
   };
@@ -88,14 +89,15 @@ export const Navbar = () => {
                 {openCategory ? <MdOutlineKeyboardArrowUp /> : <MdKeyboardArrowDown />}
               </button>
               <div
-                className={`absolute z-10 top-12 transition-all duration-500 ${openCategory ? 'max-h-full opacity-100' : 'max-h-0 opacity-0'}`}
+                className={`absolute  top-12 transition-all duration-500 ${openCategory ? 'max-h-full opacity-100 pointer-events-auto' : ' pointer-events-none max-h-0 opacity-0'}`}
               >
-                <ul className='bg-white'>
+                <ul className='bg-white '>
                   {categories.map(category => (
                     <Link
                       key={category.name}
-                      onClick={() => handleSelect(category.name)}
                       href={`/products/?category=${category.name}`}
+                      onClick={() => handleSelect(category.name)}
+                      
                       className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category.name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
                     >
                       {category.name} <MdKeyboardArrowRight />
@@ -113,7 +115,7 @@ export const Navbar = () => {
             <div>
               <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>
                 <TbShoppingBag className='h-5 w-5' />
-                <RxAvatar className='h-5 w-5' />
+                <Link href="/profile/?section=Profile"><RxAvatar  className='h-5 w-5' /></Link>
               </p>
             </div>
           </div>
@@ -126,7 +128,7 @@ export const Navbar = () => {
           <button onClick={toggleDrawer} className='text-xl'>
             <MdClose />
           </button>
-          <h2 className='text-lg font-bold mb-4'>Categories</h2>
+         
           <ul className='bg-white'>
             {navList.map(nav => (
               <Link
