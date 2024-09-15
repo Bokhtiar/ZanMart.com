@@ -14,6 +14,7 @@ import { TbShoppingBag } from 'react-icons/tb';
 import { TiDocumentText } from "react-icons/ti";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { TbCircleKey } from "react-icons/tb";
+import ChangePass from '@/components/changePass';
 const Profile = () => {
     const router = useRouter();
     const { section } = router.query;
@@ -31,14 +32,14 @@ const Profile = () => {
      
             case 'Address Book':
                 return <Address />;
-            case 'paymePayment Options':
+            case 'Payment Options':
                 return <OptionsPayment />;
             case 'My Cart':
                 return <MyCart />;
             case 'Orders':
                 return <Orders />;
             case 'Change Password':
-                return <Orders />;
+                return <ChangePass />;
             default:
                 return <ProfileInfo />
         }
@@ -58,7 +59,7 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className='flex justify-center'>
-                <ul className='space-y-4  flex flex-col z-10'>
+                <ul className='space-y-4  flex flex-col'>
                    {
                     sections.map(data=> <li>
                         <Link href={`/profile?section=${data.name}`}>

@@ -73,7 +73,7 @@ export const Navbar = () => {
           </div>
           <div className='flex items-center'>
             <div>
-              <img src="support.svg" alt="Support" />
+              <img src="/support.svg" alt="Support" />
             </div>
             <div className='text-sm font-normal leading-5'>
               <p>+880969654312</p>
@@ -114,7 +114,7 @@ export const Navbar = () => {
             </div>
             <div>
               <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>
-                <TbShoppingBag className='h-5 w-5' />
+                <Link href="/profile/?section=My Cart"><TbShoppingBag className='h-5 w-5' /></Link>
                 <Link href="/profile/?section=Profile"><RxAvatar  className='h-5 w-5' /></Link>
               </p>
             </div>
