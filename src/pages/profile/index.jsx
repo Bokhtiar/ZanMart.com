@@ -15,21 +15,23 @@ import { TiDocumentText } from "react-icons/ti";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { TbCircleKey } from "react-icons/tb";
 import ChangePass from '@/components/changePass';
+import PaymetnProceed from '@/components/PaymentProceed';
+import ConfirmOrder from '@/components/ConfirmOrder';
 const Profile = () => {
     const router = useRouter();
     const { section } = router.query;
- const sections=[
-    {logo:<CgProfile />, name:'Profile'},
-    {logo:<IoLocationOutline />,name:'Address Book'},
-    {logo:<TbShoppingBag/> , name:'My Cart'},
-    {logo:<TiDocumentText />, name:'Orders'},
-    {logo:<RiSecurePaymentLine />        , name:'Payment Options'},
-    {logo:<TbCircleKey />        , name:'Change Password'}]
+    const sections = [
+        { logo: <CgProfile />, name: 'Profile' },
+        { logo: <IoLocationOutline />, name: 'Address Book' },
+        { logo: <TbShoppingBag />, name: 'My Cart' },
+        { logo: <TiDocumentText />, name: 'Orders' },
+        { logo: <RiSecurePaymentLine />, name: 'Payment Options' },
+        { logo: <TbCircleKey />, name: 'Change Password' }]
     const renderContent = () => {
         switch (section) {
             case 'Profile':
                 return <ProfileInfo />;
-     
+
             case 'Address Book':
                 return <Address />;
             case 'Payment Options':
@@ -40,6 +42,10 @@ const Profile = () => {
                 return <Orders />;
             case 'Change Password':
                 return <ChangePass />;
+            case 'Payment Proceed':
+                return < PaymetnProceed></PaymetnProceed>;
+            case 'confirm-order':
+                return <ConfirmOrder></ConfirmOrder>;
             default:
                 return <ProfileInfo />
         }
@@ -59,22 +65,22 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className='flex justify-center'>
-                <ul className='space-y-4  flex flex-col'>
-                   {
-                    sections.map(data=> <li>
-                        <Link href={`/profile?section=${data.name}`}>
-                            <p className={`flex px-10 py-1 rounded-xl teext-xs leading-7 font-medium items-center gap-1  ${section === data.name ? 'bg-primary text-white  ' : 'text-primary'}`}> {data.logo} {data.name}</p>
-                        </Link>
-                    </li>)
-                   }
-                    
-                   
-                 
-                    <li>
-                        <button className='flex  px-10 py-1 teext-xs leading-7 items-center gap-1 text-red-500'> <IoLogOut /> Logout</button>
+                    <ul className='space-y-4  flex flex-col'>
+                        {
+                            sections.map(data => <li>
+                                <Link href={`/profile?section=${data.name}`}>
+                                    <p className={`flex px-10 py-1 rounded-xl teext-xs leading-7 font-medium items-center gap-1  ${section === data.name ? 'bg-primary text-white  ' : 'text-primary'}`}> {data.logo} {data.name}</p>
+                                </Link>
+                            </li>)
+                        }
 
-                    </li>
-                </ul>
+
+
+                        <li>
+                            <button className='flex  px-10 py-1 teext-xs leading-7 items-center gap-1 text-red-500'> <IoLogOut /> Logout</button>
+
+                        </li>
+                    </ul>
                 </div>
             </div>
 
