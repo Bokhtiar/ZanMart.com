@@ -68,7 +68,7 @@ const Profile = () => {
                     <ul className='space-y-4  flex flex-col'>
                         {
                             sections.map(data => <li>
-                                <Link href={`/profile?section=${data.name}`}>
+                                <Link href={`/profile?section=${data.name }`}>
                                     <p className={`flex px-10 py-1 rounded-xl teext-xs leading-7 font-medium items-center gap-1  ${section === data.name ? 'bg-primary text-white  ' : 'text-primary'}`}> {data.logo} {data.name}</p>
                                 </Link>
                             </li>)

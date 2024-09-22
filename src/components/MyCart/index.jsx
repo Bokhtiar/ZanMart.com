@@ -15,6 +15,7 @@ const MyCart = () => {
       image: "/images/tshirt2.png",
       colors: ["black", "blue", "red"],
       stock: 60,
+      payment: true
     },
     {
       id: 11,
@@ -25,6 +26,7 @@ const MyCart = () => {
       image: "/images/tshirt2.png",
       colors: ["black", "blue", "red"],
       stock: 60,
+      payment: false
     },
     // Add other items similarly
   ];
@@ -80,7 +82,7 @@ const MyCart = () => {
         (acc, item) =>
           acc +
           item.discount_price *
-            (quantities[item.id] || 1), // Use the quantity if available, else default to 1
+          (quantities[item.id] || 1), // Use the quantity if available, else default to 1
         0
       );
   };
@@ -116,26 +118,36 @@ const MyCart = () => {
                     />
                   </div>
                   <div className="flex rounded-md justify-between shadow-custom2 items-center w-full p-2 gap-5">
-                    <div className="flex justify-start">
-                      <img
-                        className="h-[73px] w-[73px] rounded-lg"
-                        src={item.image}
-                        alt={item.name}
-                      />
-                    </div>
-                    <div className="w-fit">
-                      <p className="text-xs font-medium">{item.name}</p>
-                      <p className="font-bold text-[8px] text-[#AAAAAA] flex gap-2">
-                        <span className="text-[#FFAA00]">{item.category}</span> color: Black
-                        Size: XL
-                      </p>
-                      <button
-                        disabled
-                        className="text-[6px] px-2 py-1 font-bold border text-primary rounded-md flex items-center gap-1"
-                      >
-                        <IoMdCheckmarkCircleOutline className="h-[7px] w-[7px]" /> Cash on
-                        Delivery Available
-                      </button>
+                    <div className='flex  gap-10'>
+                      <div className="flex justify-start">
+                        <img
+                          className="h-[73px] w-[73px] rounded-lg"
+                          src={item.image}
+                          alt={item.name}
+                        />
+                      </div>
+                      <div className="w-fit">
+                        <p className="text-xs font-medium">{item.name}</p>
+                        <p className="font-bold text-[8px] text-[#AAAAAA] flex gap-2">
+                          <span className="text-[#FFAA00]">{item.category}</span> color: Black
+                          Size: XL
+                        </p>
+                        {
+                          item.payment === true ? <button
+                            disabled
+                            className="text-[6px] px-2 py-1 font-bold border text-primary rounded-md flex items-center gap-1"
+                          >
+                            <IoMdCheckmarkCircleOutline className="h-[7px] w-[7px]" /> Cash on
+                            Delivery Available
+                          </button> : <button
+                            disabled
+                            className="text-[6px] px-2 py-1 font-bold border text-white bg-red-500 rounded-md flex items-center gap-1"
+                          >
+
+                            Pre Payment Only
+                          </button>
+                        }
+                      </div>
                     </div>
                     <div className="flex flex-col items-center">
                       <p className="py-3 text-center">

@@ -33,7 +33,7 @@ const ConfirmOrder = () => {
                 </div>
 
                 {/* Total Summary Section */}
-                <div className="w-1/3 py-10">
+                <div className="w-1/3">
                     <div className="mt-12 shadow-custom2 p-5">
                         <p className="text-[8px] text-[#AAAAAA] flex gap-2">
                             <IoLocationOutline /> Delivery Location: 312/GrapTown, Dattapara Ashulia, Savar, Dhaka
