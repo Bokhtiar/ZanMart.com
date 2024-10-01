@@ -16,7 +16,6 @@ const ProductDetails = () => {
     }, []);
     const product = products.find(p => String(p.id) === id);
     console.log(product)
-
     const colors = ['blue', 'red', 'black'];
     const sizes = ['M', 'L', 'XL'];
 
