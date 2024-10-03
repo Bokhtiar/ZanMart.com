@@ -1,3 +1,4 @@
+import { Toastify } from '@/components/toastify';
 import TopFeature from '@/components/TopFeature';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -7,6 +8,7 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
 const ProductDetails = () => {
     const [products, setProducts] = useState([]);
+    const [quantity, setQuantity] = useState(1)
     const router = useRouter();
     const { id } = router.query;
     useEffect(() => {
@@ -15,9 +17,50 @@ const ProductDetails = () => {
             .then(data => setProducts(data));
     }, []);
     const product = products.find(p => String(p.id) === id);
-    console.log(product)
-    const colors = ['blue', 'red', 'black'];
-    const sizes = ['M', 'L', 'XL'];
+    //console.log(product)
+    const handelIncriment = () => {
+        setQuantity(quantity + 1)
+    }
+    const handelDiccriment = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1)
+        }
+    }
+    const shipping_address_id = 1
+    const billing_address_id = 1
+    const handelCart = () => {
+        const cartItem = {
+            product_id: product?.id,
+            sell_price: product?.discount_price || product?.price,
+            weight: product?.weight || 1, // Add weight if available
+            attribute_id: null,
+            color_id: null,
+            attribute_weight: null,
+            attribute_price: null,
+            qty: quantity,
+            image: product?.image,
+            category: product?.category,
+            title: product?.name
+        };
+    
+        let cart = localStorage.getItem('cart');
+        cart = cart ? JSON.parse(cart) : { cart_items: [], shipping_address_id: 1, billing_address_id: 1 };
+    
+        const isProductInCart = cart.cart_items.some(item => item.product_id === cartItem.product_id);
+    
+        if (isProductInCart) {
+            Toastify.Warning('Already in Cart');
+        } else {
+            cart.cart_items.push(cartItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
+    
+            // Trigger a custom event to notify the navbar about the cart update
+            window.dispatchEvent(new Event('cartUpdated'));
+    
+            Toastify.Success('Product added successfully');
+        }
+    };
+      
 
     return (
         <div className='mx-auto container px-2 mt-36 pt-5'>
@@ -68,11 +111,11 @@ const ProductDetails = () => {
                                 <span className='flex items-center gap-2'>
                                     Qty:
                                     <span className='border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]'>
-                                        <button className='p-1'>-</button> 1
-                                        <button className='p-1'>+</button>
+                                        <button onClick={handelDiccriment} className='p-1'>-</button> {quantity}
+                                        <button onClick={handelIncriment} className='p-1'>+</button>
                                     </span>
                                 </span>
-                                <button className='p-1 lg:py-2 text-base lg:px-3 text-white bg-primary rounded-xl'>Add To Cart</button>
+                                <button onClick={handelCart} className='p-1 lg:py-2 text-base lg:px-3 text-white bg-primary rounded-xl'>Add To Cart</button>
                             </p>
                         </div>
                     </div>

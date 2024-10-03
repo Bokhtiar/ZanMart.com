@@ -48,13 +48,13 @@ console.log(error)
     >
       {
         banner?.map(item =>
-          <SwiperSlide><div className='relative bg-[#F5F5F5] '>
-            <div className='absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2 '>
+          <SwiperSlide><div  className='relative h-80  bg-[#F5F5F5] '>
+            <div className='absolute  top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2 '>
               <h1 className='text-primary text-2xl md:text-3xl lg:text-[35px] font-extrabold'>Flat Discount</h1>
               <p className='text-md mb-2'>On the selected items</p>
               <button className='rounded-full btn text-sm bg-primary text-white px-5  py-2'>Shop Now</button>
             </div>
-            <img className='w-full h-full bg-cover' src="banner.png" alt="" />
+            <img className='w-full h-full bg-cover' src={`http://127.0.0.1:8000/${item.image}`} alt="" />
           </div></SwiperSlide>
         )
       }

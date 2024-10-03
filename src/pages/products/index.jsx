@@ -1,4 +1,4 @@
-import ProductsBanner from '@/components/productsBanner';
+
 import SingleCart from '@/components/singleCart';
 import { privateRequest, publicRequest } from '@/config/axios.config';
 import { useRouter } from 'next/router';
@@ -6,49 +6,56 @@ import React, { useEffect, useState } from 'react';
 import { FiFilter } from 'react-icons/fi';
 import { MdClose } from 'react-icons/md';
 import { PiRectangle } from 'react-icons/pi';
-import { TbAlignLeft, TbAlignRight } from 'react-icons/tb';
 
 const Products = () => {
-    const subCategory = ['Mens clothing', 'Womens Clothing'];
     const router = useRouter();
     const { category } = router.query;
-
     const [products, setProducts] = useState([]);
     const [minValue, setMinValue] = useState(10);
     const [maxValue, setMaxValue] = useState(90);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [size, setSize] = useState([]);
     const [colors, setColors] = useState([]);
-    const [page, setPage] = useState(1); // Add page state
-    const [perPage, setPerPage] = useState(20); // Per page state
+    const [subCategory, setSubcategory] = useState([]);
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
 
-       // Function to fetch products with pagination
-    //    const fetchProducts = async () => {
-    //     try {
-    //         const response = await publicRequest.get(`products?per_page=${perPage}&page=${page}`);
-    //         setProducts(response?.data?.data?.data || []);
-    //         console.log('Products:', response.data);
-    //     } catch (error) {
-    //         console.error('Error fetching products:', error);
-    //     }
-    // };
-    const fetchProducts=async()=>{
-        fetch('/data.json')
-        .then(res=>res.json())
-        .then(data=>setProducts(data))
+    const categoryFetch = async () => {
+        try {
+            const response = await publicRequest.get('categories');
+            const fetchedCategories = response?.data?.data || [];
+            const selectedCategory = fetchedCategories?.find(item => item.category_name === category);
+            setSubcategory(selectedCategory?.childs || []);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+        }
+    };
 
-    }
+    const fetchProducts = async () => {
+        fetch('/data.json')
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data)
+                // Filter products by category and selected subcategory
+                // const filteredProducts = data.filter(product => {
+                //     const isInCategory = product.category === category;
+                //     const isInSubCategory = selectedSubCategory ? product.sub_category_id === selectedSubCategory.sub_category_id : true;
+                //     return isInCategory 
+
+                // });
+
+            });
+    };
 
     // Function to fetch sizes (attributes)
     const fetchSizes = async () => {
         try {
-            const response = await privateRequest.get('/admin/attribute');
+            const response = await privateRequest.get('admin/attribute');
             setSize(response?.data?.data?.data || []);
-            console.log('Sizes:', response.data);
+            console.log('size--------->', response?.data?.data?.data)
         } catch (error) {
             console.error('Error fetching sizes:', error);
         }
@@ -57,24 +64,20 @@ const Products = () => {
     // Function to fetch colors
     const fetchColors = async () => {
         try {
-            const response = await privateRequest.get('/admin/color');
+            const response = await privateRequest.get('admin/color');
             setColors(response?.data?.data?.data || []);
-            console.log('Colors:', response.data);
+            console.log('color---->', response?.data?.data?.data)
         } catch (error) {
             console.error('Error fetching colors:', error);
         }
     };
 
-    // UseEffect to call all fetching functions at once
     useEffect(() => {
-        const fetchData = async () => {
-            await Promise.all([fetchProducts(), fetchSizes(), fetchColors()]);
-        };
-        fetchData();
-    }, [page, perPage]);
-
-
-    
+        fetchProducts();
+        fetchSizes();
+        fetchColors();
+        categoryFetch();
+    }, [category, selectedSubCategory]); // Updated dependencies
 
     const handleMinChange = (e) => {
         const value = Math.min(Number(e.target.value), maxValue - 1);
@@ -86,22 +89,21 @@ const Products = () => {
         setMaxValue(value);
     };
 
-    // Handle Pagination (Next/Previous)
-    const handleNextPage = () => {
-        setPage(prevPage => prevPage + 1);
-    };
-
-    const handlePreviousPage = () => {
-        if (page > 1) {
-            setPage(prevPage => prevPage - 1);
-        }
-    };
-
     return (
         <div className="mt-36">
-            <ProductsBanner category={category} subCategory={subCategory} />
-
+                 {/* product banner--------------------------- */}
+            <div className='text-center py-10'>
+                <h1 className='font-extrabold text-primary text-4xl py-2'>{category}</h1>
+                <p className='font-normal text-xl leading-7'>Choose form the best collections</p>
+                <p className='py-10 gap-10 flex justify-center'>
+                    {
+                        subCategory?.map(sub => <button className='shadow-lg font-normal rounded-sm py-2  text-xs px-10 '>{sub.category_name}</button>)
+                    }
+                </p>
+            </div>
+             
             <div className="flex container mx-auto items-start gap-10 w-full">
+                {/* Filter options */}
                 <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
                     <div>
                         <p className="text-base font-semibold leading-6">Price Range</p>
@@ -128,7 +130,6 @@ const Products = () => {
 
                     <div className="mt-10">
                         <p className="text-base font-semibold leading-6">Filter by Size</p>
-                        {/* Iterate over the size array */}
                         {size.map(s => (
                             <p key={s.attribute_id} className="flex py-1 text-xs font-mormal leading-4 items-center gap-2">
                                 <input className="border-[#AAAAAA]" type="checkbox" /> {s.name}
@@ -141,9 +142,6 @@ const Products = () => {
                         {colors.map(color => (
                             <button key={color.index} className="flex py-1 text-xs font-normal leading-4 items-center gap-2">
                                 <input type="checkbox" />
-                                {/* <span className="h-[13px] border overflow-hidden w-[13px]">
-                                    <PiRectangle className={`${color.color} w-[30px] h-[50px]`} />
-                                </span> */}
                                 {color.name}
                             </button>
                         ))}
@@ -156,36 +154,12 @@ const Products = () => {
                         <button onClick={toggleDrawer} className="text-xl">
                             <FiFilter />
                         </button>
-                        <p>
-                            Sort By :{" "}
-                            <select className="ml-2 border rounded">
-                                <option value="">Default</option>
-                                <option value="price">Low to High</option>
-                                <option value="popularity">High to Low</option>
-                            </select>
-                        </p>
                     </div>
 
                     <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
                         {products.map(product => (
                             <SingleCart key={product.id} item={product} />
                         ))}
-                    </div>
-
-                    <div className="flex justify-center  gap-10 mt-8">
-                        <button
-                            className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                            onClick={handlePreviousPage}
-                            disabled={page === 1}
-                        >
-                            Previous
-                        </button>
-                        <button
-                            className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                            onClick={handleNextPage}
-                        >
-                            Next
-                        </button>
                     </div>
                 </div>
             </div>
@@ -219,7 +193,7 @@ const Products = () => {
                         <div className="mt-10">
                             <p className="text-base font-semibold leading-6">Filter by color</p>
                             {colors.map(color => (
-                                <button key={color.index} className="flex py-1 text-xs font-normal leading-4 items-center gap-2">
+                                <button key={color.color_id} className="flex py-1 text-xs font-normal leading-4 items-center gap-2">
                                     <span className="h-[13px] border overflow-hidden w-[13px]">
                                         <PiRectangle className={`${color.color} w-[30px] h-[50px]`} />
                                     </span>
@@ -227,7 +201,7 @@ const Products = () => {
                                 </button>
                             ))}
                         </div>
-                        <img className="mt-10 w-full" src="/images/filterbanner.svg" alt="" />
+                        {/* <img className="mt-10 w-full" src="/images/filterbanner.svg" alt="" /> */}
                     </div>
                 </div>
             </div>

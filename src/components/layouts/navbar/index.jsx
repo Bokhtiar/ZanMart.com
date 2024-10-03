@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MdKeyboardArrowDown, MdOutlineKeyboardArrowUp, MdKeyboardArrowRight, MdClose } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { TbShoppingBag, TbAlignLeft } from "react-icons/tb";
 import { RxAvatar } from "react-icons/rx";
+import { publicRequest } from '@/config/axios.config';
 
 const navList = [
   { name: "home", href: "/" },
@@ -15,12 +16,39 @@ const navList = [
 ];
 
 export const Navbar = () => {
-  const pathName = usePathname('');
-  const [active, setActive] = useState('');
+  const pathName = usePathname();
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  const [cart, setCart] = useState({
+    cart_items: [],
+    shipping_address_id: 1,
+    billing_address_id: 1,
+  });
+
+  const [categories, setCategories] = useState([]);
+  const categoryFetch = async () => {
+    const response = await publicRequest.get('categories');
+    setCategories(response.data.data);
+  };
+
+  useEffect(() => {
+    const updateCart = () => {
+      const cartData = localStorage.getItem('cart');
+      if (cartData) {
+        setCart(JSON.parse(cartData));
+      }
+    };
+
+    updateCart();
+    categoryFetch();
+
+    window.addEventListener('cartUpdated', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+    };
+  }, []);
 
   const handleCategory = () => {
     setOpenCategory(!openCategory);
@@ -34,14 +62,6 @@ export const Navbar = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
-  const categories = [
-    { name: "Clothing" },
-    { name: "Stationary" },
-    { name: "Medical Equipment" },
-    { name: "Handicraft" },
-    { name: "Others" },
-  ];
 
   return (
     <>
@@ -63,9 +83,8 @@ export const Navbar = () => {
                   : "after:left-1/2"
                   }`}
                 key={index}
-                aria-labelledby="labeldiv"
               >
-                <button className="nav_link pb-2 leading-5 capitalize" aria-label='area-lavel'>
+                <button className="nav_link pb-2 leading-5 capitalize">
                   {item?.name}
                 </button>
               </Link>
@@ -94,28 +113,30 @@ export const Navbar = () => {
                 <ul className='bg-white '>
                   {categories.map(category => (
                     <Link
-                      key={category.name}
-                      href={`/products/?category=${category.name}`}
-                      onClick={() => handleSelect(category.name)}
-                      
-                      className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category.name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
+                      key={category?.category_id}
+                      href={`/products/?category=${category?.category_name}`}
+                      onClick={() => handleSelect(category?.category_name)}
+                      className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category?.category_name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
                     >
-                      {category.name} <MdKeyboardArrowRight />
+                      {category.category_name} <MdKeyboardArrowRight />
                     </Link>
                   ))}
                 </ul>
               </div>
             </div>
             <div className='flex rounded-full md:w-[658px] w-80 relative items-center'>
-              <input className='rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full h-12' type="text" name="search" id="" placeholder='search your product hare' />
-              <button className='flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white w-[75px]  lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2'>
+              <input className='rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full h-12' type="text" placeholder='search your product here' />
+              <button className='flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2'>
                 search <IoSearch className='h-4 w-4' />
               </button>
             </div>
             <div>
               <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>
-                <Link href="/profile/?section=My Cart"><TbShoppingBag className='h-5 w-5' /></Link>
-                <Link href="/profile/?section=Profile"><RxAvatar  className='h-5 w-5' /></Link>
+                <Link href="/profile/?section=My Cart" className='relative'>
+                  <span className='absolute text-xs top-0 right-0 bg-yellow-500 leading-0 rounded-full'>{cart.cart_items.length}</span>
+                  <TbShoppingBag className='h-5 w-5' />
+                </Link>
+                <Link href="/profile/?section=Profile"><RxAvatar className='h-5 w-5' /></Link>
               </p>
             </div>
           </div>
@@ -128,7 +149,7 @@ export const Navbar = () => {
           <button onClick={toggleDrawer} className='text-xl'>
             <MdClose />
           </button>
-         
+
           <ul className='bg-white'>
             {navList.map(nav => (
               <Link
@@ -140,7 +161,7 @@ export const Navbar = () => {
                   : "after:left-1/2"
                   }`}
               >
-                {nav.name} 
+                {nav.name}
               </Link>
             ))}
           </ul>
