@@ -6,6 +6,7 @@ import { IoSearch } from "react-icons/io5";
 import { TbShoppingBag, TbAlignLeft } from "react-icons/tb";
 import { RxAvatar } from "react-icons/rx";
 import { publicRequest } from '@/config/axios.config';
+import { useProduct } from '@/hooks/useProducts';
 
 const navList = [
   { name: "home", href: "/" },
@@ -20,7 +21,7 @@ export const Navbar = () => {
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const [searchQuery, setSearchQuery] = useState('')
   const [cart, setCart] = useState({
     cart_items: [],
     shipping_address_id: 1,
@@ -31,8 +32,38 @@ export const Navbar = () => {
   const categoryFetch = async () => {
     const response = await publicRequest.get('categories');
     setCategories(response.data.data);
+    console.log(response)
   };
+  const handleSearchQuery = (e) => {
+    const query = e.target.value
+    setSearchQuery(query)
+  }
+  const { products, setProducts, originalProducts } = useProduct()
+  const handleSearch =async () => {
+    // Filter products based on the search query
+    // const filtered = originalProducts.filter(product =>
+    //   product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    // );
+    // setProducts(filtered)
+    console.log(searchQuery)
+    const SearchFilter=await publicRequest.get(`products-search/?search=''}`)
 
+    setProducts(SearchFilter?.data?.data?.data)
+    console.log('searchdata',SearchFilter)
+  }
+  const handleSelect = async (data,id) => {
+    setSelected(data);
+    // console.log(data,id)
+    // const filtered =await originalProducts.filter(product =>
+    //   product.title.toLowerCase().includes(data.toLowerCase())
+    // );
+    // setProducts(filtered)
+    const CategoryFilterd=await publicRequest.get(`category/product/${id}`)
+    setProducts(CategoryFilterd?.data?.data?.data)
+
+    
+    setIsDrawerOpen(false); // Close the drawer after selecting a category
+  };
   useEffect(() => {
     const updateCart = () => {
       const cartData = localStorage.getItem('cart');
@@ -43,6 +74,7 @@ export const Navbar = () => {
 
     updateCart();
     categoryFetch();
+    handleSearch();
 
     window.addEventListener('cartUpdated', updateCart);
     return () => {
@@ -54,10 +86,7 @@ export const Navbar = () => {
     setOpenCategory(!openCategory);
   };
 
-  const handleSelect = (data) => {
-    setSelected(data);
-    setIsDrawerOpen(false); // Close the drawer after selecting a category
-  };
+
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -115,7 +144,7 @@ export const Navbar = () => {
                     <Link
                       key={category?.category_id}
                       href={`/products/?category=${category?.category_name}`}
-                      onClick={() => handleSelect(category?.category_name)}
+                      onClick={() => handleSelect(category?.category_name,category?.category_id)}
                       className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category?.category_name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
                     >
                       {category.category_name} <MdKeyboardArrowRight />
@@ -125,10 +154,10 @@ export const Navbar = () => {
               </div>
             </div>
             <div className='flex rounded-full md:w-[658px] w-80 relative items-center'>
-              <input className='rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full h-12' type="text" placeholder='search your product here' />
-              <button className='flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2'>
+              <input onChange={handleSearchQuery} className='rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full h-12' type="text" placeholder='search your product here' />
+              <Link href={`/products/?category=${searchQuery}`} onClick={handleSearch} className='flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2'>
                 search <IoSearch className='h-4 w-4' />
-              </button>
+              </Link>
             </div>
             <div>
               <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>

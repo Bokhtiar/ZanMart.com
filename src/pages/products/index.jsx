@@ -1,6 +1,7 @@
 
 import SingleCart from '@/components/singleCart';
 import { privateRequest, publicRequest } from '@/config/axios.config';
+import { useProduct } from '@/hooks/useProducts';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FiFilter } from 'react-icons/fi';
@@ -10,7 +11,7 @@ import { PiRectangle } from 'react-icons/pi';
 const Products = () => {
     const router = useRouter();
     const { category } = router.query;
-    const [products, setProducts] = useState([]);
+    // const [products, setProducts] = useState([]);
     const [minValue, setMinValue] = useState(10);
     const [maxValue, setMaxValue] = useState(90);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -34,22 +35,8 @@ const Products = () => {
         }
     };
 
-    const fetchProducts = async () => {
-        fetch('/data.json')
-            .then(res => res.json())
-            .then(data => {
-                setProducts(data)
-                // Filter products by category and selected subcategory
-                // const filteredProducts = data.filter(product => {
-                //     const isInCategory = product.category === category;
-                //     const isInSubCategory = selectedSubCategory ? product.sub_category_id === selectedSubCategory.sub_category_id : true;
-                //     return isInCategory 
-
-                // });
-
-            });
-    };
-
+    const { products,setProducts } = useProduct()
+    console.log(products)
     // Function to fetch sizes (attributes)
     const fetchSizes = async () => {
         try {
@@ -66,14 +53,25 @@ const Products = () => {
         try {
             const response = await privateRequest.get('admin/color');
             setColors(response?.data?.data?.data || []);
-            console.log('color---->', response?.data?.data?.data)
+            console.log('', response?.data?.data?.data)
+        } catch (error) {
+            console.error('Error fetching colors:', error);
+        }
+    };
+    
+    const PriceFilter = async () => {
+        console.log('click')
+        try {
+            const response = await publicRequest.post('product/price/filter',{min_price:minValue,max_price:maxValue});
+            setProducts(response?.data?.data || []);
+            console.log('price Filtered---->', response)
         } catch (error) {
             console.error('Error fetching colors:', error);
         }
     };
 
+
     useEffect(() => {
-        fetchProducts();
         fetchSizes();
         fetchColors();
         categoryFetch();
@@ -91,7 +89,7 @@ const Products = () => {
 
     return (
         <div className="mt-36">
-                 {/* product banner--------------------------- */}
+            {/* product banner--------------------------- */}
             <div className='text-center py-10'>
                 <h1 className='font-extrabold text-primary text-4xl py-2'>{category}</h1>
                 <p className='font-normal text-xl leading-7'>Choose form the best collections</p>
@@ -101,7 +99,7 @@ const Products = () => {
                     }
                 </p>
             </div>
-             
+
             <div className="flex container mx-auto items-start gap-10 w-full">
                 {/* Filter options */}
                 <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
@@ -125,7 +123,9 @@ const Products = () => {
                                 onChange={handleMaxChange}
                                 placeholder="Max"
                             />
+                           
                         </div>
+                        <button onClick={PriceFilter} className='mt-4  border rounded-md px-4 text-white  bg-primary text-sm '>Filter</button>
                     </div>
 
                     <div className="mt-10">
@@ -157,8 +157,8 @@ const Products = () => {
                     </div>
 
                     <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
-                        {products.map(product => (
-                            <SingleCart key={product.id} item={product} />
+                        {products?.map(product => (
+                            <SingleCart key={product.product_id} item={product} />
                         ))}
                     </div>
                 </div>

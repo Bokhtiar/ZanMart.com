@@ -1,5 +1,7 @@
 import { Toastify } from '@/components/toastify';
 import TopFeature from '@/components/TopFeature';
+import { publicRequest } from '@/config/axios.config';
+import { useProduct } from '@/hooks/useProducts';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -7,17 +9,42 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from 'react-icons/f
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
 const ProductDetails = () => {
-    const [products, setProducts] = useState([]);
+
     const [quantity, setQuantity] = useState(1)
     const router = useRouter();
+    const [product, setProduct] = useState({})
     const { id } = router.query;
+    const { products } = useProduct()
+   const [categoryName,setCategoryName]=useState('')
     useEffect(() => {
-        fetch('/data.json')
-            .then(res => res.json())
-            .then(data => setProducts(data));
-    }, []);
-    const product = products.find(p => String(p.id) === id);
-    //console.log(product)
+        const fetchProduct = async () => {
+            try {
+              // Fetch product by ID
+              const res = await publicRequest.get(`product/${id}`);
+              console.log('Product:', res.data?.data);
+              setProduct(res?.data?.data);
+          
+              // Fetch categories
+              const categoryResponse = await publicRequest.get(`categories`);
+              const categories = categoryResponse?.data?.data;
+              console.log('Categories:', categories);
+        
+              // Find category by the product's categopry name by category_id
+              const productCategoryId = res?.data?.data?.category_id;
+              const categoryName = categories?.find(itm => itm.category_id === productCategoryId)?.category_name;
+              setCategoryName(categoryName)
+              console.log('Category Name:', categoryName); // Should now log the correct category name
+          
+            } catch (error) {
+              console.error('Failed to fetch product:', error);
+            }
+          };
+          
+          
+
+        fetchProduct();
+    }, [id]); // Add `id` as a dependency if it's dynamic
+
     const handelIncriment = () => {
         setQuantity(quantity + 1)
     }
@@ -42,25 +69,25 @@ const ProductDetails = () => {
             category: product?.category,
             title: product?.name
         };
-    
+
         let cart = localStorage.getItem('cart');
         cart = cart ? JSON.parse(cart) : { cart_items: [], shipping_address_id: 1, billing_address_id: 1 };
-    
+
         const isProductInCart = cart.cart_items.some(item => item.product_id === cartItem.product_id);
-    
+
         if (isProductInCart) {
             Toastify.Warning('Already in Cart');
         } else {
             cart.cart_items.push(cartItem);
             localStorage.setItem('cart', JSON.stringify(cart));
-    
+
             // Trigger a custom event to notify the navbar about the cart update
             window.dispatchEvent(new Event('cartUpdated'));
-    
+
             Toastify.Success('Product added successfully');
         }
     };
-      
+
 
     return (
         <div className='mx-auto container px-2 mt-36 pt-5'>
@@ -68,8 +95,8 @@ const ProductDetails = () => {
                 <div className='flex flex-col contents-between' >
                     <div className='max-w-[540px] max-h-[540px]'>
                         <Image
-                            src={product?.image}
-                            alt={product?.name}
+                            src={`http://127.0.0.1:8000/${product?.thumbnail_image}`}
+                            alt={product?.title}
                             width={540}
                             height={540}
                             className='w-full  h-full'
@@ -83,28 +110,28 @@ const ProductDetails = () => {
                 </div>
                 <div className='flex flex-col content-between items- w-full lg:w-1/2'>
                     <div>
-                        <h1 className='font-medium text-3xl text-start leading-10'>{product?.name}</h1>
-                        <p className='text-lg pt-4 pb-3 leading-4 font-bold text-secondary'>{product?.category}</p>
-                        <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
+                        <h1 className='font-medium text-3xl text-start leading-10'>{product?.title}</h1>
+                        <p className='text-lg pt-4 pb-3 leading-4 font-bold text-secondary'>{categoryName}</p>
+                        {/* <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
                             Available Size: <br />
                             {product?.sizes.map((size, index) => (
                                 <span className='font-semibold' key={index}>{size}, </span>
                             ))}
-                        </p>
-                        <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
+                        </p> */}
+                        {/* <p className='text-base font-light leading-6 pb-3 text-[#AAAAAA]'>
                             Available Colors: <br />
                             {product?.colors.map((color, index) => (
                                 <span className='font-bold ' key={index}>{color}, </span>
                             ))}
-                        </p>
+                        </p> */}
                         <p className='flex text-center w-24 border items-center text-primary border-primary px-1'>
                             <IoMdCheckmarkCircleOutline /> In Stock
                         </p>
                         <p className='flex py-3 flex-row items-center w-1/2 lg:w-2/5 justify-between'>
                             <span className='text-primary md:text-3xl text-2xl lg:text-5xl font-bold'>
-                                {product?.discount_price} <span className='md:text-2xl text-lg lg:text-2xl  font-normal text-black'>tk</span>
+                                {product?.sell_price} <span className='md:text-2xl text-lg lg:text-2xl  font-normal text-black'>tk</span>
                             </span>
-                            <span className='text-secondary flex lg:text-2xl line-through'>{product?.price} tk</span>
+                            <span className='text-secondary flex lg:text-2xl line-through'>10 tk</span>
                         </p>
                         <div className=''>
                             <p className='rounded-xl font-medium lg:items-center text-lg lg:text-xl md:border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 border-[#D9D9D9] lg:p-3'>
@@ -119,7 +146,7 @@ const ProductDetails = () => {
                             </p>
                         </div>
                     </div>
-                    <div className='flex flex-col  lg:w-1/2 justify-center'>
+                 {/*    <div className='flex flex-col  lg:w-1/2 justify-center'>
                         <h1 className='font-normal py-2 lg:p-2 text-xl'>Share this item to social media:</h1>
                         <p className="flex lg:text-[40px] gap-5 text-[#AAAAAA]">
                             <FaFacebookF />
@@ -127,7 +154,7 @@ const ProductDetails = () => {
                             <FaInstagram />
                             <FaTwitter />
                         </p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div>
