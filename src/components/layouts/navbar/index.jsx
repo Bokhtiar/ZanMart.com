@@ -39,18 +39,15 @@ export const Navbar = () => {
     setSearchQuery(query)
   }
   const { products, setProducts, originalProducts } = useProduct()
-  const handleSearch =async () => {
-    // Filter products based on the search query
-    // const filtered = originalProducts.filter(product =>
-    //   product.title.toLowerCase().includes(searchQuery.toLowerCase())
-    // );
-    // setProducts(filtered)
-    console.log(searchQuery)
-    const SearchFilter=await publicRequest.get(`products-search/?search=''}`)
-
-    setProducts(SearchFilter?.data?.data?.data)
-    console.log('searchdata',SearchFilter)
-  }
+  const handleSearch = async () => {
+    try {
+      const SearchFilter = await publicRequest.get(`products-search?search=${searchQuery}`);
+      setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+  
   const handleSelect = async (data,id) => {
     setSelected(data);
     // console.log(data,id)
@@ -60,8 +57,7 @@ export const Navbar = () => {
     // setProducts(filtered)
     const CategoryFilterd=await publicRequest.get(`category/product/${id}`)
     setProducts(CategoryFilterd?.data?.data?.data)
-
-    
+    console.log('category filter',CategoryFilterd)
     setIsDrawerOpen(false); // Close the drawer after selecting a category
   };
   useEffect(() => {

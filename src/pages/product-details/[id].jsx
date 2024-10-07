@@ -124,9 +124,19 @@ const ProductDetails = () => {
                                 <span className='font-bold ' key={index}>{color}, </span>
                             ))}
                         </p> */}
-                        <p className='flex text-center w-24 border items-center text-primary border-primary px-1'>
+                        <div className='flex gap-3'>
+                        <p className='flex text-center w-24 border items-center  text-primary rounded-sm border-[#D9D9D9] px-1'>
                             <IoMdCheckmarkCircleOutline /> In Stock
                         </p>
+                        {
+                            product.delivery_status== 'cash'? <p className='flex text-center  border items-center text-primaryrounded-sm text-primary border-[#D9D9D9] px-1'>
+                            <IoMdCheckmarkCircleOutline /> Cash on delivery Avialable
+                        </p> :<p className='flex text-center  border items-center text-primaryrounded-sm text-primary border-[#D9D9D9] px-1'>
+                            <IoMdCheckmarkCircleOutline /> Online Payment
+                        </p>
+
+                        }
+                        </div>
                         <p className='flex py-3 flex-row items-center w-1/2 lg:w-2/5 justify-between'>
                             <span className='text-primary md:text-3xl text-2xl lg:text-5xl font-bold'>
                                 {product?.sell_price} <span className='md:text-2xl text-lg lg:text-2xl  font-normal text-black'>tk</span>

@@ -13,7 +13,7 @@ const Products = () => {
     const { category } = router.query;
     // const [products, setProducts] = useState([]);
     const [minValue, setMinValue] = useState(10);
-    const [maxValue, setMaxValue] = useState(90);
+    const [maxValue, setMaxValue] = useState(200);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [size, setSize] = useState([]);
     const [colors, setColors] = useState([]);
@@ -36,13 +36,13 @@ const Products = () => {
     };
 
     const { products,setProducts } = useProduct()
-    console.log(products)
+   // console.log(products)
     // Function to fetch sizes (attributes)
     const fetchSizes = async () => {
         try {
             const response = await privateRequest.get('admin/attribute');
             setSize(response?.data?.data?.data || []);
-            console.log('size--------->', response?.data?.data?.data)
+          //  console.log('size--------->', response?.data?.data?.data)
         } catch (error) {
             console.error('Error fetching sizes:', error);
         }
@@ -53,18 +53,18 @@ const Products = () => {
         try {
             const response = await privateRequest.get('admin/color');
             setColors(response?.data?.data?.data || []);
-            console.log('', response?.data?.data?.data)
+          //  console.log('', response?.data?.data?.data)
         } catch (error) {
             console.error('Error fetching colors:', error);
         }
     };
     
     const PriceFilter = async () => {
-        console.log('click')
+       // console.log('click')
         try {
             const response = await publicRequest.post('product/price/filter',{min_price:minValue,max_price:maxValue});
             setProducts(response?.data?.data || []);
-            console.log('price Filtered---->', response)
+            //console.log('price Filtered---->', response)
         } catch (error) {
             console.error('Error fetching colors:', error);
         }
@@ -83,7 +83,7 @@ const Products = () => {
     };
 
     const handleMaxChange = (e) => {
-        const value = Math.max(Number(e.target.value), minValue + 1);
+        const value = Math.max(Number(e.target.value), );
         setMaxValue(value);
     };
 
