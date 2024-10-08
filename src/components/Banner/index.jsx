@@ -18,8 +18,7 @@ const Banner = () => {
   const [banner, setBanner] = useState([])
   const fetchBanner = async () => {
 try{
-  const response = await privateRequest.get('admin/banner')
-  console.log(response)
+  const response = await publicRequest.get('banner')
   setBanner(response.data.data)
 
 }

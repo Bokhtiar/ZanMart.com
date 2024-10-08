@@ -14,7 +14,6 @@ const ProductDetails = () => {
     const router = useRouter();
     const [product, setProduct] = useState({})
     const { id } = router.query;
-    const { products } = useProduct()
    const [categoryName,setCategoryName]=useState('')
     useEffect(() => {
         const fetchProduct = async () => {
@@ -57,23 +56,23 @@ const ProductDetails = () => {
     const billing_address_id = 1
     const handelCart = () => {
         const cartItem = {
-            product_id: product?.id,
-            sell_price: product?.discount_price || product?.price,
+            product_id: product?.product_id,
+            sell_price: product?.sell_price ,
             weight: product?.weight || 1, // Add weight if available
             attribute_id: null,
             color_id: null,
             attribute_weight: null,
             attribute_price: null,
             qty: quantity,
-            image: product?.image,
-            category: product?.category,
-            title: product?.name
+            image: product?.thumbnail_image,
+            category: categoryName,
+            title: product?.title,
+            payment:product.delivery_status
         };
-
         let cart = localStorage.getItem('cart');
         cart = cart ? JSON.parse(cart) : { cart_items: [], shipping_address_id: 1, billing_address_id: 1 };
-
-        const isProductInCart = cart.cart_items.some(item => item.product_id === cartItem.product_id);
+      
+        const isProductInCart = cart?.cart_items?.some(item => item?.product_id === cartItem.product_id);
 
         if (isProductInCart) {
             Toastify.Warning('Already in Cart');

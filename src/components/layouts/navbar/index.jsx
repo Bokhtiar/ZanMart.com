@@ -47,17 +47,18 @@ export const Navbar = () => {
       console.error("Error fetching search results:", error);
     }
   };
-  
-  const handleSelect = async (data,id) => {
+
+  const handleSelect = async (data, id) => {
     setSelected(data);
     // console.log(data,id)
     // const filtered =await originalProducts.filter(product =>
     //   product.title.toLowerCase().includes(data.toLowerCase())
     // );
     // setProducts(filtered)
-    const CategoryFilterd=await publicRequest.get(`category/product/${id}`)
+    const CategoryFilterd = await publicRequest.get(`category/product/${id}`)
     setProducts(CategoryFilterd?.data?.data?.data)
-    console.log('category filter',CategoryFilterd)
+    console.log('category filter', CategoryFilterd)
+    console.log("category data", CategoryFilterd?.data?.data?.data)
     setIsDrawerOpen(false); // Close the drawer after selecting a category
   };
   useEffect(() => {
@@ -140,7 +141,7 @@ export const Navbar = () => {
                     <Link
                       key={category?.category_id}
                       href={`/products/?category=${category?.category_name}`}
-                      onClick={() => handleSelect(category?.category_name,category?.category_id)}
+                      onClick={() => handleSelect(category?.category_name, category?.category_id)}
                       className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category?.category_name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
                     >
                       {category.category_name} <MdKeyboardArrowRight />
@@ -158,7 +159,7 @@ export const Navbar = () => {
             <div>
               <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>
                 <Link href="/profile/?section=My Cart" className='relative'>
-                  <span className='absolute text-xs top-0 right-0 bg-yellow-500 leading-0 rounded-full'>{cart.cart_items.length}</span>
+                  <span className='absolute text-xs -top-1 -right-1 bg-yellow-500 leading-0 px-1 py-.5 text-center rounded-full'>{cart.cart_items.length}</span>
                   <TbShoppingBag className='h-5 w-5' />
                 </Link>
                 <Link href="/profile/?section=Profile"><RxAvatar className='h-5 w-5' /></Link>

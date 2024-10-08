@@ -8,14 +8,18 @@ const TopFeature = ({ title, dataUrl, itemLimit }) => {
   console.log(title)
   useEffect(() => {
     const fetchdata = async () => {
-      const res = await publicRequest.get(dataUrl)
-      console.log('-------', res?.data?.data)
+      try{
+        const res = await publicRequest.get(dataUrl)
       const result = res?.data?.data
       // const categoryProduct=data.filter(item=>item?.category_name?.toLowerCase().includes('sattionary'))
       const categoryProduct = result.find(category => category?.category_name === title);
       console.log(categoryProduct)
       setData(categoryProduct?.products)
       console.log(categoryProduct?.products)
+      }
+      catch(error){
+        
+      }
     }
     fetchdata()
   }, [title,dataUrl]);

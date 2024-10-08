@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { CiWarning } from "react-icons/ci";
+import { TiWarning } from 'react-icons/ti';
 
 const MyCart = () => {
   // Retrieve cart from localStorage, handle case if cart doesn't exist
@@ -119,8 +121,9 @@ const MyCart = () => {
       localStorage.setItem('cart', JSON.stringify(newcart));
       window.dispatchEvent(new Event('cartUpdated'));
   }
-
-  // Render the cart
+  const hasPrePaymentOnly = data.some(
+    (item) => selectedItems[item.product_id] && item.payment !== "cash"
+  );
   return (
     <div>
       <h1 className="text-2xl font-bold my-10">Manage your Cart</h1>
@@ -159,7 +162,7 @@ const MyCart = () => {
                       <div className="flex justify-start">
                         <img
                           className="h-[73px] w-[73px] rounded-lg"
-                          src={item.image}
+                          src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
                           alt={item.title}
                         />
                       </div>
@@ -169,7 +172,7 @@ const MyCart = () => {
                           <span className="text-[#FFAA00]">{item.category}</span> color: Black
                           Size: XL
                         </p>
-                        {item.payment === true ? (
+                        {item.payment === "cash" ? (
                           <button
                             disabled
                             className="text-[6px] px-2 py-1 font-bold border text-primary rounded-md flex items-center gap-1"
@@ -222,7 +225,7 @@ const MyCart = () => {
 
         {/* Total Summary Section */}
         <div className="w-1/3 py-10">
-          <div className="mt-12 shadow-custom2 p-5">
+          <div className="mt-12 shadow-custom2 bg-white p-5">
             <p className="text-[8px] text-[#AAAAAA] flex gap-2">
               <IoLocationOutline /> Delivery Location: 312/GrapTown, Dattapara Ashulia, Savar, Dhaka
             </p>
@@ -245,6 +248,12 @@ const MyCart = () => {
               Proceed to Payment
             </Link>
           </div>
+         {
+          hasPrePaymentOnly &&  <p className='flex mt-4  gap-5 items-center'>
+          <TiWarning className='text-yellow-500 h-12 w-12 '/>
+          <span>You Selected “Pre Payments” only product.You have to make the full payment to confirm your order</span>
+          </p>
+         }
         </div>
       </div>
     </div>

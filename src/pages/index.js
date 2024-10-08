@@ -16,9 +16,14 @@ const poppins = Poppins({ weight: ["100", "200", "300", "400", "500", "600", "70
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const categoryFetch = async () => {
+   try{
     const response = await publicRequest.get('home-page-category');
     setCategories(response?.data?.data);
     console.log(response?.data?.data)
+   }
+   catch(error){
+    
+   }
   };
   useEffect(()=>{
     categoryFetch()
