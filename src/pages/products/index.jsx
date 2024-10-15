@@ -7,19 +7,59 @@ import React, { useEffect, useState } from 'react';
 import { FiFilter } from 'react-icons/fi';
 import { MdClose } from 'react-icons/md';
 import { PiRectangle } from 'react-icons/pi';
-
+import style from './style.module.css'
 const Products = () => {
     const router = useRouter();
-    const { category } = router.query;
-    // const [products, setProducts] = useState([]);
-    const [minValue, setMinValue] = useState(10);
+    const { category_id, category_name } = router.query;
+    const [minValue, setMinValue] = useState(20);
     const [maxValue, setMaxValue] = useState(200);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [size, setSize] = useState([]);
     const [colors, setColors] = useState([]);
     const [subCategory, setSubcategory] = useState([]);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+    const [units, setUnits] = useState([])
+    const [selectedAttributes, setSelectedAttributes] = useState({});
+    //range function 
+    const minGap = 0;
+    const sliderminValue = 0; // set this to your desired minimum value
+    const sliderMaxValue = 5000;
+    const handleMinChange = (e) => {
+        const value = parseInt(e.target.value);
+        if (value <= maxValue - minGap) {
+            setMinValue(value);
+        }
+    };
 
+    const handleMaxChange = (e) => {
+        const value = parseInt(e.target.value);
+        if (value >= minValue + minGap) {
+            setMaxValue(value);
+        }
+    };
+    const setArea = () => {
+        const rangeStyle = {
+            left: `${((minValue - sliderminValue) / (sliderMaxValue - sliderminValue)) * 100
+                }%`,
+            right: `${100 -
+                ((maxValue - sliderminValue) / (sliderMaxValue - sliderminValue)) * 100
+                }%`,
+        };
+        const minTooltipStyle = {
+            left: `${(minValue / sliderMaxValue) * 100}%`,
+        };
+        const maxTooltipStyle = {
+            right: `${100 - (minValue / sliderMaxValue) * 100}%`,
+        };
+
+        return { rangeStyle, minTooltipStyle, maxTooltipStyle };
+    };
+
+    const { rangeStyle } = setArea();
+
+    useEffect(() => {
+        setArea();
+    }, [minValue, maxValue])
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
@@ -28,21 +68,21 @@ const Products = () => {
         try {
             const response = await publicRequest.get('categories');
             const fetchedCategories = response?.data?.data || [];
-            const selectedCategory = fetchedCategories?.find(item => item.category_name === category);
+            const selectedCategory = fetchedCategories?.find(item => item.category_id === category);
             setSubcategory(selectedCategory?.childs || []);
         } catch (error) {
             console.error("Error fetching categories:", error);
         }
     };
 
-    const { products,setProducts } = useProduct()
-   // console.log(products)
-    // Function to fetch sizes (attributes)
+    const { products, setProducts } = useProduct()
+    console.log(products)
     const fetchSizes = async () => {
         try {
-            const response = await privateRequest.get('admin/attribute');
-            setSize(response?.data?.data?.data || []);
-          //  console.log('size--------->', response?.data?.data?.data)
+            const response = await privateRequest.get(`category/show/${category_id}`);
+            setUnits(response.data?.data?.units)
+            // setSize(response.data?.data?.units[0]?.attributes || []);
+            //  console.log('size--------->', response?.data?.data?.data)
         } catch (error) {
             console.error('Error fetching sizes:', error);
         }
@@ -51,18 +91,18 @@ const Products = () => {
     // Function to fetch colors
     const fetchColors = async () => {
         try {
-            const response = await privateRequest.get('admin/color');
-            setColors(response?.data?.data?.data || []);
-          //  console.log('', response?.data?.data?.data)
+            const response = await publicRequest.get('color');
+            setColors(response?.data?.data || []);
+            // console.log('', response?.data?.data)
         } catch (error) {
             console.error('Error fetching colors:', error);
         }
     };
-    
+
     const PriceFilter = async () => {
-       // console.log('click')
+        // console.log('click')
         try {
-            const response = await publicRequest.post('product/price/filter',{min_price:minValue,max_price:maxValue});
+            const response = await publicRequest.post('product/price/filter', { min_price: minValue, max_price: maxValue });
             setProducts(response?.data?.data || []);
             //console.log('price Filtered---->', response)
         } catch (error) {
@@ -75,23 +115,92 @@ const Products = () => {
         fetchSizes();
         fetchColors();
         categoryFetch();
-    }, [category, selectedSubCategory]); // Updated dependencies
+    }, [category_id, selectedSubCategory]); // Updated dependencies
 
-    const handleMinChange = (e) => {
-        const value = Math.min(Number(e.target.value), maxValue - 1);
-        setMinValue(value);
-    };
+    //Product unit and color Filter
+    const [variantData, setVariantData] = useState({
+        attributes: {
+            // Example: unit_key id 1,6,7
+               // Start with an empty array for color ids
+        }
+    });
+    const [selectedColors, setSelectedColors] = useState([]);
+    const handleColorChange = async (colorId) => {
+        // Determine the new selected colors based on the current selection
+        const newSelectedColors = selectedColors.includes(colorId)
+            ? selectedColors.filter(id => id !== colorId) // Unselect
+            : [...selectedColors, colorId]; // Select
 
-    const handleMaxChange = (e) => {
-        const value = Math.max(Number(e.target.value), );
-        setMaxValue(value);
+        // Update selected colors state
+        setSelectedColors(newSelectedColors);
+
+        // Update variantData with the new selected colors
+        const updatedVariantData = {
+            ...variantData,
+            attributes: {
+                ...variantData.attributes,
+                color: newSelectedColors // Update color attribute
+            }
+        };
+        setVariantData(updatedVariantData);
+
+        // Log the updated variantData directly
+        console.log(updatedVariantData);
+        console.log(variantData);
+        try {
+            console.log(updatedVariantData)
+            const res = await publicRequest.post('product/variant-color-filter', updatedVariantData)
+            console.log(res.data.data)
+            setProducts(res?.data?.data) 
+        } catch (error) {
+            console.log(error)
+        }
     };
+    const handleAttributeChange = async (unitId, attributeId) => {
+        // Manually calculate the new state
+        const newSelectedAttributes = selectedAttributes[unitId] || [];
+        const updatedAttributes = newSelectedAttributes.includes(attributeId)
+            ? newSelectedAttributes.filter(id => id !== attributeId) // Unselect
+            : [...newSelectedAttributes, attributeId]; // Select
+    
+        // Update the selectedAttributes state manually
+        const updatedSelectedAttributes = {
+            ...selectedAttributes,
+            [unitId]: updatedAttributes
+        };
+    
+        // Update variantData based on the manually updated attributes
+        const updatedVariantData = {
+            ...variantData,
+            attributes: {
+                ...variantData.attributes,
+                [`unit_${unitId}`]: updatedAttributes // Update specific unit attribute
+            }
+        };
+    
+        // Set the updated states
+        setSelectedAttributes(updatedSelectedAttributes); // Update selectedAttributes state
+        setVariantData(updatedVariantData); // Update variantData state
+    
+        // Now call the API with the updated variantData
+        try {
+            const res = await publicRequest.post('product/variant-color-filter', updatedVariantData);
+            setProducts(res?.data?.data); // Update products based on API response
+            console.log("API Response:", res);
+        } catch (error) {
+            console.error("Error calling API:", error);
+        }
+    
+        console.log("Updated variantData:", updatedVariantData);
+    };
+    
+
 
     return (
         <div className="mt-36">
             {/* product banner--------------------------- */}
             <div className='text-center py-10'>
-                <h1 className='font-extrabold text-primary text-4xl py-2'>{category}</h1>
+                <h1 className='font-extrabold text-primary text-4xl py-2'>{category_name}</h1>
                 <p className='font-normal text-xl leading-7'>Choose form the best collections</p>
                 <p className='py-10 gap-10 flex justify-center'>
                     {
@@ -123,26 +232,57 @@ const Products = () => {
                                 onChange={handleMaxChange}
                                 placeholder="Max"
                             />
-                           
+
                         </div>
+                        ;<div>
+                            <div
+                                className={`relative w-48 h-2 bg-primary ${style.range_slider} `}
+                            >
+                                <input
+                                    type="range"
+                                    className={style.minvalue}
+                                    min={sliderminValue}
+                                    max={sliderMaxValue}
+                                    value={minValue}
+                                    onChange={handleMinChange}
+                                />
+                                <input
+                                    type="range"
+                                    className={style.maxValue}
+                                    min={sliderminValue}
+                                    max={sliderMaxValue}
+                                    value={maxValue}
+                                    onChange={handleMaxChange}
+                                />
+                            </div>
+                            <div className="slider-track" style={rangeStyle}></div>
+                        </div>
+
+
                         <button onClick={PriceFilter} className='mt-4  border rounded-md px-4 text-white  bg-primary text-sm '>Filter</button>
                     </div>
 
-                    <div className="mt-10">
-                        <p className="text-base font-semibold leading-6">Filter by Size</p>
-                        {size.map(s => (
-                            <p key={s.attribute_id} className="flex py-1 text-xs font-mormal leading-4 items-center gap-2">
-                                <input className="border-[#AAAAAA]" type="checkbox" /> {s.name}
-                            </p>
-                        ))}
-                    </div>
+                    {
+                        units?.map(unit => <div className="mt-10">
+                            <p className="text-base font-semibold leading-6">Filter by {unit?.unit_name}</p>
+                            {unit?.attributes?.map(attribute => (
+                                <p key={attribute.attribute_id} className="flex py-1 text-xs font-mormal leading-4 items-center gap-2">
+                                    <input className="border-[#AAAAAA]" type="checkbox"
+                                        onChange={() => handleAttributeChange(unit?.unit_id, attribute?.attribute_id)} // Handle change
+                                        checked={selectedAttributes[unit?.unit_id]?.includes(attribute?.attribute_id)} /> {attribute?.attribute_name}
+                                </p>
+                            ))}
+                        </div>)
+                    }
 
                     <div className="mt-10">
                         <p className="text-base font-semibold leading-6">Filter by color</p>
                         {colors.map(color => (
-                            <button key={color.index} className="flex py-1 text-xs font-normal leading-4 items-center gap-2">
-                                <input type="checkbox" />
-                                {color.name}
+                            <button key={color?.index} className="flex py-1 text-xs font-normal leading-4 items-center gap-2">
+                                <input type="checkbox"
+                                    checked={selectedColors.includes(color?.color_id)} // Check if the color is selected
+                                    onChange={() => handleColorChange(color?.color_id)} />
+                                {color?.name}
                             </button>
                         ))}
                     </div>
@@ -158,7 +298,7 @@ const Products = () => {
 
                     <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
                         {products?.map(product => (
-                            <SingleCart key={product.product_id} item={product} />
+                            <SingleCart key={product?.product_id} item={product} />
                         ))}
                     </div>
                 </div>
@@ -184,8 +324,8 @@ const Products = () => {
                         <div className="mt-10">
                             <p className="text-base font-semibold leading-6">Filter by Size</p>
                             {size.map(s => (
-                                <p key={s.attribute_id} className="flex py-1 text-xs font-mormal leading-4 items-center gap-2">
-                                    <input className="border-[#AAAAAA]" type="checkbox" /> {s.name}
+                                <p key={s?.attribute_id} className="flex py-1 text-xs font-mormal leading-4 items-center gap-2">
+                                    <input className="border-[#AAAAAA]" type="checkbox" /> {s?.name}
                                 </p>
                             ))}
                         </div>

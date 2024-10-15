@@ -19,7 +19,7 @@ export default function Home() {
    try{
     const response = await publicRequest.get('home-page-category');
     setCategories(response?.data?.data);
-    console.log(response?.data?.data)
+   // console.log(response)
    }
    catch(error){
     
@@ -45,7 +45,7 @@ export default function Home() {
       <Banner></Banner>
       <ServiceQuality></ServiceQuality>
       {
-        categories.map(category=>  <TopFeature title={category?.category_name} dataUrl={'home-page-category'} itemLimit={dataLimit(category)} ></TopFeature>)
+        categories.map(category=>  <TopFeature key={category?.category_id} categoryid={category?.category_id} title={category?.category_name} dataUrl={'home-page-category'} itemLimit={dataLimit(category)} ></TopFeature>)
       }
       {/* <TopFeature title="FLASH SALE" dataUrl={'home-page-category'} itemLimit={5}></TopFeature>
       <TopFeature title="MAN'S CLOTHING" dataUrl={'home-page-category'} itemLimit={10} ></TopFeature>

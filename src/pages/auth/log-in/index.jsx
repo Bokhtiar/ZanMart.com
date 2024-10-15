@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { publicRequest } from '@/config/axios.config';
 import { useRouter } from 'next/navigation';
 import { Toastify } from '@/components/toastify';
-import { getToken, setToken } from '@/utils/helpers';
+import { getToken, networkErrorHandeller, setToken } from '@/utils/helpers';
 
 
 const Login = () => {
@@ -27,11 +27,11 @@ const Login = () => {
       if(response.data.data.token){
         setToken(response.data.data.token)
         Toastify.Success('Successfully Login')
-        router.forward 
+        router.push('/')
       }
     }
     catch(error){
-    Toastify.Error(error.message)
+      networkErrorHandeller(error)
     }
    
   };

@@ -10,11 +10,11 @@ const ServiceQuality = () => {
   return (
     <div className='container  mx-auto gap-4 md:gap-8 lg:gap-12 mt-10 grid-cols-1 grid lg:grid-cols-4  md:grid-cols-2'>
       {
-        data.map(item=><div className='flex gap-4 items-center rounded-xl justify-center py-5 shadow-custom'>
-            <img src={item.logo} alt="authentic" />
+        data.map(item=><div key={item?.logo} className='flex gap-4 items-center rounded-xl justify-center py-5 shadow-custom'>
+            <img src={item?.logo} alt="authentic" />
             <div>
-                <p className='text-base font-semibold'>{item.title}</p>
-                <p className='text-xs'>{item.comment}</p>
+                <p className='text-base font-semibold'>{item?.title}</p>
+                <p className='text-xs'>{item?.comment}</p>
             </div>
           </div>)
       }

@@ -2,14 +2,14 @@ import Link from 'next/link';
 import React from 'react';
 
 const SingleCart = ({ item }) => {
-  const { name,category , buy_price, sell_price, thumbnail_image,title } = item
+  const {  category, buy_price, sell_price, thumbnail_image, title } = item
 
   return (
     <Link href={`/product-details/${item.product_id}`} className='w-full h-fit rounded-[15px]  shadow-lg '>
       <div className='overflow-hidden w-full  rounded-t-[15px] '>
         <img
-          class="w-full object-cover h-40 transition-transform duration-500 hover:scale-125"
-          src={`http://127.0.0.1:8000/${thumbnail_image}`}
+          className="w-full object-cover h-40 transition-transform duration-500 hover:scale-125"
+          src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumbnail_image}`}
           alt=""
         />
       </div>

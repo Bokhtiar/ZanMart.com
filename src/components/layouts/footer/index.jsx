@@ -36,7 +36,7 @@ const Footer = () => {
       <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
         <div className="text-center">
           <div className="flex justify-center">
-            {data.logo && <img src={data.logo} alt="Logo" />} {/* Ensure logo exists */}
+            {data.logo && <img className="h-32 w-32" src={`${process.env.NEXT_PUBLIC_API_SERVER}${data.logo}`} alt="Logo" />} {/* Ensure logo exists */}
           </div>
           <p className="font-medium text-xs leading-[14px] text-[#AAAAAA]">
             Your Trusted Online Shop. Shop with Comfort

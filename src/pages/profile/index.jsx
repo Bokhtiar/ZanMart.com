@@ -17,6 +17,7 @@ import { TbCircleKey } from "react-icons/tb";
 import ChangePass from '@/components/changePass';
 import PaymetnProceed from '@/components/PaymentProceed';
 import ConfirmOrder from '@/components/ConfirmOrder';
+import { Toastify } from '@/components/toastify';
 const Profile = () => {
     const router = useRouter();
     const { section } = router.query;
@@ -50,7 +51,11 @@ const Profile = () => {
                 return <ProfileInfo />
         }
     };
-
+const handleLogOut=()=>{
+    localStorage.removeItem('token')
+    Toastify.Success('Logout Succesfully')
+    router.push('/')
+}
     return (
         <div className='container  mx-auto flex  mt-36'>
 
@@ -77,7 +82,7 @@ const Profile = () => {
 
 
                         <li>
-                            <button className='flex  px-10 py-1 teext-xs leading-7 items-center gap-1 text-red-500'> <IoLogOut /> Logout</button>
+                            <button onClick={handleLogOut} className='flex  px-10 py-1 teext-xs leading-7 items-center gap-1 text-red-500'> <IoLogOut /> Logout</button>
 
                         </li>
                     </ul>

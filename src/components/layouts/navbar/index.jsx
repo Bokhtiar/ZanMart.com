@@ -32,7 +32,7 @@ export const Navbar = () => {
   const categoryFetch = async () => {
     const response = await publicRequest.get('categories');
     setCategories(response.data.data);
-    console.log(response)
+    // console.log(response)
   };
   const handleSearchQuery = (e) => {
     const query = e.target.value
@@ -50,15 +50,11 @@ export const Navbar = () => {
 
   const handleSelect = async (data, id) => {
     setSelected(data);
-    // console.log(data,id)
-    // const filtered =await originalProducts.filter(product =>
-    //   product.title.toLowerCase().includes(data.toLowerCase())
-    // );
-    // setProducts(filtered)
+    // console.log(id)
     const CategoryFilterd = await publicRequest.get(`category/product/${id}`)
     setProducts(CategoryFilterd?.data?.data?.data)
-    console.log('category filter', CategoryFilterd)
-    console.log("category data", CategoryFilterd?.data?.data?.data)
+    // console.log('category ', CategoryFilterd)
+    // console.log("category data", CategoryFilterd?.data?.data?.data)
     setIsDrawerOpen(false); // Close the drawer after selecting a category
   };
   useEffect(() => {
@@ -72,6 +68,7 @@ export const Navbar = () => {
     updateCart();
     categoryFetch();
     handleSearch();
+    handleSelect();
 
     window.addEventListener('cartUpdated', updateCart);
     return () => {
@@ -140,7 +137,7 @@ export const Navbar = () => {
                   {categories.map(category => (
                     <Link
                       key={category?.category_id}
-                      href={`/products/?category=${category?.category_name}`}
+                      href={`/products/?category_id=${category?.category_id}&category_name=${category?.category_name}`}
                       onClick={() => handleSelect(category?.category_name, category?.category_id)}
                       className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category?.category_name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
                     >

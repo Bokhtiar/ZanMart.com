@@ -1,5 +1,6 @@
 import { Toastify } from '@/components/toastify';
 import { publicRequest } from '@/config/axios.config';
+import { networkErrorHandeller } from '@/utils/helpers';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -7,36 +8,36 @@ import { useForm } from 'react-hook-form';
 
 const Register = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-const router= useRouter()
-const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
-    const newData={
-      
-        name: data.fullName,
-        email: data.email,
-        phone: data.phoneNumber,
-        role: 'user', // Can be dynamic based on your form
-        password: data.password,
-      
-    }  
-    setLoading(true); 
+    const newData = {
+
+      name: data.fullName,
+      email: data.email,
+      phone: data.phoneNumber,
+      role: 'user', // Can be dynamic based on your form
+      password: data.password,
+
+    }
+    setLoading(true);
     try {
       const response = await publicRequest.post("register", newData);  // Use the endpoint 'register' (modify if necessary)
-      console.log( 'succesas---', response); 
-      if(response.data.data.token){
-        setToken(response.data.data.token)
-        router.forward
+      console.log('succesas---', response);
+      if (response.data.data.token || response.status == 200) {
+        setToken(response?.data?.data?.token)
+        console.log(response)
+        router.forward('/')
         Toastify.Success('Registered successfully')
       }
-  
+
     } catch (error) {
-      console.error('Registration failed:', error);
-      // Handle error (e.g., show error message)
+      networkErrorHandeller(error)
     }
     finally {
       setLoading(false);  // Set loading back to false after API call
     }
-   
+
   };
 
   return (
@@ -231,9 +232,9 @@ const [loading, setLoading] = useState(false);
           </form>
         </div>
       </div>
-     
+
     </div>
- 
+
   );
 };
 

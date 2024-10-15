@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { CiWarning } from "react-icons/ci";
 import { TiWarning } from 'react-icons/ti';
 
 const MyCart = () => {
@@ -92,60 +91,64 @@ const MyCart = () => {
         0
       );
   };
-  const handleDelete=(id)=>{
-    console.log(id)
-    const updatedCartItems=data.filter(data=>data.product_id!==id)
-    setCart(prevCart => ({
-      ...prevCart, // Keep the rest of the cart data (shipping_address_id, billing_address_id) unchanged
-      cart_items: updatedCartItems, // Update only the cart_items with the new array
+
+  const handleDelete = (id) => {
+    const updatedCartItems = data.filter((data) => data.product_id !== id);
+    setCart((prevCart) => ({
+      ...prevCart,
+      cart_items: updatedCartItems,
     }));
     const updatedCart = {
       ...cart,
-      cart_items: updatedCartItems
+      cart_items: updatedCartItems,
     };
     localStorage.setItem('cart', JSON.stringify(updatedCart));
-    console.log(cart)
     window.dispatchEvent(new Event('cartUpdated'));
-  
+  };
 
-  }
-  const handleAllDelete=()=>{
-      const newcart={
-        ...cart,
-        cart_items:[]
-      }
-      setCart(prevCart => ({
-        ...prevCart, // Keep the rest of the cart data (shipping_address_id, billing_address_id) unchanged
-        cart_items: [], // Update only the cart_items with the new array
-      }));
-      localStorage.setItem('cart', JSON.stringify(newcart));
-      window.dispatchEvent(new Event('cartUpdated'));
-  }
+  const handleAllDelete = () => {
+    const newCart = {
+      ...cart,
+      cart_items: [],
+    };
+    setCart((prevCart) => ({
+      ...prevCart,
+      cart_items: [],
+    }));
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    window.dispatchEvent(new Event('cartUpdated'));
+  };
+
   const hasPrePaymentOnly = data.some(
-    (item) => selectedItems[item.product_id] && item.payment !== "cash"
+    (item) => selectedItems[item.product_id] && item.payment !== 'cash'
   );
+
   return (
     <div>
       <h1 className="text-2xl font-bold my-10">Manage your Cart</h1>
       <hr className="border-2" />
       <div className="flex gap-2">
         <div className="w-2/3 p-10">
-          {
-            data.length>0 ?  <div className="flex justify-between">
-            <p className="flex font-semibold items-center gap-5 text-sm">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAll}
-              />
-              Select All
-            </p>
-            <button onClick={handleAllDelete} className="flex font-semibold items-center text-sm gap-5 text-red-700">
-              <RiDeleteBin6Line className="font-semibold" /> Delete
-            </button>
-          </div>
-          : <p> Cart is Empty</p>
-          }
+          {data.length > 0 ? (
+            <div className="flex justify-between">
+              <p className="flex font-semibold items-center gap-5 text-sm">
+                <input
+                  type="checkbox"
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+                Select All
+              </p>
+              <button
+                onClick={handleAllDelete}
+                className="flex font-semibold items-center text-sm gap-5 text-red-700"
+              >
+                <RiDeleteBin6Line className="font-semibold" /> Delete
+              </button>
+            </div>
+          ) : (
+            <p> Cart is Empty</p>
+          )}
           <div className="py-5">
             <div className="flex flex-col items-center">
               {data.map((item) => (
@@ -172,7 +175,7 @@ const MyCart = () => {
                           <span className="text-[#FFAA00]">{item.category}</span> color: Black
                           Size: XL
                         </p>
-                        {item.payment === "cash" ? (
+                        {item.payment === 'cash' ? (
                           <button
                             disabled
                             className="text-[6px] px-2 py-1 font-bold border text-primary rounded-md flex items-center gap-1"
@@ -212,7 +215,7 @@ const MyCart = () => {
                           +
                         </button>
                       </p>
-                      <button onClick={()=>handleDelete(item.product_id)} className="flex items-center text-[8px] gap-5 text-red-700">
+                      <button onClick={() => handleDelete(item.product_id)} className="flex items-center text-[8px] gap-5 text-red-700">
                         <RiDeleteBin6Line className="font-semibold" /> Delete
                       </button>
                     </div>
@@ -230,30 +233,39 @@ const MyCart = () => {
               <IoLocationOutline /> Delivery Location: 312/GrapTown, Dattapara Ashulia, Savar, Dhaka
             </p>
             <p className="text-sm font-bold leading-4 py-5">Total Summary</p>
-            <p className="text-xs font-medium flex justify-between pb-5">
-              Subtotal ({Object.keys(selectedItems).filter((key) => selectedItems[key]).length} Items)
-              <span>{calculateSubtotal().toFixed(2)} Tk</span>
-            </p>
-            <p className="text-xs font-medium flex justify-between pb-5">
-              Delivery Charge <span>150 Tk</span>
-            </p>
-            <hr className="border" />
-            <div className="text-sm font-bold leading-4 py-5 flex justify-between">
-              <p>Total</p>
-              <p>
-                <span className="text-2xl text-primary">{(calculateSubtotal() + 150).toFixed(2)}</span> Tk
+            <div className="flex justify-between items-center py-2">
+              <p className="text-xs">Subtotal ({Object.keys(selectedItems).length} Items)</p>
+              <p className="text-xs">
+                <span className="font-bold">{calculateSubtotal().toFixed(2)}</span> Tk
               </p>
             </div>
-            <Link href={'/profile?section=Payment Proceed'} className="text-center text-sm bg-primary text-white p-2 rounded-md">
-              Proceed to Payment
-            </Link>
+            <div className="flex justify-between items-center py-2">
+              <p className="text-xs">Shipping Fee</p>
+              <p className="text-xs">
+                <span className="font-bold">0</span> Tk
+              </p>
+            </div>
+            <hr />
+            <div className="flex justify-between items-center py-2">
+              <p className="text-xs">Total</p>
+              <p className="text-xs">
+                <span className="font-bold">{calculateSubtotal().toFixed(2)}</span> Tk
+              </p>
+            </div>
+            <hr />
+            {hasPrePaymentOnly && (
+              <p className="text-xs flex items-center py-2 text-[#FA7F5D] gap-2">
+                <TiWarning /> Pre Payment Required
+              </p>
+            )}
+            <div className="pt-5">
+              <Link href={`/profile?section=Payment Proceed`}>
+                <button className="w-full text-white bg-primary py-3 px-3 rounded-md text-xs">
+                  Proceed to Checkout
+                </button>
+              </Link>
+            </div>
           </div>
-         {
-          hasPrePaymentOnly &&  <p className='flex mt-4  gap-5 items-center'>
-          <TiWarning className='text-yellow-500 h-12 w-12 '/>
-          <span>You Selected “Pre Payments” only product.You have to make the full payment to confirm your order</span>
-          </p>
-         }
         </div>
       </div>
     </div>
