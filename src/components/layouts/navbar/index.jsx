@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MdKeyboardArrowDown, MdOutlineKeyboardArrowUp, MdKeyboardArrowRight, MdClose } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { TbShoppingBag, TbAlignLeft } from "react-icons/tb";
 import { RxAvatar } from "react-icons/rx";
+import { publicRequest } from '@/config/axios.config';
+import { useProduct } from '@/hooks/useProducts';
 
 const navList = [
   { name: "home", href: "/" },
@@ -16,31 +18,73 @@ const navList = [
 
 export const Navbar = () => {
   const pathName = usePathname();
-  const [active, setActive] = useState('');
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [cart, setCart] = useState({
+    cart_items: [],
+    shipping_address_id: 1,
+    billing_address_id: 1,
+  });
+
+  const [categories, setCategories] = useState([]);
+  const categoryFetch = async () => {
+    const response = await publicRequest.get('categories');
+    setCategories(response.data.data);
+    // console.log(response)
+  };
+  const handleSearchQuery = (e) => {
+    const query = e.target.value
+    setSearchQuery(query)
+  }
+  const { products, setProducts, originalProducts } = useProduct()
+  const handleSearch = async () => {
+    try {
+      const SearchFilter = await publicRequest.get(`products-search?search=${searchQuery}`);
+      setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
+  const handleSelect = async (data, id) => {
+    setSelected(data);
+    // console.log(id)
+    const CategoryFilterd = await publicRequest.get(`category/product/${id}`)
+    setProducts(CategoryFilterd?.data?.data?.data)
+    // console.log('category ', CategoryFilterd)
+    // console.log("category data", CategoryFilterd?.data?.data?.data)
+    setIsDrawerOpen(false); // Close the drawer after selecting a category
+  };
+  useEffect(() => {
+    const updateCart = () => {
+      const cartData = localStorage.getItem('cart');
+      if (cartData) {
+        setCart(JSON.parse(cartData));
+      }
+    };
+
+    updateCart();
+    categoryFetch();
+    handleSearch();
+    handleSelect();
+
+    window.addEventListener('cartUpdated', updateCart);
+    return () => {
+      window.removeEventListener('cartUpdated', updateCart);
+    };
+  }, []);
 
   const handleCategory = () => {
     setOpenCategory(!openCategory);
   };
 
-  const handleSelect = (data) => {
-    setSelected(data);
-    setIsDrawerOpen(false); // Close the drawer after selecting a category
-  };
+
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
-  const categories = [
-    { name: "Clothing" },
-    { name: "Stationary" },
-    { name: "Medical Equipment" },
-    { name: "Handicraft" },
-    { name: "Others" },
-  ];
 
   return (
     <>
@@ -62,9 +106,8 @@ export const Navbar = () => {
                   : "after:left-1/2"
                   }`}
                 key={index}
-                aria-labelledby="labeldiv"
               >
-                <button className="nav_link pb-2 leading-5 capitalize" aria-label='area-lavel'>
+                <button className="nav_link pb-2 leading-5 capitalize">
                   {item?.name}
                 </button>
               </Link>
@@ -72,7 +115,7 @@ export const Navbar = () => {
           </div>
           <div className='flex items-center'>
             <div>
-              <img src="support.svg" alt="Support" />
+              <img src="/support.svg" alt="Support" />
             </div>
             <div className='text-sm font-normal leading-5'>
               <p>+880969654312</p>
@@ -82,38 +125,41 @@ export const Navbar = () => {
         </nav>
         <div className='bg-primary'>
           <div className='flex justify-between items-center container mx-auto py-2'>
-            <div className='relative lg:flex hidden'>
+            <div className='relative lg:flex md:flex hidden'>
               <button onClick={handleCategory} className='flex items-center text-white text-base'>
                 <span className='me-2'>Categories</span>
                 {openCategory ? <MdOutlineKeyboardArrowUp /> : <MdKeyboardArrowDown />}
               </button>
               <div
-                className={`absolute z-10 top-12 transition-all duration-500 ${openCategory ? 'max-h-full opacity-100' : 'max-h-0 opacity-0'}`}
+                className={`absolute  top-12 transition-all duration-500 ${openCategory ? 'max-h-full opacity-100 pointer-events-auto' : ' pointer-events-none max-h-0 opacity-0'}`}
               >
-                <ul className='bg-white'>
+                <ul className='bg-white '>
                   {categories.map(category => (
                     <Link
-                      key={category.name}
-                      onClick={() => handleSelect(category.name)}
-                      href={`/products/?category=${category.name}`}
-                      className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category.name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
+                      key={category?.category_id}
+                      href={`/products/?category_id=${category?.category_id}&category_name=${category?.category_name}`}
+                      onClick={() => handleSelect(category?.category_name, category?.category_id)}
+                      className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected === category?.category_name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
                     >
-                      {category.name} <MdKeyboardArrowRight />
+                      {category.category_name} <MdKeyboardArrowRight />
                     </Link>
                   ))}
                 </ul>
               </div>
             </div>
-            <div className='flex rounded-full md:w-[658px] sm:w-80 relative items-center'>
-              <input className='rounded-full text-center w-full h-12' type="text" name="search" id="" />
-              <button className='flex absolute right-0 rounded-full bg-black h-12 text-white sm:w-[75px] lg:w-40 items-center justify-center gap-2'>
+            <div className='flex rounded-full md:w-[658px] w-80 relative items-center'>
+              <input onChange={handleSearchQuery} className='rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full h-12' type="text" placeholder='search your product here' />
+              <Link href={`/products/?category=${searchQuery}`} onClick={handleSearch} className='flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2'>
                 search <IoSearch className='h-4 w-4' />
-              </button>
+              </Link>
             </div>
             <div>
-              <p className='flex items-center gap-5'>
-                <TbShoppingBag className='h-5 w-5' />
-                <RxAvatar className='h-5 w-5' />
+              <p className='flex items-center md:gap-4  lg:gap-5 gap-2'>
+                <Link href="/profile/?section=My Cart" className='relative'>
+                  <span className='absolute text-xs -top-1 -right-1 bg-yellow-500 leading-0 px-1 py-.5 text-center rounded-full'>{cart.cart_items.length}</span>
+                  <TbShoppingBag className='h-5 w-5' />
+                </Link>
+                <Link href="/profile/?section=Profile"><RxAvatar className='h-5 w-5' /></Link>
               </p>
             </div>
           </div>
@@ -126,16 +172,19 @@ export const Navbar = () => {
           <button onClick={toggleDrawer} className='text-xl'>
             <MdClose />
           </button>
-          <h2 className='text-lg font-bold mb-4'>Categories</h2>
+
           <ul className='bg-white'>
-            {categories.map(category => (
+            {navList.map(nav => (
               <Link
-                key={category.name}
-                onClick={() => handleSelect(category.name)}
-                href={`/products/?category=${category.name}`}
-                className={`flex items-center shadow-md mt-2 h-16 justify-between px-4 ${selected === category.name ? 'bg-primary text-white font-extrabold' : 'bg-white'}`}
+                key={nav.name}
+                onClick={() => handleSelect(nav.name)}
+                href={nav.href}
+                className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none after:absolute after:w-0 after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0 ${pathName === nav?.href
+                  ? "after:w-full after:left-0"
+                  : "after:left-1/2"
+                  }`}
               >
-                {category.name} <MdKeyboardArrowRight />
+                {nav.name}
               </Link>
             ))}
           </ul>
