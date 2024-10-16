@@ -14,6 +14,9 @@ const Products = () => {
     const colors = [
         { name: "Black", color: "bg-black" },
         { name: "Red", color: "bg-red-500" },
+
+
+        
         { name: "White", color: "bg-white" },
         { name: "Blue", color: "bg-sky-400" },
         { name: "Navy Blue", color: "bg-blue-800" },
