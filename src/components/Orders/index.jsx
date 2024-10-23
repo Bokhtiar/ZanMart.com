@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState } from 'react';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
@@ -47,11 +48,11 @@ const Orders = () => {
   ];
 
   const [data, setData] = useState(initialData);
-const [selectedStatus,setSelectedStatus]=useState('')
+  const [selectedStatus, setSelectedStatus] = useState('')
   const handleStatus = (status) => {
     setSelectedStatus(status)
     if (status === '') {
-      setData(initialData); 
+      setData(initialData);
     } else {
       const filteredData = initialData.filter((item) => item.status === status);
       setData(filteredData);
@@ -65,26 +66,26 @@ const [selectedStatus,setSelectedStatus]=useState('')
       <div className='flex gap-2'>
         <div className='w-full p-10'>
           <div className='flex gap-12'>
-            <button onClick={() => handleStatus('')} className={`${selectedStatus===''? 'text-primary':''} text-sm leading-4 font-semibold`}>
+            <button onClick={() => handleStatus('')} className={`${selectedStatus === '' ? 'text-primary' : ''} text-sm leading-4 font-semibold`}>
               All Orders
             </button>
-            <button onClick={() => handleStatus('toReceive')} className={`${selectedStatus==='toReceive'? 'text-primary':''} text-sm leading-4 font-semibold`}>
+            <button onClick={() => handleStatus('toReceive')} className={`${selectedStatus === 'toReceive' ? 'text-primary' : ''} text-sm leading-4 font-semibold`}>
               To Receive
             </button>
-            <button onClick={() => handleStatus('shipped')} className={`${selectedStatus==='shipped'? 'text-primary':''} text-sm leading-4 font-semibold`}>
+            <button onClick={() => handleStatus('shipped')} className={`${selectedStatus === 'shipped' ? 'text-primary' : ''} text-sm leading-4 font-semibold`}>
               Shipped
             </button>
-            <button onClick={() => handleStatus('delivered')} className={`${selectedStatus==='delivered'? 'text-primary':''} text-sm leading-4 font-semibold`}>
+            <button onClick={() => handleStatus('delivered')} className={`${selectedStatus === 'delivered' ? 'text-primary' : ''} text-sm leading-4 font-semibold`}>
               Delivered
             </button>
           </div>
           <div className='py-5'>
             <div className='flex flex-col items-center'>
               {data.map((item) => (
-                <div key={item.id} className='flex items-center w-full py-2 gap-2'>
+                <div key={item?.id} className='flex items-center w-full py-2 gap-2'>
                   <div className='flex rounded-md justify-between shadow-custom2 items-center w-full p-2 gap-5'>
                     <div className='flex w-1/3 items-center'>
-                      <img className='h-[73px] w-[73px] rounded-lg' src={item.image} alt={item.name} />
+                      <Image height={400} width={400} className='h-[73px] w-[73px] rounded-lg' src={item.image} alt={item.name} />
                       <div className='pl-3'>
                         <p className='text-xs font-medium'>{item.name}</p>
                         <p className='font-bold text-[8px] text-[#AAAAAA] flex gap-2'>

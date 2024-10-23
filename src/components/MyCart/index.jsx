@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
@@ -152,18 +153,18 @@ const MyCart = () => {
           <div className="py-5">
             <div className="flex flex-col items-center">
               {data.map((item) => (
-                <div key={item.product_id} className="flex items-center w-full py-2 gap-2">
+                <div key={item?.product_id} className="flex items-center w-full py-2 gap-2">
                   <div>
                     <input
                       type="checkbox"
-                      checked={selectedItems[item.product_id] || false}
-                      onChange={() => handleItemSelect(item.product_id)}
+                      checked={selectedItems[item?.product_id] || false}
+                      onChange={() => handleItemSelect(item?.product_id)}
                     />
                   </div>
                   <div className="flex rounded-md justify-between shadow-custom2 items-center w-full p-2 gap-5">
                     <div className="flex gap-10">
                       <div className="flex justify-start">
-                        <img
+                        <Image height={500} width={500}
                           className="h-[73px] w-[73px] rounded-lg"
                           src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
                           alt={item.title}

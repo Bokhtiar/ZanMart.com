@@ -210,7 +210,7 @@ const Register = () => {
             </div>
 
             <p className='mt-10 text-white text-md font-normal text-start'>
-              By clicking "SIGN UP" I agree to the{' '}
+              By clicking &quot;SIGN UP&quot; I agree to the{' '}
               <strong>Terms of Use</strong> and <strong>Privacy Policy</strong>
             </p>
             <div className='flex justify-center'>

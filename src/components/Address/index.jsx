@@ -57,6 +57,7 @@ const Address = () => {
     e.preventDefault();
     try {
       if (isEdit) {
+        console.log(formData)
         const res = await privateRequest.put(`user/address/${editAddressId}`, formData);
         if (res.status === 200) {
           setAddress((prevAddresses) => prevAddresses.map(item => item.address_id === editAddressId ? res.data.data : item));

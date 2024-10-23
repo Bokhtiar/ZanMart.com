@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { IoLocationOutline } from 'react-icons/io5';
@@ -20,9 +21,9 @@ const ConfirmOrder = () => {
 
                   <div className='flex justify-between'>
                     {
-                        data.map(data=> <button className='shadow-custom2 p-2 flex flex-col items-center justify-center'>
-<img src={data.img} alt={data.name}/>
-<span className='text-[8px] leading-4 '>{data.name}</span>
+                        data?.map(data=> <button key={data?.name} className='shadow-custom2 p-2 flex flex-col items-center justify-center'>
+< Image height={200} width={200} src={data?.img} alt={data.name}/>
+<span className='text-[8px] leading-4 '>{data?.name}</span>
                         </button>)
                     }
                   </div>
