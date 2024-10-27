@@ -16,7 +16,6 @@ const Products = () => {
   const [minValue, setMinValue] = useState(20);
   const [maxValue, setMaxValue] = useState(200);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [size, setSize] = useState([]);
   const [colors, setColors] = useState([]);
   const [subCategory, setSubcategory] = useState([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);

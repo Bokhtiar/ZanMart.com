@@ -202,7 +202,7 @@ const ProductDetails = () => {
     setThumb(img);
   };
   if (loading) {
-    return <Loader></Loader>;
+    return <Singlecart ;
   }
   return (
     <div className="mx-auto container px-2 mt-36 pt-5">

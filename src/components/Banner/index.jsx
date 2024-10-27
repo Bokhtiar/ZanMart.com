@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { useProduct } from '@/hooks/useProducts';
 import Image from 'next/image';
 
-
 const Banner = () => {
   const [banner, setBanner] = useState([])
   const fetchBanner = async () => {

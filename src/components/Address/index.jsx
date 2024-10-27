@@ -58,11 +58,19 @@ const Address = () => {
     try {
       if (isEdit) {
         console.log(formData)
-        const res = await privateRequest.put(`user/address/${editAddressId}`, formData);
+        const res = await privateRequest.put(`user/address/${editAddressId}`, {address_line1: formData.address_line1 || '',
+          address_line2: formData.address_line2,
+          division_id: formData.division_id,
+          district_id: formData.district_id,
+          upazila_id: formData.upazila_id,
+          union_id: formData.union_id,
+          postal_code: formData.postal_code,
+          country:  'Bangladesh',
+          type: formData.type || 'home',});
         if (res.status === 200) {
           setAddress((prevAddresses) => prevAddresses.map(item => item.address_id === editAddressId ? res.data.data : item));
           Toastify.Success("Address updated successfully!");
-        }
+        }b
       } else {
         const response = await privateRequest.post('user/address', formData);
         if (response.data?.success === true) {

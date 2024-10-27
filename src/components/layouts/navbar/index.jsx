@@ -14,6 +14,7 @@ import { publicRequest } from "@/config/axios.config";
 import { useProduct } from "@/hooks/useProducts";
 import Loader from "@/components/loader";
 import Image from "next/image";
+import NavSkleton from "@/components/loader/navSkleton";
 
 const navList = [
   { name: "home", href: "/" },
@@ -101,11 +102,11 @@ export const Navbar = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
   if (loading) {
-    return <Loader></Loader>;
+    return <NavSkleton></NavSkleton> ;
   }
   return (
     <>
-      <div className="fixed w-full z-10 bg-white">
+      <div className="fixed h w-full z-10 bg-white">
         <nav className="py-3 flex container mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
             {/* Drawer Toggle Button for Small Devices */}
