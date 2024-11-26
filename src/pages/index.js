@@ -11,6 +11,7 @@ import CookieConsent from "@/components/termAndConiton";
 import { useEffect, useState } from "react";
 import { publicRequest } from "@/config/axios.config";
 import Loader from "@/components/loader";
+import TopFeatureSkeleton from "@/components/loader/TopFeaturSkeleton";
 
 const poppins = Poppins({ weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900",], subsets: ["latin"] });
 
@@ -46,7 +47,7 @@ export default function Home() {
 
   }
   if(loading){
-        return <Loader></Loader>
+        return <TopFeatureSkeleton/>
   }
   return (
     <section className={`${poppins.className} px-2 pt-36 `}>

@@ -7,8 +7,8 @@ import { FiFilter } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import { PiRectangle } from "react-icons/pi";
 import style from "./style.module.css";
-import Loader from "@/components/loader";
 import Image from "next/image";
+import ProductSkeleton from "@/components/loader/ProductSkeleton";
 const Products = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -82,7 +82,7 @@ const Products = () => {
     }
   };
 
-  const { products, setProducts } = useProduct();
+  const { products, setProducts,loading:productLoading } = useProduct();
   console.log(products);
   const fetchSizes = async () => {
     try {
@@ -217,9 +217,10 @@ const Products = () => {
     console.log("Updated variantData:", updatedVariantData);
   };
 
-  if (loading) {
-    return <Loader></Loader>;
-  }
+  if (loading || productLoading) {
+    return <ProductSkeleton/>
+    }
+  
   return (
     <div className="mt-36">
       {/* product banner--------------------------- */}
@@ -358,7 +359,7 @@ const Products = () => {
               <FiFilter />
             </button>
           </div>
-
+       {/* All product show */}
           <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
             {products?.map((product) => (
               <SingleCart key={product?.product_id} item={product} />

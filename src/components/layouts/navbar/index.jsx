@@ -15,6 +15,7 @@ import { useProduct } from "@/hooks/useProducts";
 import Loader from "@/components/loader";
 import Image from "next/image";
 import NavSkleton from "@/components/loader/navSkleton";
+import ProductSkeleton from "@/components/loader/ProductSkeleton";
 
 const navList = [
   { name: "home", href: "/" },
@@ -47,19 +48,20 @@ export const Navbar = () => {
     } catch (error) {}
     // console.log(response)
   };
+  console.log(categories);
   const handleSearchQuery = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
   };
-  const { products, setProducts, originalProducts } = useProduct();
+  const { setLoading: updateLoading, setProducts } = useProduct();
   const handleSearch = async () => {
     try {
-      setLoading(true);
+      updateLoading(true);
       const SearchFilter = await publicRequest.get(
         `products-search?search=${searchQuery}`
       );
       setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
-      setLoading(false);
+      updateLoading(false);
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
@@ -68,11 +70,11 @@ export const Navbar = () => {
   const handleSelect = async (data, id) => {
     setSelected(data);
     try {
-      setLoading(true);
+      updateLoading(true);
       const categoryFilterd = await publicRequest.get(`category/product/${id}`);
       setProducts(categoryFilterd?.data?.data?.data);
       setIsDrawerOpen(false);
-      setLoading(false);
+      updateLoading(false);
     } catch (error) {} // Close the drawer after selecting a category
   };
   useEffect(() => {
@@ -102,11 +104,14 @@ export const Navbar = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
   if (loading) {
-    return <NavSkleton></NavSkleton> ;
+    return <NavSkleton></NavSkleton>;
   }
+  /*   if (productLoading) {
+    //return <ProductSkeleton/>
+  } */
   return (
     <>
-      <div className="fixed h w-full z-10 bg-white">
+      <div className="fixed h w-full h z-10 bg-white">
         <nav className="py-3 flex container mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
             {/* Drawer Toggle Button for Small Devices */}
@@ -116,13 +121,15 @@ export const Navbar = () => {
             >
               <TbAlignLeft />
             </button>
-            <Image
-              height={400}
-              width={400}
-              className="h-14 w-14 ml-4"
-              src="/logo.png"
-              alt="Logo"
-            />
+            <Link href="/" passHref>
+              <Image
+                height={400}
+                width={400}
+                className="h-14 w-14 ml-4 cursor-pointer"
+                src="/logo.png"
+                alt="Logo"
+              />
+            </Link>
           </div>
           <div className="hidden md:flex gap-10">
             {navList.map((item, index) => (
@@ -182,23 +189,58 @@ export const Navbar = () => {
               >
                 <ul className="bg-white ">
                   {categories.map((category) => (
-                    <Link
-                      key={category?.category_id}
-                      href={`/products/? category_id=${category?.category_id}&category_name=${category?.category_name}`}
-                      onClick={() =>
-                        handleSelect(
-                          category?.category_name,
-                          category?.category_id
-                        )
-                      }
-                      className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${
-                        selected === category?.category_name
-                          ? "bg-primary text-white font-extrabold"
-                          : "bg-white"
-                      }`}
-                    >
-                      {category.category_name} <MdKeyboardArrowRight />
-                    </Link>
+                    <div key={category?.category_id} className="relative group">
+                      <Link
+                        href={`/products/? category_id=${category?.category_id}&category_name=${category?.category_name}`}
+                        onClick={() =>
+                          handleSelect(
+                            category?.category_name,
+                            category?.category_id
+                          )
+                        }
+                        className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${
+                          selected === category?.category_name
+                            ? "bg-primary text-white font-extrabold"
+                            : "bg-white"
+                        }`}
+                      >
+                        {category.category_name} <MdKeyboardArrowRight />
+                      </Link>
+                      <div className="opacity-0 pointer-events-none ms-10 group-hover:opacity-100 group-hover:pointer-events-auto flex flex-col absolute top-0 -right-40 bg-white transition-all duration-1000">
+  {category?.children?.map((child) => (
+    <div key={child?.category_id} className="relative group">
+   
+    <Link
+      href={`/products/?category_id=${child?.category_id}&category_name=${child?.category_name}`}
+      onClick={() =>
+        handleSelect(child?.category_name, child?.category_id)
+      }
+      className="border-b p-2 flex w-[155px] justify-between items-center"
+    >
+      {child?.category_name} <MdKeyboardArrowRight />
+    </Link>
+  
+   
+    <div className="hidden  group-hover:flex flex-col absolute top-0 -right-40 bg-white transition-all duration-300">
+      {child?.children?.map((subChild) => (
+        <Link
+          key={subChild?.category_id}
+          href={`/products/?category_id=${subChild?.category_id}&category_name=${subChild?.category_name}`}
+          onClick={() =>
+            handleSelect(subChild?.category_name, subChild?.category_id)
+          }
+          className="border-b p-2 flex w-[155px] justify-between items-center"
+        >
+          {subChild?.category_name} <MdKeyboardArrowRight />
+        </Link>
+      ))}
+    </div>
+  </div>
+  
+  ))}
+</div>
+
+                    </div>
                   ))}
                 </ul>
               </div>

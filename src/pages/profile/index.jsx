@@ -26,7 +26,6 @@ const Profile = () => {
         { logo: <IoLocationOutline />, name: 'Address Book' },
         { logo: <TbShoppingBag />, name: 'My Cart' },
         { logo: <TiDocumentText />, name: 'Orders' },
-        { logo: <RiSecurePaymentLine />, name: 'Payment Options' },
         { logo: <TbCircleKey />, name: 'Change Password' }]
     const renderContent = () => {
         switch (section) {
@@ -35,8 +34,7 @@ const Profile = () => {
 
             case 'Address Book':
                 return <Address />;
-            case 'Payment Options':
-                return <OptionsPayment />;
+           
             case 'My Cart':
                 return <MyCart />;
             case 'Orders':
@@ -44,9 +42,9 @@ const Profile = () => {
             case 'Change Password':
                 return <ChangePass />;
             case 'Payment Proceed':
-                return < PaymetnProceed></PaymetnProceed>;
+                return < PaymetnProceed/>;
             case 'confirm-order':
-                return <ConfirmOrder></ConfirmOrder>;
+                return <ConfirmOrder/>;
             default:
                 return <ProfileInfo />
         }

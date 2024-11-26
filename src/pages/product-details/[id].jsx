@@ -1,4 +1,6 @@
 import Loader from "@/components/loader";
+import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
+import SingleCartSkeleton from "@/components/loader/singleCartSkeleton";
 import { Toastify } from "@/components/toastify";
 import TopFeature from "@/components/TopFeature";
 import { publicRequest } from "@/config/axios.config";
@@ -73,22 +75,22 @@ const ProductDetails = () => {
     const cartItem = {
       product_id: product?.product_id,
       sell_price: selectedPrice, // Use selectedPrice instead of product?.sell_price
-      weight: product?.weight || 1,
+      weight:product?.weight|| selectedWeight || 1 ,
       attribute_id: selectdAtribute_id,
       color_id: selectdColor_id,
-      attribute_weight: null,
+      attribute_weight: selectedWeight|| null,
       attribute_price: selectedPrice,
       qty: quantity,
       image: product?.thumbnail_image,
       category: categoryName,
       title: product?.title,
-      payment: product.delivery_status,
+      payment: product?.delivery_status,
     };
 
     let cart = localStorage.getItem("cart");
     cart = cart
       ? JSON.parse(cart)
-      : { cart_items: [], shipping_address_id: 1, billing_address_id: 1 };
+      : { cart_items: [],  };
 
     const isProductInCart = cart?.cart_items?.some(
       (item) => item?.product_id === cartItem?.product_id
@@ -117,33 +119,9 @@ const ProductDetails = () => {
     attribute: item?.attribute?.name,
     attribute_id: item?.attribute?.attribute_id,
     weight: item?.weight,
+    attribute_weight:item?.attribute?.attribute_weight
   }));
-  //     let obj = { };
-  //     let obj1 = {};
-  //   let arr = [];
-  //   const [cm,setcm] = useState("")
-  //     data?.map((item)=>{
-  //           const key = item?.attribute;
-  //           const key2 = item?.color_name;
-  //           obj[key+key2] = item;
-  //           obj1[key] = item?.color_name
-  //          return item;
-  //      })
-  //      const sz = 'xl';
-  //      const clr = cm ;
-  //      console.log(clr)
-  //      console.log(obj,"object-------")
-  //      console.log(obj[sz+clr],"welcom logic")
-  //  if(obj1[sz] == clr){
-  //      console.log(obj[sz+clr],"welcom logic")
-  //  }else{
-  //      if(!obj[sz+clr]){
-  //         console.log(obj[sz])
-  //      }else{
-  //          console.log(obj[sz+clr])
-  // }
-
-  //  }
+  
 
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
@@ -202,7 +180,7 @@ const ProductDetails = () => {
     setThumb(img);
   };
   if (loading) {
-    return <Singlecart ;
+    return <ProductDetailsSkeleton/> ;
   }
   return (
     <div className="mx-auto container px-2 mt-36 pt-5">

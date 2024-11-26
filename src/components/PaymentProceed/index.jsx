@@ -2,7 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
-import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
 
 const PaymetnProceed = () => {
