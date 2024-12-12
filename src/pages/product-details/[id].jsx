@@ -25,6 +25,7 @@ const ProductDetails = () => {
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
 
+
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -70,46 +71,6 @@ const ProductDetails = () => {
       setQuantity(quantity - 1);
     }
   };
-
-  const handelCart = () => {
-    const cartItem = {
-      product_id: product?.product_id,
-      sell_price: selectedPrice, // Use selectedPrice instead of product?.sell_price
-      weight:product?.weight|| selectedWeight || 1 ,
-      attribute_id: selectdAtribute_id,
-      color_id: selectdColor_id,
-      attribute_weight: selectedWeight|| null,
-      attribute_price: selectedPrice,
-      qty: quantity,
-      image: product?.thumbnail_image,
-      category: categoryName,
-      title: product?.title,
-      payment: product?.delivery_status,
-    };
-
-    let cart = localStorage.getItem("cart");
-    cart = cart
-      ? JSON.parse(cart)
-      : { cart_items: [],  };
-
-    const isProductInCart = cart?.cart_items?.some(
-      (item) => item?.product_id === cartItem?.product_id
-    );
-
-    if (isProductInCart) {
-      Toastify.Warning("Already in Cart");
-    } else {
-      cart.cart_items.push(cartItem);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      window.dispatchEvent(new Event("cartUpdated"));
-      Toastify.Success("Product added successfully");
-    }
-  };
-
-  useEffect(() => {
-    fetchProduct();
-  }, [id]);
-
   const data = product?.product_variants?.map((item) => ({
     color_name: item?.color?.name,
     color_id: item?.color?.color_id,
@@ -119,10 +80,64 @@ const ProductDetails = () => {
     attribute: item?.attribute?.name,
     attribute_id: item?.attribute?.attribute_id,
     weight: item?.weight,
-    attribute_weight:item?.attribute?.attribute_weight
+    attribute_weight: item?.attribute?.attribute_weight,
   }));
+  console.log(product)
+  console.log(data)
+  const handelCart = () => {
+    // Find the selected variant based on the selected color and attribute
+    const selectedVariant = product?.product_variants.find(
+      (item) =>
+        item?.color_id === selectdColor_id && item?.attribute_id === selectdAtribute_id
+    );
+  console.log(selectedVariant)
+   if(selectedVariant){
+    const cartItem = {
+      product_id: product?.product_id,
+      sell_price: selectedPrice,
+      weight: product?.weight || selectedWeight || 1,
+      attribute_id: selectdAtribute_id,
+      attribute: selectedAttribute,
+      color_id: selectdColor_id,
+      color: selectedColor,
+      attribute_weight: selectedWeight || null,
+      attribute_price: selectedPrice,
+      qty: quantity,
+      image: product?.thumbnail_image,
+      category: categoryName,
+      title: product?.title,
+      payment: product?.delivery_status,
+      product_variant_id: selectedVariant?.product_variant_id , // Include the variant ID
+    };
+  
+    let cart = localStorage.getItem("cart");
+    cart = cart ? JSON.parse(cart) : { cart_items: [] };
+  
+    const isProductInCart = cart?.cart_items?.some(
+      (item) => item?.product_id === cartItem?.product_id && item?.product_variant_id === cartItem?.product_variant_id
+    );
+  
+    if (isProductInCart) {
+      Toastify.Warning("Already in Cart");
+    } else {
+      cart.cart_items.push(cartItem);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      window.dispatchEvent(new Event("cartUpdated"));
+      Toastify.Success("Product added successfully");
+    }
+   }
+   else{
+    Toastify.Warning('Selected size and color is not available.Please select another color or size')
+   }
+  };
   
 
+  useEffect(() => {
+    fetchProduct();
+  }, [id]);
+
+
+console.log(product?.product_variants)
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     // Ensure the gallery images are available and parse them if necessary
@@ -150,6 +165,7 @@ const ProductDetails = () => {
 
   const [have, setHave] = useState(true);
   const handleColor = (colordata) => {
+   
     setSelectedColor(colordata?.color_name);
     setSelectedColor_id(colordata.color_id);
     const newColor = data?.find(
@@ -157,22 +173,21 @@ const ProductDetails = () => {
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
     );
-
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
+
   };
   const attributeHandle = (attributedata) => {
     setSelectedAttribute(attributedata?.attribute);
     setSelectedAttribute_id(attributedata?.attribute_id);
-
     const newAttribute = data?.find(
       (item) =>
         item?.attribute === attributedata?.attribute &&
         item?.color_name === selectedColor
     );
-
     setSelectedPrice(newAttribute?.price || product?.sell_price);
     setSelectedWeight(newAttribute?.weight || product?.weight);
+   
   };
 
   //change thumbnile image base on galllery
@@ -180,7 +195,7 @@ const ProductDetails = () => {
     setThumb(img);
   };
   if (loading) {
-    return <ProductDetailsSkeleton/> ;
+    return <ProductDetailsSkeleton />;
   }
   return (
     <div className="mx-auto container px-2 mt-36 pt-5">
@@ -193,7 +208,6 @@ const ProductDetails = () => {
               width={540}
               height={540}
               className="lg:h-[540px] lg:w-[540px] h-[400px] w-[400px]"
-              
             />
           </div>
           <div className="flex py-5 gap-4 w-1/2">

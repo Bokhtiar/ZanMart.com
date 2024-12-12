@@ -25,24 +25,40 @@ const ChangePass = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { currentPassword, newPassword, confirmPassword } = formData;
-
-    // Check if new password and confirm password match
-    if (newPassword === confirmPassword) {
-      const response = await privateRequest.post("password/reset", {
-        password : formData.currentPassword,
-        new_password : formData.newPassword,
-        confirm_password  : formData.confirmPassword
-    });
-      if (response.status == 200) {
-        removeToken()
-        Toastify.Success(response.data?.message);
-        router.push("/auth/log-in");
-      }
-    } else {
-      alert("New password and confirm password do not match!");
+  
+    // Ensure all fields are filled
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Toastify.Error("All fields are required!");
       return;
     }
+  
+    // Check if new password and confirm password match
+    if (newPassword !== confirmPassword) {
+      Toastify.Error("New password and confirm password do not match!");
+      return;
+    }
+  
+    try {
+      const response = await privateRequest.post("password/reset", {
+        password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+  
+      if (response.status === 200) {
+        Toastify.Success(response.data?.message);
+        removeToken(); // Ensure token removal on successful password reset
+        router.push("/auth/log-in");
+      } else {
+        Toastify.Error(response?.data?.message);
+        console.log(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error resetting password:", error?.response?.data?.errors[0]);
+      Toastify.Error(error?.response?.data?.errors[0]);
+    }
   };
+  
 
   return (
     <div>

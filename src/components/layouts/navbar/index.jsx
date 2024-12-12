@@ -19,6 +19,7 @@ import ProductSkeleton from "@/components/loader/ProductSkeleton";
 
 const navList = [
   { name: "home", href: "/" },
+  { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
   { name: "Track Order", href: "/track-order" },
   { name: "Log In", href: "/auth/log-in" },
@@ -48,7 +49,7 @@ export const Navbar = () => {
     } catch (error) {}
     // console.log(response)
   };
-  console.log(categories);
+  // console.log(categories);
   const handleSearchQuery = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -187,18 +188,21 @@ export const Navbar = () => {
                     : " pointer-events-none max-h-0 opacity-0"
                 }`}
               >
-                <ul className="bg-white ">
+                <ul className="bg-white">
                   {categories.map((category) => (
-                    <div key={category?.category_id} className="relative group">
+                    <div
+                      key={category?.category_id}
+                      className="relative parent"
+                    >
                       <Link
-                        href={`/products/? category_id=${category?.category_id}&category_name=${category?.category_name}`}
+                        href={`/category-products/?category_id=${category?.category_id}&category_name=${category?.category_name}`}
                         onClick={() =>
                           handleSelect(
                             category?.category_name,
                             category?.category_id
                           )
                         }
-                        className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${
+                        className={`flex items-center  shadow-md mt-2 h-16 w-64 justify-between px-4 ${
                           selected === category?.category_name
                             ? "bg-primary text-white font-extrabold"
                             : "bg-white"
@@ -206,40 +210,49 @@ export const Navbar = () => {
                       >
                         {category.category_name} <MdKeyboardArrowRight />
                       </Link>
-                      <div className="opacity-0 pointer-events-none ms-10 group-hover:opacity-100 group-hover:pointer-events-auto flex flex-col absolute top-0 -right-40 bg-white transition-all duration-1000">
-  {category?.children?.map((child) => (
-    <div key={child?.category_id} className="relative group">
-   
-    <Link
-      href={`/products/?category_id=${child?.category_id}&category_name=${child?.category_name}`}
-      onClick={() =>
-        handleSelect(child?.category_name, child?.category_id)
-      }
-      className="border-b p-2 flex w-[155px] justify-between items-center"
-    >
-      {child?.category_name} <MdKeyboardArrowRight />
-    </Link>
-  
-   
-    <div className="hidden  group-hover:flex flex-col absolute top-0 -right-40 bg-white transition-all duration-300">
-      {child?.children?.map((subChild) => (
-        <Link
-          key={subChild?.category_id}
-          href={`/products/?category_id=${subChild?.category_id}&category_name=${subChild?.category_name}`}
-          onClick={() =>
-            handleSelect(subChild?.category_name, subChild?.category_id)
-          }
-          className="border-b p-2 flex w-[155px] justify-between items-center"
-        >
-          {subChild?.category_name} <MdKeyboardArrowRight />
-        </Link>
-      ))}
-    </div>
-  </div>
-  
-  ))}
-</div>
 
+                      {/* Child Menu - Will appear when hovering over Parent */}
+                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-10 flex flex-col absolute top-0 -right-40 bg-white transition-all duration-1000">
+                        {category?.children?.map((child) => (
+                          <div
+                            key={child?.category_id}
+                            className="relative child"
+                          >
+                            <Link
+                              href={`/category-products/?category_id=${child?.category_id}&category_name=${child?.category_name}`}
+                              onClick={() =>
+                                handleSelect(
+                                  child?.category_name,
+                                  child?.category_id
+                                )
+                              }
+                              className="border-b p-2 hover:bg-slate-50 flex w-[155px] justify-between items-center"
+                            >
+                              {child?.category_name} <MdKeyboardArrowRight />
+                            </Link>
+
+                            {/* Grandchild Menu - Will appear when hovering over Child */}
+                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-40 bg-white transition-all duration-300">
+                              {child?.children?.map((subChild) => (
+                                <Link
+                                  key={subChild?.category_id}
+                                  href={`/category-products/?category_id=${subChild?.category_id}&category_name=${subChild?.category_name}`}
+                                  onClick={() =>
+                                    handleSelect(
+                                      subChild?.category_name,
+                                      subChild?.category_id
+                                    )
+                                  }
+                                  className="grandchild  hover:bg-slate-50 border-b p-2 flex w-[155px] justify-between items-center"
+                                >
+                                  {subChild?.category_name}{" "}
+                                  <MdKeyboardArrowRight />
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </ul>
@@ -254,7 +267,7 @@ export const Navbar = () => {
                 placeholder="search your product here"
               />
               <Link
-                href={`/products/?category=${searchQuery}`}
+                href={`/category-products/?category=${searchQuery}`}
                 onClick={handleSearch}
                 className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white 
                 w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2"

@@ -39,39 +39,30 @@ const Address = () => {
   const handleEditModal = (address) => {
     setIsEdit(true);
     setModal(true);
-    setEditAddressId(address.address_id); // Set the address ID for editing
+    setEditAddressId(address?.address_id); // Set the address ID for editing
     setFormData({
-      name: address.name || "",
-      email: address.email || "",
-      phone: address.phone || "",
-      address_line1: address.address_line1 || "",
-      address_line2: address.address_line2 || "",
-      division_id: address.division?.id || "",
-      district_id: address.district?.id || "",
-      upazila_id: address.upazila?.id || "",
-      union_id: address.union?.id || "",
-      postal_code: address.postal_code || "",
-      country: address.country || "Bangladesh",
-      type: address.type || "home",
+      name: address?.name || "",
+      email: address?.email || "",
+      phone: address?.phone || "",
+      address_line1: address?.address_line1 || "",
+      address_line2: address?.address_line2 || "",
+      division_id: address?.division?.id || "",
+      district_id: address?.district?.id || "",
+      upazila_id: address?.upazila?.id || "",
+      union_id: address?.union?.id || "",
+      postal_code: address?.postal_code || "",
+      country: address?.country || "Bangladesh",
+      type: address?.type || "home",
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData.name)
     try {
       if (isEdit) {
         console.log(formData);
-        const res = await privateRequest.put(`user/address/${editAddressId}`, {
-          address_line1: formData.address_line1 || "",
-          address_line2: formData.address_line2,
-          division_id: formData.division_id,
-          district_id: formData.district_id,
-          upazila_id: formData.upazila_id,
-          union_id: formData.union_id,
-          postal_code: formData.postal_code,
-          country: "Bangladesh",
-          type: formData.type || "home",
-        });
+        const res = await privateRequest.put(`user/address/${editAddressId}`, formData);
         if (res.status === 200) {
           setAddress((prevAddresses) =>
             prevAddresses.map((item) =>

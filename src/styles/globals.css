@@ -42,3 +42,23 @@ body {
   height: 100%;
   object-fit: cover;
 }
+
+/* Initially hide child and grandchild menus */
+.child-menu,
+.grandchild-menu {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, pointer-events 0.3s ease;
+}
+
+/* Show child menu when hovering over the parent category */
+.parent:hover .child-menu {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Show grandchild menu when hovering over a child category */
+.child:hover .grandchild-menu {
+  opacity: 1;
+  pointer-events: auto;
+}

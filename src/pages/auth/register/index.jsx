@@ -23,11 +23,10 @@ const Register = () => {
     setLoading(true);
     try {
       const response = await publicRequest.post("register", newData);  // Use the endpoint 'register' (modify if necessary)
-      console.log('succesas---', response);
-      if (response.data.data.token || response.status == 200) {
-        setToken(response?.data?.data?.token)
-        console.log(response)
-        router.forward('/')
+      console.log('succesas---', response.status);
+      if ( response?.status == 201) {
+  
+        router.push('/log-in')
         Toastify.Success('Registered successfully')
       }
 

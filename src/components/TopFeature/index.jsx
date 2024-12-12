@@ -36,7 +36,7 @@ const TopFeature = ({ title, dataUrl, itemLimit, categoryid }) => {
       setProducts(CategoryFilterd?.data?.data?.data)
       console.log('category ', CategoryFilterd)
       console.log("category data", CategoryFilterd?.data?.data?.data)
-      router.push(`/products/?category_id=${categoryid}&category_name=${title}`);
+      router.push(`/category-products/?category_id=${categoryid}&category_name=${title}`);
     } catch (error) {
 
     }

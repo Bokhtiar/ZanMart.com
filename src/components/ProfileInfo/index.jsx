@@ -1,82 +1,188 @@
-import Image from "next/image";
-import React from "react";
+import { privateRequest } from "@/config/axios.config";
+import React, { useState, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
-import { FaCheckCircle } from "react-icons/fa";
-import { RiUpload2Fill } from "react-icons/ri";
+import { Toastify } from "../toastify";
 
-const ProfileInfo = () => {
+const ProfileInfo = ({ profile }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    profile_pic: "",
+    role: profile?.role,
+  });
+
+  // Set form data when profile prop changes
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile?.name || "",
+        email: profile?.email || "",
+        phone: profile?.phone || "",
+        role: profile?.role, // Ensure role is correctly set
+      });
+    }
+  }, [profile]);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevData) => ({ ...prevData, profile_pic: file }));
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.role
+    ) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
+    try {
+      const formDataObj = new FormData();
+      // Make sure role is included
+
+      if (formData.profile_pic) {
+        formDataObj.append("profile_pic", formData?.profile_pic); // File object
+      }
+      console.log(formData?.profile_pic);
+      const res = await privateRequest.post("user/profile", {
+        name: formData?.name,
+        email: formData?.email,
+        phone: formData?.phone,
+        role: formData?.role,
+        profile_pic: formData?.profile_pic,
+        _method: "PUT",
+      });
+      if (res?.status == 200) {
+        Toastify.Success(res.data?.message);
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error(
+        "Error updating profile:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold my-10 ">Manage Your Account</h1>
+      <h1 className="text-2xl font-bold my-10">Manage Your Account</h1>
       <hr className="border-2" />
-      <div>
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-xl font-semibold py-5"> Personal Profile </h3>
-            <p className="flex pb-2 font-medium text-lg ">
-              Name:
-              <span className="flex font-light ps-2 gap-5 items-center">
-                MD Hasan Miah <AiFillEdit className="text-[#AAAAAA;]" />{" "}
-              </span>{" "}
-            </p>
-            <p className="flex pb-2 font-medium text-lg ">
-              Phone:
-              <span className="flex font-light ps-2 gap-5 items-center">
-                +88015683451 <AiFillEdit className="text-[#AAAAAA;]" />{" "}
-              </span>{" "}
-            </p>
-            <p className="flex pb-2 font-medium text-lg ">
-              Emaol:
-              <span className="flex font-light ps-2 gap-5 items-center">
-                kalorbap@gmail.com <AiFillEdit className="text-[#AAAAAA;]" />{" "}
-              </span>{" "}
-            </p>
-            <p className="flex pb-2 font-medium text-lg ">
-              Address:
-              <span className="flex font-light ps-2 gap-5 items-center">
-                312/GrapTown, Dattapara Ashulia, Savar, Dhaka{" "}
-                <AiFillEdit className="text-[#AAAAAA;]" />{" "}
-              </span>{" "}
-            </p>
-          </div>
-          <div className="">
-            <div className="flex justify-center  flex-col gap-2">
-              <div className="flex justify-center ">
-                <Image
-                  height={500}
-                  width={500}
-                  className="rounded-full  hover:border-2 border-primary  h-24 w-24 "
-                  src="/images/tshirt2.png"
-                ></Image>
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-xl font-semibold flex items-center  py-5">
+            Personal Profile
+          </h3>
+          <p className="flex pb-2 font-medium text-lg">
+            Name:
+            <span className="flex font-light ps-2 gap-5 items-center">
+              {profile?.name}
+            </span>
+          </p>
+          <p className="flex pb-2 font-medium text-lg">
+            Phone:
+            <span className="flex font-light ps-2 gap-5 items-center">
+              {profile?.phone}
+            </span>
+          </p>
+          <p className="flex pb-2 font-medium text-lg">
+            Email:
+            <span className="flex font-light ps-2 gap-5 items-center">
+              {profile?.email}
+            </span>
+          </p>
+          <button
+            onClick={handleOpenModal}
+            className="text-lg bg-primary px-5 py-2  gap-2 mt-10 flex items-center text-white rounded-3xl"
+          >
+            Edit <AiFillEdit className="cursor-pointer" />
+          </button>
+        </div>
+      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-96">
+            <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full border rounded px-3 py-2"
+                />
               </div>
-              <button className="flex items-center justify-center text-primary gap-2 text-lg leading-4 font-medium">
-                {" "}
-                <RiUpload2Fill /> Upload Photo
+              <div>
+                <label className="block font-medium mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block font-medium mb-2">Phone</label>
+                <input
+                  type="number"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block font-medium mb-2">
+                  Profile Picture
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="file-input w-full border rounded px-3 py-2"
+                />
+                <p className="text-sm text-gray-500 mt-2">
+                  Supported formats: JPEG, PNG. Max size: 2MB.
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                onClick={handleCloseModal}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveChanges}
+                className="bg-primary text-white px-4 py-2 rounded"
+              >
+                Save
               </button>
             </div>
           </div>
         </div>
-        <div className="py-10 flex  gap-10 justify-between">
-          <div className="flex flex-row">
-            <p className=" pb-2 font-light items-start flex text-lg">
-              <span className="flex me-2 items-center font-medium whitespace-nowrap">
-                <FaCheckCircle className="text-primary me-5" />
-                Promotional Email:
-              </span>
-              <span> Get personalized offers on your own email address.</span>
-            </p>
-          </div>
-          <div className="flex flex-row ">
-            <p className=" pb-2 font-light items-start flex text-lg">
-              <span className="flex me-2 items-center font-medium whitespace-nowrap">
-                <FaCheckCircle className="text-primary me-5" />
-                Promotional SMS:
-              </span>
-              <span> Get personalized offers on your own phone number.</span>
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
