@@ -340,7 +340,7 @@ console.log(product?.product_variants)
                     </div> */}
         </div>
       </div>
-      <TopFeature />
+      <TopFeature title='Releted Products' dataUrl={'home-page-category'} categoryid={product?.category_id} itemLimit="5" ></TopFeature>
     </div>
   );
 };

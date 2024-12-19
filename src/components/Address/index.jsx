@@ -58,41 +58,69 @@ const Address = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData.name)
+    console.log(formData);
+
     try {
-      if (isEdit) {
-        console.log(formData);
-        const res = await privateRequest.put(`user/address/${editAddressId}`, formData);
-        if (res.status === 200) {
-          setAddress((prevAddresses) =>
-            prevAddresses.map((item) =>
-              item.address_id === editAddressId ? res.data.data : item
-            )
-          );
-          Toastify.Success("Address updated successfully!");
-        }
-        
-      } else {
-        const response = await privateRequest.post("user/address", formData);
-        console.log(response)
-        if (response.data?.success === true) {
-          setAddress((prevAddresses) => [...prevAddresses, response.data.data]);
-          Toastify.Success(response.data.message);
+        const updatedFormData = {
+            ...formData,
+            name: formData.name || "",          // Ensure name is provided
+            phone: formData.phone || "",        // Ensure phone is provided
+            email: formData.email || "",        // Ensure email is provided
+            address_line1: formData.address_line1 || "",
+            address_line2: formData.address_line2 || "",
+            division_id: formData.division_id || "",
+            district_id: formData.district_id || "",
+            upazila_id: formData.upazila_id || "",
+            union_id: formData.union_id || "",
+            postal_code: formData.postal_code || "",
+            type: formData.type || "", // Example: 'home', 'office'
+        };
+
+        if (isEdit) {
+            console.log(updatedFormData);
+            const res = await privateRequest.put(
+                `user/address/${editAddressId}`,
+                updatedFormData
+            );
+
+            if (res.status === 200) {
+                setAddress((prevAddresses) =>
+                    prevAddresses.map((item) =>
+                        item.address_id === editAddressId
+                            ? res.data.data
+                            : item
+                    )
+                );
+                Toastify.Success("Address updated successfully!");
+            }
         } else {
-          Toastify.Error(response.error);
+            const response = await privateRequest.post(
+                "user/address",
+                updatedFormData
+            );
+
+            if (response.data?.success === true) {
+                setAddress((prevAddresses) => [
+                    ...prevAddresses,
+                    response.data.data,
+                ]);
+                Toastify.Success(response.data.message);
+            } else {
+                Toastify.Error(response.error);
+            }
         }
-      }
     } catch (error) {
-      console.error(
-        "Error submitting address:",
-        error.response?.data || error.message
-      );
-      Toastify.Error("Failed to submit address.");
+        console.error(
+            "Error submitting address:",
+            error.response?.data || error.message
+        );
+        Toastify.Error("Failed to submit address.");
     }
 
     // Close the modal
     setModal(false);
-  };
+};
+
 
   // Fetch divisions
   const handleDivision = async () => {
