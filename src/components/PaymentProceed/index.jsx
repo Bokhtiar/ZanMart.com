@@ -1,7 +1,7 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
-import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
 
 const PaymetnProceed = () => {
@@ -27,10 +27,10 @@ const PaymetnProceed = () => {
           </div>
           <p>Package Items:</p>
           {selectedCartItems.map((item) => (
-            <div key={item.product_id} className="flex items-center w-full py-2 gap-2">
+            <div key={item?.product_id} className="flex items-center w-full py-2 gap-2">
               <div className="flex rounded-md justify-between items-center w-full p-2 gap-5">
                 <div className="flex w-1/3 items-center">
-                  <img
+                  <Image height={500} width={500}
                     className="h-[73px] w-[73px] rounded-lg"
                     src={item?.image}
                     alt={item.title}

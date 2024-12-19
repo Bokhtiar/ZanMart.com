@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
@@ -27,7 +28,7 @@ const OptionsPayment = () => {
     <div className='flex rounded-md justify-between shadow-custom2 items-center w-full p-2 gap-5'>
       {/* Payment Gateway Data */}
       <div className='flex w-1/3 gap-5 items-center'>
-        <img className='h-[40px] w-[40px] rounded-lg' src='/images/sneker.svg' alt='Payment Icon' />
+        <Image height={200} width={200} className='h-[40px] w-[40px] rounded-lg' src='/images/sneker.svg' alt='Payment Icon' />
         <p className='text-xs font-medium'>Bkash Personal</p>
       </div>
 
