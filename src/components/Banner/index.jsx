@@ -12,15 +12,18 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { privateRequest, publicRequest } from '@/config/axios.config';
 import Link from 'next/link';
 import { useProduct } from '@/hooks/useProducts';
-
+import Image from 'next/image';
+import BannerSkeleton from '../loader/bannerSkaleton';
 
 const Banner = () => {
   const [banner, setBanner] = useState([])
+  const [loading,setLoading]=useState(false)
   const fetchBanner = async () => {
     try {
+      setLoading(true)
       const response = await publicRequest.get('banner')
       setBanner(response.data.data)
-      console.log(response.data.data)
+      setLoading(false)
 
     }
     catch (error) {
@@ -42,6 +45,9 @@ const Banner = () => {
   useEffect(() => {
     fetchBanner()
   }, [])
+  if(loading){
+    return <BannerSkeleton></BannerSkeleton>
+  }
   return (
     <Swiper
       spaceBetween={30}
@@ -79,10 +85,10 @@ const Banner = () => {
                 </div>
               </div>
               {/* Sliding Image */}
-              <img
+              <Image height={1000} width={1000} priority        
                 className="w-full h-full object-cover"
                 src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
-                alt=""
+                alt={item?.name}
               />
             </div>
           </SwiperSlide>

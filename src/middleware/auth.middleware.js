@@ -1,26 +1,25 @@
 "use client";
-import { useEffect, useLayoutEffect, useState } from "react";
-import { redirect } from "next/navigation";
-import { getToken } from "@/utils/helper";
-
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getToken } from "@/utils/helpers";
 
 export default function isAuth(Component) {
-   
     return function IsAuth(props) {
+        const [isLoading, setIsLoading] = useState(true);
+        const router = useRouter();
 
+        useEffect(() => {
+            const auth = getToken(); // Retrieve the authentication token
 
-        const auth = getToken()
-
-        // useLayoutEffect this hook roading then component pass
-        useLayoutEffect(() => {
             if (!auth) {
-                return redirect("/auth/login");
+                router.replace("/auth/log-in"); // Client-side redirect
+            } else {
+                setIsLoading(false); // Allow rendering the protected component
             }
-        }, [auth]);
+        }, [router]);
 
-
-        if (!auth) {
-            return null;
+        if (isLoading) {
+            return <div>Loading...</div>; // Optional: Add a loading spinner or fallback UI
         }
 
         return <Component {...props} />;

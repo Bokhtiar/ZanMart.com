@@ -10,18 +10,24 @@ import PaymentOptions from "@/components/PaymentOptions";
 import CookieConsent from "@/components/termAndConiton";
 import { useEffect, useState } from "react";
 import { publicRequest } from "@/config/axios.config";
+import Loader from "@/components/loader";
+import TopFeatureSkeleton from "@/components/loader/TopFeaturSkeleton";
 
 const poppins = Poppins({ weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900",], subsets: ["latin"] });
 
 export default function Home() {
   const [categories, setCategories] = useState([]);
+  const [loading,setLoading]=useState(false)
   const categoryFetch = async () => {
    try{
+    setLoading(true)
     const response = await publicRequest.get('home-page-category');
     setCategories(response?.data?.data);
    // console.log(response)
+   setLoading(false)
    }
    catch(error){
+    setLoading(false)
     
    }
   };
@@ -39,6 +45,9 @@ export default function Home() {
         return 10;
     }
 
+  }
+  if(loading){
+        return <TopFeatureSkeleton/>
   }
   return (
     <section className={`${poppins.className} px-2 pt-36 `}>

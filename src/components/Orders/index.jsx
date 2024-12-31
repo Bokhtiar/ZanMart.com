@@ -1,129 +1,210 @@
-import React, { useState } from 'react';
-import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
-import { IoLocationOutline } from 'react-icons/io5';
-import { RiDeleteBin6Line } from 'react-icons/ri';
+import { privateRequest } from "@/config/axios.config";
+import isAuth from "@/middleware/auth.middleware";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { RiEyeLine } from "react-icons/ri";
 
 const Orders = () => {
-  const initialData = [
-    {
-      id: 10,
-      name: "Bluetooth Speaker",
-      category: "Electronics",
-      price: 99.99,
-      discount_price: 79.99,
-      image: "/images/tshirt2.png",
-      colors: ["black", "blue", "red"],
-      stock: 60,
-      selected: false,
-      quantity: 1,
-      status: "delivered",
-    },
-    {
-      id: 11,
-      name: "Bluetooth Speaker fgfgfgd  fhgsg",
-      category: "Electronics",
-      price: 99.99,
-      discount_price: 79.99,
-      image: "/images/tshirt2.png",
-      colors: ["black", "blue", "red"],
-      stock: 60,
-      selected: false,
-      quantity: 1,
-      status: "shipped",
-    },
-    {
-      id: 12,
-      name: "Laptop",
-      category: "Electronics",
-      price: 599.99,
-      discount_price: 549.99,
-      image: "/images/sneker.svg",
-      colors: ["black", "silver"],
-      stock: 20,
-      selected: false,
-      quantity: 1,
-      status: "toReceive",
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [expandedOrders, setExpandedOrders] = useState({}); // Track expanded orders
 
-  const [data, setData] = useState(initialData);
-const [selectedStatus,setSelectedStatus]=useState('')
+  const fetchOrders = async (status = "") => {
+    try {
+      setLoading(true);
+      const res = await privateRequest.get(
+        `user/orders?order_status=${status}`
+      );
+      setData(res?.data?.data || []);
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleStatus = (status) => {
-    setSelectedStatus(status)
-    if (status === '') {
-      setData(initialData); 
-    } else {
-      const filteredData = initialData.filter((item) => item.status === status);
-      setData(filteredData);
+    setSelectedStatus(status);
+    fetchOrders(status);
+  };
+
+  const toggleOrderDetails = (orderId) => {
+    setExpandedOrders((prev) => ({
+      ...prev,
+      [orderId]: !prev[orderId],
+    }));
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const renderStatus = (status) => {
+    switch (status) {
+      case "processing":
+        return "Processing";
+      case "shipped":
+        return "Shipped";
+      case "delivered":
+        return "Delivered";
+      case "cenceled":
+        return "Canceled";
+      default:
+        return "All Orders";
     }
   };
 
   return (
-    <div>
-      <h1 className='text-2xl font-bold my-10'>Manage your Orders</h1>
-      <hr className='border-2' />
-      <div className='flex gap-2'>
-        <div className='w-full p-10'>
-          <div className='flex gap-12'>
-            <button onClick={() => handleStatus('')} className={`${selectedStatus===''? 'text-primary':''} text-sm leading-4 font-semibold`}>
-              All Orders
+    <div className="container mx-auto my-10 p-5">
+      <h1 className="text-2xl font-bold mb-6"> Your Orders</h1>
+      <hr className="border-2" />
+      <div className="flex justify-start space-x-6 mt-2  pb-4 mb-6">
+        {["", "processing", "shipped", "delivered", "cenceled"].map(
+          (status) => (
+            <button
+              key={status}
+              onClick={() => handleStatus(status)}
+              className={`py-2 px-4 text-sm font-semibold rounded ${
+                selectedStatus === status
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-600 hover:text-primary"
+              }`}
+            >
+              {renderStatus(status)}
             </button>
-            <button onClick={() => handleStatus('toReceive')} className={`${selectedStatus==='toReceive'? 'text-primary':''} text-sm leading-4 font-semibold`}>
-              To Receive
-            </button>
-            <button onClick={() => handleStatus('shipped')} className={`${selectedStatus==='shipped'? 'text-primary':''} text-sm leading-4 font-semibold`}>
-              Shipped
-            </button>
-            <button onClick={() => handleStatus('delivered')} className={`${selectedStatus==='delivered'? 'text-primary':''} text-sm leading-4 font-semibold`}>
-              Delivered
-            </button>
-          </div>
-          <div className='py-5'>
-            <div className='flex flex-col items-center'>
-              {data.map((item) => (
-                <div key={item.id} className='flex items-center w-full py-2 gap-2'>
-                  <div className='flex rounded-md justify-between shadow-custom2 items-center w-full p-2 gap-5'>
-                    <div className='flex w-1/3 items-center'>
-                      <img className='h-[73px] w-[73px] rounded-lg' src={item.image} alt={item.name} />
-                      <div className='pl-3'>
-                        <p className='text-xs font-medium'>{item.name}</p>
-                        <p className='font-bold text-[8px] text-[#AAAAAA] flex gap-2'>
-                          <span className='text-[#FFAA00]'>{item.category}</span> color: Black Size: XL
-                        </p>
-                        <button
-                          disabled
-                          className='text-[6px] px-2 py-1 font-bold border text-primary rounded-md flex items-center gap-1'
-                        >
-                          <IoMdCheckmarkCircleOutline className='h-[7px] w-[7px]' /> Cash on Delivery Available
-                        </button>
-                      </div>
-                    </div>
-                    <div className='flex flex-col justify-start items-center'>
-                      <p className='py-3 text-[8px] text-center'>Price</p>
-                      <p className='text-xs font-semibold'>
-                        {(item.discount_price * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                    <div className='flex flex-col justify-start items-center gap-2'>
-                      <p className='text-[8px] text-center font-bold leading-3'>Quantity</p>
-                      <p className='text-[8px] items-center justify-center gap-3 font-bold leading-3 flex whitespace-nowrap'>
-                        {item.quantity}
-                      </p>
-                    </div>
-                    <div>
-                      <p className={`${item.status === 'delivered' ? 'bg-green-500' : 'bg-primary'} w-36 text-center rounded-md py-2 px-5 text-white`}>
-                        {item.status === 'toReceive' ? 'To Receive' : item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+          )
+        )}
       </div>
+
+      {loading ? (
+        <p className="text-center text-gray-500">Loading...</p>
+      ) : (
+        <div className="space-y-4">
+          {data.length > 0 ? (
+            data.map((item) => (
+              <div
+                key={item?.id}
+                className="flex flex-col bg-white shadow rounded-md p-5 space-y-4 md:space-y-0"
+              >
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                  <div className="space-y-1">
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Order ID:</span>{" "}
+                      <span className="text-primary font-bold">
+                        {item["order Details"]?.order_id}
+                      </span>
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Customer:</span>{" "}
+                      {item["order Details"]?.shipping_address?.name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <span className="font-medium">Phone:</span>{" "}
+                      {item["order Details"]?.shipping_address?.phone}
+                    </p>
+                  </div>
+                 
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 font-medium">Price:</p>
+                    <p className="text-lg text-primary font-bold">
+                      {item["order Details"]?.total_amount} Tk
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 font-medium">
+                      Product Quantity:
+                    </p>
+                    <p className="text-lg text-primary font-bold">
+                      {item["order item"].length}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center space-y-2">
+                    <p
+                      className={`px-4 py-2 rounded-full text-sm font-medium ${
+                        item["order Details"]?.order_status === "delivered"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-primary text-white"
+                      }`}
+                    >
+                      {renderStatus(item["order Details"]?.order_status)}
+                    </p>
+                    <button
+                      onClick={() =>
+                        toggleOrderDetails(item["order Details"]?.order_id)
+                      }
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-sm rounded-md"
+                    >
+                      <RiEyeLine />
+                      {expandedOrders[item["order Details"]?.order_id]
+                        ? "Hide Details"
+                        : "View More"}
+                    </button>
+                  </div>
+                  <div>
+  <Link 
+    href={`/profile?section=order-details&id=${item["order Details"]?.order_id}`} 
+    className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-sm rounded-md"
+  >
+    Details
+  </Link>
+</div>
+
+                </div>
+
+                {/* Order Items Section */}
+                {expandedOrders[item["order Details"]?.order_id] && (
+                  <div className="mt-4">
+                    {item["order item"]?.map((product) => (
+                      <div
+                        key={product?.order_item_id}
+                        className="border-b mt-2 p-2 flex justify-between items-center"
+                      >
+                        <Image
+                          height={60}
+                          width={60}
+                          src={`${process.env.NEXT_PUBLIC_API_SERVER}${product?.product?.thumbnail_image}`}
+                          alt=""
+                          className=""
+                        />
+                        <p className="text-sm flex flex-col font-medium text-gray-700">
+                          <span className="text-base  ">
+                            {product?.product?.title}
+                          </span>
+                          <span className="text-sm text-gray-500 ml-2">
+                            {product?.color?.name && (
+                              <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                              {product?.color?.name}
+                              </span>
+                            )}
+                            {product?.attribute?.name && (
+                              <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded ml-2">
+                               {product?.attribute?.name}
+                              </span>
+                            )}
+                          </span>
+                        </p>
+
+                        <p>
+                          Price:{" "}
+                          {product?.sell_price || product?.product?.sell_price}
+                        </p>
+                        <p>Quantity: {product?.qty}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No orders found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-export default Orders;
+export default isAuth(Orders);

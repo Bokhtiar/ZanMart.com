@@ -36,7 +36,7 @@ const Searchbar = () => {
                         <ul className='bg-white'>
                             {
                                 categoris.map(category =>
-                                    <Link onClick={()=>(handleSelect(category.name))} href={`/products/?category=${category.name}`} className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected===category.name ? 'bg-primary text-white font-extrabold':'bg-white'}`}>
+                                    <Link key={category?.category_id} onClick={()=>(handleSelect(category.name))} href={`/products/?category=${category.name}`} className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${selected===category.name ? 'bg-primary text-white font-extrabold':'bg-white'}`}>
                                         {category.name} <MdKeyboardArrowRight />
                                     </Link>
                                 )

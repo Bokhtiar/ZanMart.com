@@ -1,7 +1,13 @@
 import { publicRequest } from "@/config/axios.config";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaFacebookF, FaLinkedinIn, FaTwitter, FaInstagram } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaLinkedinIn,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
 
 const Footer = () => {
   const [data, setData] = useState({}); // Initialize as an empty object
@@ -10,7 +16,7 @@ const Footer = () => {
     try {
       const response = await publicRequest.get("web-setting");
       const fetchedData = response?.data?.data || {};
-     // console.log("Fetched Data:", fetchedData);
+      // console.log("Fetched Data:", fetchedData);
       if (typeof window !== "undefined") {
         localStorage.setItem("webSetting", JSON.stringify(fetchedData)); // Store in localStorage
       }
@@ -36,12 +42,23 @@ const Footer = () => {
       <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
         <div className="text-center">
           <div className="flex justify-center">
-            {data.logo && <img className="h-32 w-32" src={`${process.env.NEXT_PUBLIC_API_SERVER}${data.logo}`} alt="Logo" />} {/* Ensure logo exists */}
+            {data.logo && (
+              <Image
+                height={400}
+                width={400}
+                className="h-32 w-32"
+                src={`${process.env.NEXT_PUBLIC_API_SERVER}${data.logo}`}
+                alt="Logo"
+              />
+            )}{" "}
+            {/* Ensure logo exists */}
           </div>
           <p className="font-medium text-xs leading-[14px] text-[#AAAAAA]">
             Your Trusted Online Shop. Shop with Comfort
           </p>
-          <p className="text-sm font-bold py-2 leading-[14px] text-black">Contact Us</p>
+          <p className="text-sm font-bold py-2 leading-[14px] text-black">
+            Contact Us
+          </p>
           <p className="font-medium text-xs pb-1 leading-[14px] text-[#AAAAAA]">
             {data.email}
           </p>
@@ -53,27 +70,57 @@ const Footer = () => {
           </p>
         </div>
         <div className="text-center">
-          <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">Categories</h1>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Clothing</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Stationary</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Medical Equipment</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Handcraft</p>
+          <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
+            Categories
+          </h1>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Clothing
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Stationary
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Medical Equipment
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Handcraft
+          </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
         <div className="text-center">
-          <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">Categories</h1>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Clothing</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Stationary</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Medical Equipment</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Handcraft</p>
+          <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
+            Categories
+          </h1>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Clothing
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Stationary
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Medical Equipment
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Handcraft
+          </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
         <div className="text-center">
-          <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">Categories</h1>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Clothing</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Stationary</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Medical Equipment</p>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Handcraft</p>
+          <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
+            Categories
+          </h1>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Clothing
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Stationary
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Medical Equipment
+          </p>
+          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+            Handcraft
+          </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
       </div>

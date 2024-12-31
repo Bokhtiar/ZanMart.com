@@ -23,11 +23,10 @@ const Register = () => {
     setLoading(true);
     try {
       const response = await publicRequest.post("register", newData);  // Use the endpoint 'register' (modify if necessary)
-      console.log('succesas---', response);
-      if (response.data.data.token || response.status == 200) {
-        setToken(response?.data?.data?.token)
-        console.log(response)
-        router.forward('/')
+      console.log('succesas---', response.status);
+      if ( response?.status == 201) {
+  
+        router.push('/log-in')
         Toastify.Success('Registered successfully')
       }
 
@@ -210,7 +209,7 @@ const Register = () => {
             </div>
 
             <p className='mt-10 text-white text-md font-normal text-start'>
-              By clicking "SIGN UP" I agree to the{' '}
+              By clicking &quot;SIGN UP&quot; I agree to the{' '}
               <strong>Terms of Use</strong> and <strong>Privacy Policy</strong>
             </p>
             <div className='flex justify-center'>
