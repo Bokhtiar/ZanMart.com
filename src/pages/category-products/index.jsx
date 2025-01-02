@@ -2,7 +2,7 @@ import SingleCart from "@/components/singleCart";
 import { publicRequest } from "@/config/axios.config";
 import { useProduct } from "@/hooks/useProducts";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import { PiRectangle } from "react-icons/pi";
@@ -10,6 +10,9 @@ import style from "./style.module.css";
 import Image from "next/image";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
+import { Toastify } from "@/components/toastify";
+import UnitFilter from "./components/UnitFilter";
+import ColorFilter from "./components/ColorFilter";
 const CategoryProducts = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -21,19 +24,19 @@ const CategoryProducts = () => {
   const [units, setUnits] = useState([]);
   const [selectedAttributes, setSelectedAttributes] = useState({});
 
-
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
   const categoryFetch = async () => {
     try {
-      setLoading(true);
+      setLoading(false);
       const response = await publicRequest.get("categories");
       const fetchedCategories = response?.data?.data || [];
       const selectedCategory = fetchedCategories?.find(
-        (item) => item?.category_id === category
+        (item) => item?.category_id === category_id
       );
+      console.log(selectedCategory ,"selectedCategory ================>");
       setSubcategory(selectedCategory?.childs || []);
       setLoading(false);
     } catch (error) {
@@ -41,25 +44,13 @@ const CategoryProducts = () => {
     }
   };
 
-  const { products, setProducts,loading:productLoading } = useProduct();
+  const { products, setProducts, loading: productLoading } = useProduct();
   console.log(products);
-  const fetchSizes = async () => {
-    try {
-      setLoading(true);
-      const response = await publicRequest.get(`category/show/${category_id}`);
-      setUnits(response.data?.data?.units);
-      setLoading(false);
-      // setSize(response.data?.data?.units[0]?.attributes || []);
-      //  console.log('size--------->', response?.data?.data?.data)
-    } catch (error) {
-      console.error("Error fetching sizes:", error);
-    }
-  };
 
   // Function to fetch colors
   const fetchColors = async () => {
     try {
-      setLoading(true);
+      setLoading(false);
       const response = await publicRequest.get("color");
       setColors(response?.data?.data || []);
       // console.log('', response?.data?.data)
@@ -68,14 +59,43 @@ const CategoryProducts = () => {
       console.error("Error fetching colors:", error);
     }
   };
-
-
   useEffect(() => {
-    fetchSizes();
-    fetchColors();
     categoryFetch();
-  }, [category_id, selectedSubCategory]); // Updated dependencies
+  }, []);
+  useEffect(() => {
+    fetchColors();
+  }, [selectedSubCategory]); // Updated dependencies
+  useEffect(() => {
+    const fetchSizes = async () => {
+      try {
+        setLoading(false);
 
+        const response = await publicRequest.get(
+          `category/show/${category_id}`
+        );
+        
+        setUnits(response.data?.data?.units);
+        setLoading(false);
+        // setSize(response.data?.data?.units[0]?.attributes || []);
+        //  console.log('size--------->', response?.data?.data?.data)
+      } catch (error) {
+        console.error("Error fetching sizes:", error);
+      }
+    };
+    // fetchSizes();
+     if(category_id){
+      publicRequest
+      .get(`category/show/${category_id}`)
+      .then((res) => {
+        setUnits(res?.data?.data?.units);
+        setLoading(false);
+      })
+      .catch((error) => {
+        Toastify.Error("Error fetching sizes:");
+      });
+     }
+  }, [category_id]);
+  console.log(category_id,"this is category id");
   //Product unit and color Filter
   const [variantData, setVariantData] = useState({
     attributes: {
@@ -92,7 +112,6 @@ const CategoryProducts = () => {
 
     // Update selected colors state
     setSelectedColors(newSelectedColors);
-
     // Update variantData with the new selected colors
     const updatedVariantData = {
       ...variantData,
@@ -105,13 +124,11 @@ const CategoryProducts = () => {
 
     // Log the updated variantData directly
     try {
-      setLoading(true);
-      console.log(updatedVariantData);
+      setLoading(false); 
       const res = await publicRequest.post(
         "product/variant-color-filter",
         updatedVariantData
-      );
-      console.log(res.data.data);
+      ); 
       setProducts(res?.data?.data);
       setLoading(false);
     } catch (error) {
@@ -146,7 +163,7 @@ const CategoryProducts = () => {
 
     // Now call the API with the updated variantData
     try {
-      setLoading(true);
+      setLoading(false);
       const res = await publicRequest.post(
         "product/variant-color-filter",
         updatedVariantData
@@ -155,16 +172,17 @@ const CategoryProducts = () => {
       console.log("API Response:", res);
       setLoading(false);
     } catch (error) {
-      console.error("Error calling API:", error);
+      // console.error("Error calling API:", error);
+      Toastify.Error("Error fetching products");
     }
 
-    console.log("Updated variantData:", updatedVariantData);
+    // console.log("Updated variantData:", updatedVariantData);
   };
 
-  if (loading || productLoading) {
-    return <ProductSkeleton/>
-    }
-  
+  if (loading || productLoading  ) {
+    return <ProductSkeleton />;
+  } 
+
   return (
     <div className="mt-36">
       {/* product banner--------------------------- */}
@@ -190,55 +208,20 @@ const CategoryProducts = () => {
       <div className="flex container mx-auto items-start gap-10 w-full">
         {/* Filter options */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
-        <PriceFilter api='products' setProducts={setProducts}/>
-
-          {units?.map((unit) => (
-            <div key={unit?.unit_id} className="mt-10">
-              <p className="text-base font-semibold leading-6">
-                Filter by {unit?.unit_name}
-              </p>
-              {unit?.attributes?.map((attribute) => (
-                <p
-                  key={attribute?.attribute_id}
-                  className="flex py-1 text-xs font-mormal leading-4 items-center gap-2"
-                >
-                  <input
-                    className="border-[#AAAAAA]"
-                    type="checkbox"
-                    onChange={() =>
-                      handleAttributeChange(
-                        unit?.unit_id,
-                        attribute?.attribute_id
-                      )
-                    } // Handle change
-                    checked={selectedAttributes[unit?.unit_id]?.includes(
-                      attribute?.attribute_id
-                    )}
-                  />{" "}
-                  {attribute?.attribute_name}
-                </p>
-              ))}
-            </div>
+          <PriceFilter api="products" setProducts={setProducts} />
+          {/* unit field map here  */}
+          {units?.map((unit, index) => (
+            <UnitFilter
+              unit={unit}
+              key={unit?.unit_id}
+              selectedAttributes={selectedAttributes}
+              handleAttributeChange={handleAttributeChange}
+            />
           ))}
 
-          <div className="mt-10">
-            <p className="text-base font-semibold leading-6">Filter by color</p>
-            {colors.map((color) => (
-              <button
-                key={color?.color_id}
-                className="flex py-1 text-xs font-normal leading-4 items-center gap-2"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedColors.includes(color?.color_id)} // Check if the color is selected
-                  onChange={() => handleColorChange(color?.color_id)}
-                />
-                {color?.name}
-              </button>
-            ))}
-          </div>
+          <ColorFilter colors={colors} selectedColors={selectedColors} handleColorChange={handleColorChange}/>
           <Image
-            height={1000}
+            height={1000} 
             width={300}
             className="mt-10 w-full"
             src="/images/filterbanner.svg"
@@ -252,16 +235,15 @@ const CategoryProducts = () => {
               <FiFilter />
             </button>
           </div>
-       {/* All product show */}
+          {/* All product show */}
           <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
-          {products && Array.isArray(products) ? (
-  products.map((product) => (
-    <SingleCart key={product?.product_id} item={product} />
-  ))
-) : (
-  <p>No products available</p>
-)}
-
+            {products && Array.isArray(products) ? (
+              products.map((product) => (
+                <SingleCart key={product?.product_id} item={product} />
+              ))
+            ) : (
+              <p>No products available</p>
+            )}
           </div>
         </div>
       </div>
@@ -281,7 +263,7 @@ const CategoryProducts = () => {
             {" "}
             {/* Ensures the content area has scrollable overflow */}
             <div className="flex-col">
-            <PriceFilter api='products' setProducts={setProducts}/>
+              <PriceFilter api="products" setProducts={setProducts} />
 
               {units?.map((unit) => (
                 <div key={unit?.unit_id} className="mt-10">
@@ -338,4 +320,4 @@ const CategoryProducts = () => {
   );
 };
 
-export default CategoryProducts;
+export default  CategoryProducts;
