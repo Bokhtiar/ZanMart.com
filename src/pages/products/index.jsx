@@ -9,11 +9,10 @@ import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
 import Paginations from "@/components/pagination";
 const Products = () => {
- 
   const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
- 
+
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -35,7 +34,7 @@ const Products = () => {
       <div className="flex container mx-auto items-start gap-10 w-full">
         {/* Filter options */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
-         <PriceFilter api='products' setProducts={setProducts}/>
+          <PriceFilter api="products" setProducts={setProducts} />
 
           <Image
             height={1000}
@@ -54,16 +53,15 @@ const Products = () => {
           </div>
           {/* All product show */}
           <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
-          {products && Array.isArray(products) ? (
-  products.map((product) => (
-    <SingleCart key={product?.product_id} item={product} />
-  ))
-) : (
-  <p>No products available</p>
-)}
-
+            {products && Array.isArray(products) ? (
+              products.map((product) => (
+                <SingleCart key={product?.product_id} item={product} />
+              ))
+            ) : (
+              <p>No products available</p>
+            )}
           </div>
-          <Paginations api='products' data={setProducts}/>
+          <Paginations api="products" data={setProducts} />
         </div>
       </div>
 
@@ -81,11 +79,10 @@ const Products = () => {
           <div className="flex-grow mt-4 overflow-y-auto">
             {" "}
             {/* Ensures the content area has scrollable overflow */}
-            <PriceFilter api='products' setProducts={setProducts}/>
+            <PriceFilter api="products" setProducts={setProducts} />
           </div>
         </div>
       </div>
-     
     </div>
   );
 };
