@@ -1,16 +1,12 @@
 import Image from "next/image";
-import { Inter, Poppins } from "next/font/google";
-import Searchbar from "@/components/searchabr";
+import {   Poppins } from "next/font/google"; 
 import Banner from "@/components/Banner";
 import ServiceQuality from "@/components/ServiceQuality";
-import TopFeature from "@/components/TopFeature";
-import OfferBanner from "@/components/offerBanner";
-import SpecialDiscount from "@/components/specialDiscount";
+import TopFeature from "@/components/TopFeature"; 
 import PaymentOptions from "@/components/PaymentOptions";
 import CookieConsent from "@/components/termAndConiton";
 import { useEffect, useState } from "react";
-import { publicRequest } from "@/config/axios.config";
-import Loader from "@/components/loader";
+import { publicRequest } from "@/config/axios.config"; 
 import TopFeatureSkeleton from "@/components/loader/TopFeaturSkeleton";
 
 const poppins = Poppins({ weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900",], subsets: ["latin"] });

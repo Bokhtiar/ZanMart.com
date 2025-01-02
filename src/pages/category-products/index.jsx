@@ -66,23 +66,7 @@ const CategoryProducts = () => {
     fetchColors();
   }, [selectedSubCategory]); // Updated dependencies
   useEffect(() => {
-    const fetchSizes = async () => {
-      try {
-        setLoading(false);
-
-        const response = await publicRequest.get(
-          `category/show/${category_id}`
-        );
-        
-        setUnits(response.data?.data?.units);
-        setLoading(false);
-        // setSize(response.data?.data?.units[0]?.attributes || []);
-        //  console.log('size--------->', response?.data?.data?.data)
-      } catch (error) {
-        console.error("Error fetching sizes:", error);
-      }
-    };
-    // fetchSizes();
+     
      if(category_id){
       publicRequest
       .get(`category/show/${category_id}`)

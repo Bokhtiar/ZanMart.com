@@ -16,9 +16,10 @@ import Loader from "@/components/loader";
 import Image from "next/image";
 import NavSkleton from "@/components/loader/navSkleton";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
-
+import CategoriesList from "./components/CategoryRender";
+import style from "./components/style.module.css";
 const navList = [
-  { name: "home", href: "/" },
+  { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
   { name: "Track Order", href: "/track-order" },
@@ -104,12 +105,14 @@ export const Navbar = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-  if (loading) {
-    return <NavSkleton></NavSkleton>;
-  }
+  // if (loading) {
+  //   return <NavSkleton></NavSkleton>;
+  // }
   /*   if (productLoading) {
     //return <ProductSkeleton/>
   } */
+
+   
   return (
     <>
       <div className="fixed h w-full h z-10 bg-white">
@@ -167,7 +170,8 @@ export const Navbar = () => {
             </div>
           </div>
         </nav>
-        <div className="bg-primary">
+        {/* bottom navbar start  */}
+        <section className="bg-primary">
           <div className="flex justify-between items-center container mx-auto py-2">
             <div className="relative lg:flex md:flex hidden">
               <button
@@ -188,7 +192,7 @@ export const Navbar = () => {
                     : " pointer-events-none max-h-0 opacity-0"
                 }`}
               >
-                <ul className="bg-white">
+                <ul className="bg-white shadow-lg overflow-auto">
                   {categories.map((category) => (
                     <div
                       key={category?.category_id}
@@ -262,7 +266,7 @@ export const Navbar = () => {
               <input
                 onChange={handleSearchQuery}
                 className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full
-                 h-12"
+                 h-12 outline-none"
                 type="text"
                 placeholder="search your product here"
               />
@@ -292,20 +296,20 @@ export const Navbar = () => {
               </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
       {/* Drawer for small devices */}
       <div
-        className={`fixed top-0 left-0 h-full z-20 bg-white transition-transform transform ${
+        className={`fixed overflow-auto scrollbar-thin top-0 left-0 h-full z-20   bg-white transition-transform transform ${
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"
-        } w-64`}
+        } w-64 ${style.scrollbar_thin}`}
       >
         <div className="p-4">
           <button onClick={toggleDrawer} className="text-xl">
             <MdClose />
           </button>
-
+          <h1 className="font-bold">Menu</h1>
           <ul className="bg-white">
             {navList.map((nav) => (
               <Link
@@ -324,6 +328,14 @@ export const Navbar = () => {
               </Link>
             ))}
           </ul>
+          {/* mobile phone category */}
+          <h1 className="font-bold mt-4">Categoriss</h1>
+          
+           <div className="">
+           <CategoriesList categories={categories} setDropdown={setIsDrawerOpen}/>
+           </div>
+        
+     
         </div>
       </div>
 
