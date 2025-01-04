@@ -1,8 +1,9 @@
+import React, {  useEffect, useState } from "react";
 import SingleCart from "@/components/singleCart";
+import dynamic from "next/dynamic";
 import { publicRequest } from "@/config/axios.config";
 import { useProduct } from "@/hooks/useProducts";
 import { useRouter } from "next/router";
-import React, { memo, useCallback, useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import { PiRectangle } from "react-icons/pi";
@@ -11,8 +12,11 @@ import Image from "next/image";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
 import { Toastify } from "@/components/toastify";
-import UnitFilter from "./components/UnitFilter";
+import UnitFilter from "./components/UnitFilter"; 
 import ColorFilter from "./components/ColorFilter";
+// const ColorFilter = dynamic(() => import("./components/ColorFilter"),  {
+//   loading: () => <p>Loading...</p>,
+// });
 const CategoryProducts = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
