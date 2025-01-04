@@ -22,13 +22,13 @@ const id=router.query?.category_id;
 
   const renderCategories = (categories ) => {
     return (
-      <ul className="ml-2 mt-2 pl-4">
+      <ul className="  mt-2 pl-4  ">
         {categories.map((category) => (
-          <li key={category.category_id} className={`relative ${category?.category_id==id ?'text-primary' :""} `}>
-            <div className="flex items-center justify-between">
+          <li key={category.category_id} className={`my-1 relative ${category?.category_id==id ?'text-primary font-bold text-base bg-gray-200 rounded-lg ' :""} `}>
+            <div className="flex items-center justify-between hover:bg-gray-100 px-2  rounded-lg">
               {/* Category Link */}
               <Link
-                className="text-md py-2 leading-7 font-normal relative hover:border-none flex-grow"
+                className="text-md py-1.5 leading-7 font-normal relative hover:border-none flex-grow "
                 href={`/category-products/?category_id=${category.category_id}&category_name=${category.category_name}`}
                 onClick={() =>{ handleSelect(category.category_name);setDropdown(false)}}
               >
