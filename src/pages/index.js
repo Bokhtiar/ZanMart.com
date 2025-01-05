@@ -62,7 +62,7 @@ export default function Home() {
       <TopFeature title="OTHERS PRODUCTS" dataUrl={'/data.json'} itemLimit={5} ></TopFeature> */}
       <PaymentOptions></PaymentOptions>
 
-      <CookieConsent />
+      {/* <CookieConsent /> */}
     </section>
   );
 }

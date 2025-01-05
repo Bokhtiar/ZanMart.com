@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -114,9 +114,24 @@ export const Navbar = () => {
     //return <ProductSkeleton/>
   } */
 const token=getToken();
-   
+// my code 
+const dropdownRef = useRef(null);
+ 
+const handleClickOutside = (event) => { 
+  if (dropdownRef.current && !dropdownRef.current.contains(event.target)) { 
+    setOpenCategory(false);
+  }
+};
+
+useEffect(() => {
+  document.addEventListener("mousedown", handleClickOutside); 
+  // Cleanup the event listener on component unmount
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
   return (
-    <>
+    <div  ref={dropdownRef}>
       <div className="fixed h w-full h z-10 bg-white">
         <nav className="py-3 flex container mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
@@ -157,7 +172,7 @@ const token=getToken();
             ))}
            {
             !token &&  <Link
-                href={''}
+                href={'/auth/log-in'}
                 className={`text-sm leading-7 font-normal relative hover:border-none after:absolute after:w-0 
                   after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-
                   in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
@@ -386,6 +401,6 @@ const token=getToken();
           onClick={toggleDrawer}
         ></div>
       )}
-    </>
+    </div>
   );
 };
