@@ -52,7 +52,7 @@ const VerifyNumber = () => {
             {otp.map((digit, index) => (
               <input
                 key={index}
-                className="w-16 sm:w-24 h-16 sm:h-24 text-primary text-center font-bold text-2xl sm:text-3xl rounded-lg"
+                className="outline-none w-16 sm:w-24 h-16 sm:h-24 text-primary text-center font-bold text-2xl sm:text-3xl rounded-lg"
                 type="text"
                 maxLength="1"
                 value={digit}

@@ -74,11 +74,12 @@ const Address = () => {
             union_id: formData.union_id || "",
             postal_code: formData.postal_code || "",
             type: formData.type || "", // Example: 'home', 'office'
+            _method: "PUT",
         };
 
         if (isEdit) {
             console.log(updatedFormData);
-            const res = await privateRequest.put(
+            const res = await privateRequest.post(
                 `user/address/${editAddressId}`,
                 updatedFormData
             );

@@ -1,37 +1,25 @@
 import { useState } from "react";
+import PolicyModal from "./PolicyModal";
 
-const TermsAndConditions = () => {
-  const [showTerms, setShowTerms] = useState(false);
-
-  const handleShowTerms = () => {
-    setShowTerms(true);
-  };
-
-  const handleCloseTerms = () => {
-    setShowTerms(false);
-  };
-
+const TermsAndConditions = ({ showTerms, setShowTerms }) => {
   return (
     <>
-      <button className="underline text-blue-500" onClick={handleShowTerms}>
-        Terms & Conditions
-      </button>
-
-      {showTerms && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-5 rounded-lg w-3/4 h-3/4 overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Terms & Conditions</h2>
-            <p className="text-sm">
+     { showTerms && <PolicyModal setOpen={setShowTerms}>
+        <div className=" ms-center z-50">
+          <div className="bg-white p-5 rounded-lg   overflow-auto">
+            <h2 className="text-xl font-bold mb-4 border-b">Terms & Conditions</h2>
+            <p className="text-sm leading-4">
               <strong>1. INTRODUCTION</strong>
               <br />
-              Welcome to zanmart.com, also hereby known as “we&quot;, &quot;us&quot; or
-              &quot;zanmart&quot;. We are an online marketplace, and these are the terms
-              and conditions governing your access and use of zanmart along with
-              its related sub-domains, sites, mobile app, services, and tools
-              (the &quot;Site&quot;). By using the Site, you hereby accept these terms and
-              conditions (including the linked information herein) and represent
-              that you agree to comply with these terms and conditions (the
-              &quot;User Agreement&quot;). This User Agreement is deemed effective upon
+              Welcome to zanmart.com, also hereby known as &quote;we&quot;,
+              &quot;us&quot; or &quot;zanmart&quot;. We are an online
+              marketplace, and these are the terms and conditions governing your
+              access and use of zanmart along with its related sub-domains,
+              sites, mobile app, services, and tools (the &quot;Site&quot;). By
+              using the Site, you hereby accept these terms and conditions
+              (including the linked information herein) and represent that you
+              agree to comply with these terms and conditions (the &quot;User
+              Agreement&quot;). This User Agreement is deemed effective upon
               your use of the Site, which signifies your acceptance of these
               terms. If you do not agree to be bound by this User Agreement,
               please do not access, register with, or use this Site.
@@ -116,14 +104,16 @@ const TermsAndConditions = () => {
             </p>
 
             <button
-              onClick={handleCloseTerms}
+              onClick={(e) => {
+                setShowTerms(false);
+              }}
               className="mt-5 bg-blue-500 text-white py-2 px-4 rounded"
             >
               Close
             </button>
           </div>
         </div>
-      )}
+      </PolicyModal>}
     </>
   );
 };
