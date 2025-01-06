@@ -76,7 +76,7 @@ const Banner = () => {
                   </h1>
                   <p className="text-md mb-2">On the selected items</p>
                   <Link
-                    href={`products?category=${item?.name}`}
+                    href={`banner-products?sale=${item?.name}`}
                     onClick={() => bannerProduct(item?.banner_id)}
                     className="rounded-full btn text-sm bg-primary text-white px-5 py-2"
                   >
