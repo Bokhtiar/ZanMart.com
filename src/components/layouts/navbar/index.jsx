@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -16,14 +16,15 @@ import Loader from "@/components/loader";
 import Image from "next/image";
 import NavSkleton from "@/components/loader/navSkleton";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
-
+import CategoriesList from "./components/CategoryRender";
+import style from "./components/style.module.css";
+import { CategoryItem } from "./components/LargCategory";
+import { getToken } from "@/utils/helpers";
 const navList = [
-  { name: "home", href: "/" },
+  { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
   { name: "Track Order", href: "/track-order" },
-  { name: "Log In", href: "/auth/log-in" },
-  { name: "Sign Up", href: "/auth/register" },
 ];
 
 export const Navbar = () => {
@@ -104,14 +105,36 @@ export const Navbar = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-  if (loading) {
-    return <NavSkleton></NavSkleton>;
-  }
+  // if (loading) {
+  //   return <NavSkleton></NavSkleton>;
+  // }
   /*   if (productLoading) {
     //return <ProductSkeleton/>
   } */
+  const [token, setToken] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(getToken() ? true : false);
+    }
+  }, []);
+  // my code
+  const dropdownRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpenCategory(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
-    <>
+    <div ref={dropdownRef}>
       <div className="fixed h w-full h z-10 bg-white">
         <nav className="py-3 flex container mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
@@ -150,6 +173,22 @@ export const Navbar = () => {
                 </button>
               </Link>
             ))}
+            {!token && (
+              <Link
+                href={"/auth/log-in"}
+                className={`text-sm leading-7 font-normal relative hover:border-none after:absolute after:w-0 
+                  after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-
+                  in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+                    pathName === "/auth/log-in"
+                      ? "after:w-full after:left-0"
+                      : "after:left-1/2"
+                  }`}
+              >
+                <button className="nav_link pb-2 leading-5 capitalize">
+                  Log In
+                </button>
+              </Link>
+            )}
           </div>
           <div className="flex items-center gap-1">
             <div>
@@ -167,8 +206,9 @@ export const Navbar = () => {
             </div>
           </div>
         </nav>
-        <div className="bg-primary">
-          <div className="flex justify-between items-center container mx-auto py-2">
+        {/* bottom navbar start  */}
+        <section className="bg-primary">
+          <div className="flex gap-3 justify-between items-center container mx-auto py-2">
             <div className="relative lg:flex md:flex hidden">
               <button
                 onClick={handleCategory}
@@ -202,7 +242,7 @@ export const Navbar = () => {
                             category?.category_id
                           )
                         }
-                        className={`flex items-center  shadow-md mt-2 h-16 w-64 justify-between px-4 ${
+                        className={`flex items-center hover:bg-primary shadow-md mt-2 h-16 w-64 justify-between px-4 ${
                           selected === category?.category_name
                             ? "bg-primary text-white font-extrabold"
                             : "bg-white"
@@ -212,7 +252,7 @@ export const Navbar = () => {
                       </Link>
 
                       {/* Child Menu - Will appear when hovering over Parent */}
-                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-10 flex flex-col absolute top-0 -right-40 bg-white transition-all duration-1000">
+                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-8 flex flex-col absolute top-0 -right-40 bg-white transition-all duration-2000">
                         {category?.children?.map((child) => (
                           <div
                             key={child?.category_id}
@@ -226,13 +266,13 @@ export const Navbar = () => {
                                   child?.category_id
                                 )
                               }
-                              className="border-b p-2 hover:bg-slate-50 flex w-[155px] justify-between items-center"
+                              className="border-b  p-2 hover:bg-primary flex w-[155px] justify-between items-center"
                             >
                               {child?.category_name} <MdKeyboardArrowRight />
                             </Link>
 
                             {/* Grandchild Menu - Will appear when hovering over Child */}
-                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-40 bg-white transition-all duration-300">
+                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-40 bg-white transition-all duration-2000">
                               {child?.children?.map((subChild) => (
                                 <Link
                                   key={subChild?.category_id}
@@ -243,7 +283,7 @@ export const Navbar = () => {
                                       subChild?.category_id
                                     )
                                   }
-                                  className="grandchild  hover:bg-slate-50 border-b p-2 flex w-[155px] justify-between items-center"
+                                  className="grandchild  hover:bg-primary border-b p-2 flex w-[155px] justify-between items-center"
                                 >
                                   {subChild?.category_name}{" "}
                                   <MdKeyboardArrowRight />
@@ -262,7 +302,7 @@ export const Navbar = () => {
               <input
                 onChange={handleSearchQuery}
                 className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full
-                 h-12"
+                 h-12 outline-none"
                 type="text"
                 placeholder="search your product here"
               />
@@ -292,20 +332,20 @@ export const Navbar = () => {
               </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
       {/* Drawer for small devices */}
       <div
-        className={`fixed top-0 left-0 h-full z-20 bg-white transition-transform transform ${
+        className={`fixed overflow-auto scrollbar-thin top-0 left-0 h-full z-20   bg-white transition-transform transform ${
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"
-        } w-64`}
+        } w-64 ${style.scrollbar_thin}`}
       >
         <div className="p-4">
           <button onClick={toggleDrawer} className="text-xl">
             <MdClose />
           </button>
-
+          <h1 className="font-bold">Menu</h1>
           <ul className="bg-white">
             {navList.map((nav) => (
               <Link
@@ -323,7 +363,29 @@ export const Navbar = () => {
                 {nav.name}
               </Link>
             ))}
+
+            {!token && (
+              <Link
+                href={"/auth/log-in"}
+                className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none 
+    after:absolute after:w-0 after:h-[5px] after:bottom-0 after:bg-primary after:transition-all 
+    after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+      pathName === "Log In" ? "after:w-full after:left-0" : "after:left-1/2"
+    }`}
+              >
+                Log In
+              </Link>
+            )}
           </ul>
+          {/* mobile phone category */}
+          <h1 className="font-bold">Categoriss</h1>
+
+          <div className="">
+            <CategoriesList
+              categories={categories}
+              setDropdown={setIsDrawerOpen}
+            />
+          </div>
         </div>
       </div>
 
@@ -334,6 +396,6 @@ export const Navbar = () => {
           onClick={toggleDrawer}
         ></div>
       )}
-    </>
+    </div>
   );
 };

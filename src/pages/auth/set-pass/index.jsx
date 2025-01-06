@@ -75,7 +75,7 @@ const Register = () => {
                 Password
               </label>
               <input
-                className="px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg"
+                className="outline-none px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg"
                 type={showPassword ? "text" : "password"} // Toggle between text and password
                 id="password"
                 placeholder="Enter your password"

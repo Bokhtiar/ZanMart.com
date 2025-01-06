@@ -62,7 +62,7 @@ const ForgotPass = () => {
                 Phone Number or E-mail
               </label>
               <input
-                className={`px-5 sm:px-14 w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
+                className={` outline-none px-5 sm:px-14 w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
                   errors.contact ? "border-red-500" : ""
                 }`}
                 type="text"

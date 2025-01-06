@@ -38,7 +38,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-[#F5F5F5] pt-10">
+    <footer className="bg-[#F5F5F5] pt-10 mt-5">
       <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
         <div className="text-center">
           <div className="flex justify-center">
