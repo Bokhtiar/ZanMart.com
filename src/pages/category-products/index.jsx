@@ -44,10 +44,11 @@ const CategoryProducts = () => {
   const { products, setProducts,loading:productLoading } = useProduct();
   console.log(products);
   const fetchSizes = async () => {
+    console.log(category_id)
     try {
       setLoading(true);
       const response = await publicRequest.get(`category/show/${category_id}`);
-      setUnits(response.data?.data?.units);
+      setUnits(response?.data?.data?.units);
       setLoading(false);
       // setSize(response.data?.data?.units[0]?.attributes || []);
       //  console.log('size--------->', response?.data?.data?.data)
@@ -68,7 +69,6 @@ const CategoryProducts = () => {
       console.error("Error fetching colors:", error);
     }
   };
-
 
   useEffect(() => {
     fetchSizes();
