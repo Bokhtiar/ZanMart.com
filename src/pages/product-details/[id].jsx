@@ -25,7 +25,7 @@ const ProductDetails = () => {
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
 
-
+console.log(variant)
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -90,8 +90,8 @@ const ProductDetails = () => {
       (item) =>
         item?.color_id === selectdColor_id && item?.attribute_id === selectdAtribute_id
     );
-  console.log(selectedVariant)
-   if(selectedVariant){
+    
+   if(selectedVariant && product?.low_stock_quantity_warning<=selectedVariant?.product_qty ){
     const cartItem = {
       product_id: product?.product_id,
       sell_price: selectedPrice,
@@ -135,7 +135,6 @@ const ProductDetails = () => {
   useEffect(() => {
     fetchProduct();
   }, [id]);
-
 
 console.log(product?.product_variants)
   const [imageArray, setImageArray] = useState([]);
@@ -284,9 +283,9 @@ console.log(product?.product_variants)
               </p>
             )}
             <div className="flex gap-3">
-              <p className="flex text-center w-24 border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
-                <IoMdCheckmarkCircleOutline /> In Stock
-              </p>
+            <p className="flex text-center w-24 border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
+                <IoMdCheckmarkCircleOutline /> Out Of Stock
+              </p> 
               {product?.delivery_status === "cash" ? (
                 <p className="flex text-center border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
                   <IoMdCheckmarkCircleOutline /> Cash on delivery Available
@@ -304,9 +303,11 @@ console.log(product?.product_variants)
                   tk
                 </span>
               </span>
-              <span className="text-secondary flex lg:text-2xl line-through">
-                10 tk
+              {
+                product?.flat_discount && <span className="text-secondary flex lg:text-2xl line-through">
+               {product?.flat_discount}
               </span>
+              }
             </p>
             <div className="">
               <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl md:border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 border-[#D9D9D9] lg:p-3">

@@ -307,7 +307,7 @@ export const Navbar = () => {
                 placeholder="search your product here"
               />
               <Link
-                href={`/category-products/?category=${searchQuery}`}
+                href={`/search-products/?search=${searchQuery}`}
                 onClick={handleSearch}
                 className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white 
                 w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2"

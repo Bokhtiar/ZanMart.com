@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 const SingleCart = ({ item }) => {
-  const { category, sell_price, thumbnail_image, title } = item;
+  const { category, flat_discount,sell_price, thumbnail_image, title } = item;
 
   return (
     <Link
@@ -29,10 +29,12 @@ const SingleCart = ({ item }) => {
             {sell_price}{" "}
             <span className="text-xs font-normal text-black">tk</span>
           </span>{" "}
-          <span className="flex text-secondary text-xs line-through  ">
+          {
+            flat_discount && <span className="flex text-secondary text-xs line-through  ">
             {" "}
-            100 tk
-          </span>{" "}
+            {flat_discount}
+          </span>
+          }
           {/* <Image
             className=""
             height={24}
