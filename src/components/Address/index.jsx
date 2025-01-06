@@ -74,7 +74,7 @@ const Address = () => {
             union_id: formData.union_id || "",
             postal_code: formData.postal_code || "",
             type: formData.type || "", // Example: 'home', 'office'
-            _method: "PUT",
+             _method: "PUT",
         };
 
         if (isEdit) {
@@ -92,12 +92,13 @@ const Address = () => {
                             : item
                     )
                 );
+                userAddresses()
                 Toastify.Success("Address updated successfully!");
             }
         } else {
             const response = await privateRequest.post(
                 "user/address",
-                updatedFormData
+                formData
             );
 
             if (response.data?.success === true) {
@@ -105,9 +106,10 @@ const Address = () => {
                     ...prevAddresses,
                     response.data.data,
                 ]);
+                userAddresses()
                 Toastify.Success(response.data.message);
             } else {
-                Toastify.Error(response.error);
+                Toastify.Error(response.errors);
             }
         }
     } catch (error) {
@@ -210,12 +212,24 @@ const Address = () => {
         setAddress((prevAddresses) =>
           prevAddresses.filter((item) => item.address_id !== id)
         );
+  
+        // Clear the cart's shipping and billing address if they match the deleted ID
+        const updatedCart = {
+          ...cart,
+          shipping_address_id: cart.shipping_address_id === id ? null : cart.shipping_address_id,
+          billing_address_id: cart.billing_address_id === id ? null : cart.billing_address_id,
+        };
+  
+        setCart(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+  
         Toastify.Success(res.data.message);
       }
     } catch (error) {
       Toastify.Error(error.message || "Failed to delete address.");
     }
   };
+  
 
   const [cart, setCart] = useState({
     cart_items: [],
@@ -301,8 +315,9 @@ const Address = () => {
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-        <div className="bg-white p-6 rounded-lg w-1/3">
+        <div className=" ">
+          <div className="fixed inset-0  bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white   p-6 rounded-lg w-1/3">
           <h2 className="text-xl font-bold mb-4">Select Location</h2>
           <form onSubmit={handleSubmit}>
             {/* Address Type */}
@@ -487,6 +502,7 @@ const Address = () => {
           </form>
         </div>
       </div>
+        </div>
       
       )}
     </div>

@@ -7,6 +7,7 @@ import { TiWarning } from "react-icons/ti";
 import { Toastify } from "../toastify";
 import { useRouter } from "next/router";
 import Modal from "../modal";
+import AddressModal from "../AddressModal";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,16 +15,16 @@ const MyCart = () => {
   const [cart, setCart] = useState({ cart_items: [] });
   const [quantities, setQuantities] = useState({});
   const router = useRouter();
-
+  const [addressModal, setAddressModal] = useState(false);
   useEffect(() => {
     const fetchCartData = async () => {
       const cartData = localStorage.getItem("cart");
       if (cartData) {
         const parsedCart = JSON.parse(cartData);
-  
+
         // Clone cart items to update their prices
         const updatedCartItems = [...parsedCart.cart_items];
-  
+
         // Fetch prices for each product
         await Promise.all(
           updatedCartItems.map(async (item, index) => {
@@ -31,7 +32,7 @@ const MyCart = () => {
               const response = await privateRequest.get(
                 `/current/product/price?product_id=${item.product_id}&product_variant_id=${item.product_variant_id}`
               );
-              console.log(response.data?.data.price)
+              console.log(response.data?.data.price);
 
               if (response.data?.data.price) {
                 updatedCartItems[index].sell_price = response.data?.data.price;
@@ -44,17 +45,16 @@ const MyCart = () => {
             }
           })
         );
-  
+
         // Update the cart state and local storage
         const updatedCart = { ...parsedCart, cart_items: updatedCartItems };
         setCart(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
       }
     };
-  
+
     fetchCartData();
   }, []);
-  
 
   const data = cart?.cart_items;
 
@@ -67,7 +67,6 @@ const MyCart = () => {
     setQuantities(updatedQuantities);
     updateCartInLocalStorage(product_id, updatedQuantities[product_id]);
   };
-  
 
   const handleDecrease = (product_id) => {
     const updatedQuantities = {
@@ -100,7 +99,9 @@ const MyCart = () => {
   };
 
   const handleDelete = (id) => {
-    const updatedCartItems = data.filter((item) => item.product_variant_id !== id);
+    const updatedCartItems = data.filter(
+      (item) => item.product_variant_id !== id
+    );
     setCart((prevCart) => ({ ...prevCart, cart_items: updatedCartItems }));
     const updatedCart = { ...cart, cart_items: updatedCartItems };
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -122,19 +123,32 @@ const MyCart = () => {
     setModalAction(null);
   };
 
+  const address = localStorage.getItem("cart");
+  const shipping_address = JSON.parse(address);
+  console.log(shipping_address?.shipping_address_id);
   const handleCheckout = async () => {
-    setIsModalOpen(true);
-    setModalAction("confirm");
+    if (shipping_address?.shipping_address_id) {
+      setIsModalOpen(true);
+      setModalAction("confirm");
+    } else{
+     setAddressModal(true)
+    };
   };
 
   const handleConfirm = async () => {
     try {
-      if (cartForOrder?.shipping_address_id && cartForOrder?.billing_address_id) {
+      if (
+        cartForOrder?.shipping_address_id &&
+        cartForOrder?.billing_address_id
+      ) {
         const res = await privateRequest.post("user/orders", cartForOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
           setCart({ ...cart, cart_items: [] });
-          localStorage.setItem("cart", JSON.stringify({ ...cart, cart_items: [] }));
+          localStorage.setItem(
+            "cart",
+            JSON.stringify({ ...cart, cart_items: [] })
+          );
           window.dispatchEvent(new Event("cartUpdated"));
           router.push({
             pathname: "/profile",
@@ -319,6 +333,9 @@ const MyCart = () => {
         message="Are you sure you want to confirm the order?"
         title={"Confirm Order"}
       />
+      {
+        addressModal && <AddressModal setAddressModal={setAddressModal} />
+      }
     </div>
   );
 };
