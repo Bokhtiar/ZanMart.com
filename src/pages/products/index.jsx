@@ -1,10 +1,8 @@
 import SingleCart from "@/components/singleCart";
 import Image from "next/image";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
-
-import { publicRequest } from "@/config/axios.config";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
 import Paginations from "@/components/pagination";
@@ -12,13 +10,16 @@ const Products = () => {
   const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
-
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
   if (loading) {
     return <ProductSkeleton />;
-  }
+  } 
+  const maxPrice = products.reduce(
+    (max, product) => Math.max(max, product.sell_price),
+    0
+  ); 
   return (
     <div className="mt-36">
       {/* product banner--------------------------- */}
@@ -79,7 +80,7 @@ const Products = () => {
           <div className="flex-grow mt-4 overflow-y-auto">
             {" "}
             {/* Ensures the content area has scrollable overflow */}
-            <PriceFilter api="products" setProducts={setProducts} />
+            <PriceFilter api="products" setProducts={setProducts}  maxPrice={maxPrice}/>
           </div>
         </div>
       </div>

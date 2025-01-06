@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import style from "./style.module.css";
 import { publicRequest } from "@/config/axios.config";
 import { Toastify } from "../toastify";
-const PriceFilter = ({ api, setProducts }) => {
+const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
   const [minValue, setMinValue] = useState(20);
-  const [maxValue, setMaxValue] = useState(200);
-
+  const [maxValue, setMaxValue] = useState(0);
+  useEffect(() => {
+    if (!isNaN(maxPrice)) {
+      setMaxValue(Number(maxPrice));
+    } else {
+      console.warn("Invalid maxPrice:", maxPrice);
+    }
+  }, [maxPrice]);
+  
   const PriceFilter = async () => {
     // console.log(maxValue, minValue,api);
     try {

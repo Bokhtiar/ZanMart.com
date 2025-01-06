@@ -107,7 +107,7 @@ const Profile = () => {
             {sections?.map((data) => (
               <li key={data?.name}>
                 <Link href={`/profile?section=${data?.name}`}>
-                  <p
+                  <span
                     className={`flex px-10 py-1 rounded-xl teext-xs leading-7 font-medium items-center gap-1  ${
                       section === data.name
                         ? "bg-primary text-white  "
@@ -116,7 +116,7 @@ const Profile = () => {
                   >
                     {" "}
                     {data.logo} {data.name}
-                  </p>
+                  </span>
                 </Link>
               </li>
             ))}

@@ -25,8 +25,6 @@ const navList = [
   { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
   { name: "Track Order", href: "/track-order" },
-  
-  
 ];
 
 export const Navbar = () => {
@@ -113,25 +111,30 @@ export const Navbar = () => {
   /*   if (productLoading) {
     //return <ProductSkeleton/>
   } */
-const token=getToken();
-// my code 
-const dropdownRef = useRef(null);
- 
-const handleClickOutside = (event) => { 
-  if (dropdownRef.current && !dropdownRef.current.contains(event.target)) { 
-    setOpenCategory(false);
-  }
-};
+  const [token, setToken] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(getToken() ? true : false);
+    }
+  }, []);
+  // my code
+  const dropdownRef = useRef(null);
 
-useEffect(() => {
-  document.addEventListener("mousedown", handleClickOutside); 
-  // Cleanup the event listener on component unmount
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setOpenCategory(false);
+    }
   };
-}, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
-    <div  ref={dropdownRef}>
+    <div ref={dropdownRef}>
       <div className="fixed h w-full h z-10 bg-white">
         <nav className="py-3 flex container mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
@@ -170,23 +173,22 @@ useEffect(() => {
                 </button>
               </Link>
             ))}
-           {
-            !token &&  <Link
-                href={'/auth/log-in'}
+            {!token && (
+              <Link
+                href={"/auth/log-in"}
                 className={`text-sm leading-7 font-normal relative hover:border-none after:absolute after:w-0 
                   after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-
                   in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
-                    pathName === '/auth/log-in'
+                    pathName === "/auth/log-in"
                       ? "after:w-full after:left-0"
                       : "after:left-1/2"
                   }`}
-                
               >
                 <button className="nav_link pb-2 leading-5 capitalize">
                   Log In
                 </button>
               </Link>
-           }
+            )}
           </div>
           <div className="flex items-center gap-1">
             <div>
@@ -226,7 +228,7 @@ useEffect(() => {
                     : " pointer-events-none max-h-0 opacity-0"
                 }`}
               >
-       <ul className="bg-white">
+                <ul className="bg-white">
                   {categories.map((category) => (
                     <div
                       key={category?.category_id}
@@ -294,7 +296,6 @@ useEffect(() => {
                     </div>
                   ))}
                 </ul>
-
               </div>
             </div>
             <div className="flex rounded-full md:w-[658px] w-80 relative items-center">
@@ -361,36 +362,30 @@ useEffect(() => {
               >
                 {nav.name}
               </Link>
-
-              
-              
             ))}
 
-{
-  !token  && <Link
-               
-                
-  href={"/auth/log-in"}
-  className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none 
+            {!token && (
+              <Link
+                href={"/auth/log-in"}
+                className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none 
     after:absolute after:w-0 after:h-[5px] after:bottom-0 after:bg-primary after:transition-all 
     after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
-      pathName === 'Log In'
-        ? "after:w-full after:left-0"
-        : "after:left-1/2"
+      pathName === "Log In" ? "after:w-full after:left-0" : "after:left-1/2"
     }`}
->
-  Log In
-</Link>
-}
+              >
+                Log In
+              </Link>
+            )}
           </ul>
           {/* mobile phone category */}
           <h1 className="font-bold">Categoriss</h1>
-          
-           <div className="">
-           <CategoriesList categories={categories} setDropdown={setIsDrawerOpen}/>
-           </div>
-        
-     
+
+          <div className="">
+            <CategoriesList
+              categories={categories}
+              setDropdown={setIsDrawerOpen}
+            />
+          </div>
         </div>
       </div>
 

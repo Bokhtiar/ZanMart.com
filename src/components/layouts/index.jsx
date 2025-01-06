@@ -7,10 +7,10 @@ const poppins = Poppins({ weight:[ "100", "200","300","400","500", "600" ,"700",
 
 export const LayoutPageWrapper = ({ children }) => {
     return (
-        <div className={`flex flex-col min-h-screen ${poppins.className}`}>
+        <section className={`flex flex-col min-h-screen ${poppins.className}`}>
             <Navbar/>
             <main className="flex-grow">{children}</main>
             <Footer/>
-        </div>
+        </section>
     )
 }
