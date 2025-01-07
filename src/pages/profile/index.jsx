@@ -36,10 +36,8 @@ const Profile = () => {
     switch (section) {
       case "Profile":
         return <ProfileInfo profile={profile} />;
-
       case "Address Book":
         return <Address />;
-
       case "My Cart":
         return <MyCart />;
       case "Orders":
@@ -76,10 +74,10 @@ const Profile = () => {
     fetchProfile();
   }, []);
   return (
-    <div className="container  mx-auto flex  mt-36">
-      <div className="w-1/4 p-4 ">
+    <div className="container-custom  mx-auto flex flex-col lg:flex-row  mt-36">
+      <div className="lg:w-1/4 p-4 flex gap-2 lg:block ">
         <div className="flex left-0  flex-col pb-10 justify-center ">
-          <div className="flex justify-center pb-4">
+          <div className="flex justify-center md:pb-4">
             <Image
               height={400}
               width={400}
@@ -102,21 +100,21 @@ const Profile = () => {
             </p>
           </div>
         </div>
-        <div className="flex justify-center">
-          <ul className="space-y-4  flex flex-col">
+        <div className="flex  justify-center">
+          <ul className="lg:space-y-4   flex flex-wrap md:gap-4 justify-between lg:items-start lg:justify-between lg:flex-col">
             {sections?.map((data) => (
-              <li key={data?.name}>
+              <li key={data?.name} className="">
                 <Link href={`/profile?section=${data?.name}`}>
-                  <span
-                    className={`flex px-10 py-1 rounded-xl teext-xs leading-7 font-medium items-center gap-1  ${
-                      section === data.name
+                  <p
+                    className={`flex lg:px-10 px-2 lg:py-1 rounded-xl text-xs lg:text-base leading-7 font-medium items-center gap-1  ${
+                      section === data?.name
                         ? "bg-primary text-white  "
                         : "text-primary"
                     }`}
                   >
                     {" "}
                     {data.logo} {data.name}
-                  </span>
+                  </p>
                 </Link>
               </li>
             ))}
@@ -135,7 +133,7 @@ const Profile = () => {
       </div>
 
       {/* Content Section */}
-      <div className="w-3/4 p-8">
+      <div className="lg:w-3/4 p-8">
         {renderContent()} 
       </div>
     </div>

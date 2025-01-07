@@ -21,8 +21,8 @@ const BesSelling = () => {
     return <ProductSkeleton/>
     }
   return (
-    <div className="mt-36">
-    {/* product banner--------------------------- */}
+    <div className="mt-36 ">
+  
     <div className="text-center py-10">
       <h1 className="font-extrabold text-primary text-4xl py-2">
         Best Selling Products
@@ -33,7 +33,7 @@ const BesSelling = () => {
       
     </div>
 
-    <div className="flex container mx-auto items-start gap-10 w-full">
+    <div className="flex container-custom mx-auto items-start gap-10 w-full">
       {/* Filter options */}
       <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
       <PriceFilter api='best-selling-product' setProducts={setProducts}/>

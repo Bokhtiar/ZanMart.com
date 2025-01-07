@@ -21,7 +21,7 @@ const SearchProdut = () => {
    
     </div>
 
-    <div className="flex container mx-auto items-start gap-10 w-full">
+    <div className="flex container-custom mx-auto items-start gap-10 w-full">
    
 
       <div className="w-full">

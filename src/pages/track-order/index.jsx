@@ -3,7 +3,7 @@ import React from 'react';
 
 const Trackorder = () => {
   return (
-    <div className='mt-36 '>
+    <div className='mt-36 container-custom'>
       <div className='p-5'>
       <h1 className='text-sm font-semibold pb-5'>Order Number</h1>
        <input className='p-2 rounded-lg border outline-none w-64' type="text" placeholder='Input Order Number'/> <br />

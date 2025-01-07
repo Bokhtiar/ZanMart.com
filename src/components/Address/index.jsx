@@ -262,48 +262,54 @@ const Address = () => {
 
       {/* Existing Addresses */}
       <div>
-        <h3 className="text-xl font-semibold py-5">Delivery Addresses</h3>
-        {address?.map((item, index) => (
-          <div
-            key={item?.address_id}
-            className="grid grid-cols-3 justify-between items-center gap-10"
-          >
-            <div className="w-full gap-2 flex">
-              <p className="pb-2 font-light space-y-2 text-start text-lg leading-6">
-                <strong className="font-medium whitespace-nowrap">
-                  Address {index + 1}:
-                </strong>
-                {item.address_line1} {item.address_line2} {item.union?.name}{" "}
-                {item.upazila?.name}, {item.district?.name},{" "}
-                {item.division?.name}
-              </p>
-              <button onClick={() => handleEditModal(item)}>
-                <AiFillEdit className="text-[#AAAAAA] h-4 w-5" />
-              </button>
-            </div>
-            <div className="flex w-full justify-center items-end gap-2">
-              <button
-                onClick={() => handelDefaultAdress(item?.address_id)}
-                className={`flex gap-5 items-center ${
-                  cart?.shipping_address_id !== item?.address_id
-                    ? "text-[#666666] "
-                    : "font-bold text-primary"
-                }`}
-              >
-                <FaCheckCircle className="me-2" /> { cart?.shipping_address_id !== item?.address_id ? 'Set as Default Delivery Address': 'Default Delivery Address'} 
-              </button>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => handleDelete(item.address_id)}
-                className="flex font-semibold items-center text-lg gap-5 text-red-700"
-              >
-                <RiDeleteBin6Line className="font-semibold" /> Delete
-              </button>
-            </div>
-          </div>
-        ))}
+  <h3 className="text-xl font-semibold py-5">Delivery Addresses</h3>
+  {address?.map((item, index) => (
+    <div
+      key={item?.address_id}
+      className="flex flex-col md:grid md:grid-cols-3 justify-between items-start md:items-center gap-6 md:gap-10 mb-6"
+    >
+      <div className="flex  w-full gap-2">
+        <p className="font-light space-y-2 text-start text-base md:text-lg leading-5 md:leading-6">
+          <strong className="font-medium whitespace-nowrap">
+            Address {index + 1}:
+          </strong>
+          {item.address_line1} {item.address_line2} {item.union?.name}{" "}
+          {item.upazila?.name}, {item.district?.name}, {item.division?.name}
+        </p>
+        <button
+          onClick={() => handleEditModal(item)}
+          className="self-start mt-2 md:mt-0"
+        >
+          <AiFillEdit className="text-gray-500 h-4 w-5" />
+        </button>
       </div>
+      <div className="flex w-full justify-start md:justify-center items-center gap-2">
+        <button
+          onClick={() => handelDefaultAdress(item?.address_id)}
+          className={`flex gap-3 items-center ${
+            cart?.shipping_address_id !== item?.address_id
+              ? "text-gray-600"
+              : "font-bold text-primary"
+          }`}
+        >
+          <FaCheckCircle className="me-2" />
+          {cart?.shipping_address_id !== item?.address_id
+            ? "Set as Default Delivery Address"
+            : "Default Delivery Address"}
+        </button>
+      </div>
+      <div className="flex justify-start md:justify-center">
+        <button
+          onClick={() => handleDelete(item.address_id)}
+          className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 text-red-700"
+        >
+          <RiDeleteBin6Line className="font-semibold" /> Delete
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
 
       {/* Add New Address Button */}
       <button

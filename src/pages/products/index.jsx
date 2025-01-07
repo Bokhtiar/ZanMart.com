@@ -32,7 +32,7 @@ const Products = () => {
         </p>
       </div>
 
-      <div className="flex container mx-auto items-start gap-10 w-full">
+      <div className="flex container-custom mx-auto items-start gap-10 w-full">
         {/* Filter options */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
           <PriceFilter api="products" setProducts={setProducts} />
