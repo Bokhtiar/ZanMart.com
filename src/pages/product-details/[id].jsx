@@ -204,9 +204,9 @@ console.log(product?.product_variants)
             <Image
               src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
               alt={product?.title}
-              width={540}
-              height={540}
-              className="lg:h-[540px] lg:w-[540px] h-[400px] w-[400px]"
+              width={500}
+              height={500}
+              className="lg:h-[400px] lg:w-[450px] h-[400px] w-[400px]"
             />
           </div>
           <div className="flex py-5 gap-4 w-1/2">
@@ -257,7 +257,7 @@ console.log(product?.product_variants)
               </p>
             )}
             {variant?.length > 0 && (
-              <p className="text-base font-light leading-6 pb-3 text-[#AAAAAA]">
+              <p className="text-base font-light  leading-6 pb-3 text-[#AAAAAA]">
                 Available Colors: <br />
                 {!have && <p>color not avialable</p>}
                 {data
@@ -270,7 +270,7 @@ console.log(product?.product_variants)
                     <button
                       onClick={() => handleColor(color)}
                       // onClick={()=>setcm(color?.color_name)}
-                      className={`font-bold p-2 border rounded-md ${
+                      className={`font-bold p-2 me-1 border rounded-md ${
                         selectedColor === color?.color_name
                           ? "bg-primary text-white"
                           : "bg-transparent"
@@ -284,7 +284,7 @@ console.log(product?.product_variants)
             )}
             <div className="flex gap-3">
             <p className="flex text-center w-24 border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
-                <IoMdCheckmarkCircleOutline /> Out Of Stock
+                <IoMdCheckmarkCircleOutline /> in stock
               </p> 
               {product?.delivery_status === "cash" ? (
                 <p className="flex text-center border items-center text-primary rounded-sm border-[#D9D9D9] px-1">

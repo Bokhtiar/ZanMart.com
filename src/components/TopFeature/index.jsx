@@ -32,18 +32,15 @@ const TopFeature = ({ title, dataUrl, itemLimit, categoryid }) => {
   const viewAll = async (id) => {
     console.log(id)
     try {
-      const CategoryFilterd = await publicRequest.get(`category/product/${categoryid}`)
-      setProducts(CategoryFilterd?.data?.data?.data)
-      console.log('category ', CategoryFilterd)
-      console.log("category data", CategoryFilterd?.data?.data?.data)
-      // router.push(`/category-products/?category_id=${categoryid}&category_name=${title}`);
+      const categoryFilterd = await publicRequest.get(`category/product/${id}`);
+            setProducts(categoryFilterd?.data?.data?.data);
     } catch (error) {
 
     }
   }
 
   return (
-    <div className='container pb-5 mx-auto'>
+    <div className='container-custom pb-5 mx-auto'>
       <h1 className='font-bold  my-10 md:text-[25px]  lg:text-[25px]  flex items-center justify-between text-primary'>{title} <Link href={`/category-products/?category_id=${categoryid}&category_name=${title}`}   > <AllViewButton />  </Link> </h1>
       <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-8 lg:gap-12'>
         {

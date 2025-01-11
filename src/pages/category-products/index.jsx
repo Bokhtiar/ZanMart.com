@@ -172,7 +172,7 @@ const CategoryProducts = () => {
   } 
 
   return (
-    <div className="mt-36">
+    <div className="mt-36 px-5">
       {/* product banner--------------------------- */}
       <div className="text-center py-10">
         <h1 className="font-extrabold text-primary text-4xl py-2">
@@ -193,7 +193,7 @@ const CategoryProducts = () => {
         </p>
       </div>
 
-      <div className="flex container mx-auto items-start gap-10 w-full">
+      <div className="flex container container-custom mx-auto items-start gap-10 w-full">
         {/* Filter options */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
           <PriceFilter api="products" setProducts={setProducts} />
@@ -243,7 +243,7 @@ const CategoryProducts = () => {
         } w-2/3`}
       >
         <div className="p-4 h-full flex flex-col">
-          <button onClick={toggleDrawer} className="text-xl">
+          <button onClick={toggleDrawer} className="text-xl ">
             <MdClose />
           </button>
 

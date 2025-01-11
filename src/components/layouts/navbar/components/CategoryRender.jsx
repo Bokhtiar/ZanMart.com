@@ -1,9 +1,12 @@
+import { publicRequest } from "@/config/axios.config";
+import { useProduct } from "@/hooks/useProducts";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 function CategoriesList({ categories,setDropdown }) {
   const [expandedCategoryIds, setExpandedCategoryIds] = useState([]);
+  const {setProducts}=useProduct()
 const router=useRouter();
 const id=router.query?.category_id;
   const handleToggle = (category_id) => {
@@ -14,9 +17,16 @@ const id=router.query?.category_id;
     );
   };
 
-  const handleSelect = (category_name,) => {
-    console.log(`Category selected: ${category_name}`);
-    // Add your category selection logic here
+  const handleSelect =async (id) => {
+    console.log('clicked')
+   try {
+   
+    const categoryFilterd = await publicRequest.get(`category/product/${id}`);
+      setProducts(categoryFilterd?.data?.data?.data);
+      
+   } catch (error) {
+    
+   }
     
   };
 
@@ -24,13 +34,13 @@ const id=router.query?.category_id;
     return (
       <ul className="  mt-2 pl-4  ">
         {categories.map((category) => (
-          <li key={category.category_id} className={`my-1 relative ${category?.category_id==id ?'text-primary font-bold text-base bg-gray-200 rounded-lg ' :""} `}>
+          <li key={category.category_id} className={`my-1 relative   ${category?.category_id==id ?'text-primary font-bold text-base bg-gray-200 rounded-lg ' :""} `}>
             <div className="flex items-center justify-between hover:bg-gray-100 px-2  rounded-lg">
               {/* Category Link */}
               <Link
                 className="text-md py-1.5 leading-7 font-normal relative hover:border-none flex-grow "
-                href={`/category-products/?category_id=${category.category_id}&category_name=${category.category_name}`}
-                onClick={() =>{ handleSelect(category.category_name);setDropdown(false)}}
+                 href={`/category-products/?category_id=${category.category_id}&category_name=${category.category_name}`}
+                onClick={() =>{ handleSelect(category?.category_id);setDropdown(false)}}
               >
                 {category.category_name}
               </Link>

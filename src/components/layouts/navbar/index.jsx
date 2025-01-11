@@ -135,8 +135,8 @@ export const Navbar = () => {
   }, []);
   return (
     <div ref={dropdownRef}>
-      <div className="fixed h w-full h z-10 bg-white">
-        <nav className="py-3 flex container mx-auto justify-between items-center">
+      <div className="fixed h w-full h z-10 bg-white  ">
+        <nav className="py-3 flex container-custom mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
             {/* Drawer Toggle Button for Small Devices */}
             <button
@@ -207,8 +207,8 @@ export const Navbar = () => {
           </div>
         </nav>
         {/* bottom navbar start  */}
-        <section className="bg-primary">
-          <div className="flex gap-3 justify-between items-center container mx-auto py-2">
+        <section className="bg-primary ">
+          <div className="flex gap-3 justify-between items-center container-custom container mx-auto py-2">
             <div className="relative lg:flex md:flex hidden">
               <button
                 onClick={handleCategory}
@@ -222,13 +222,13 @@ export const Navbar = () => {
                 )}
               </button>
               <div
-                className={`absolute  top-12 transition-all duration-500 ${
+                className={`absolute h-80    top-12 transition-all duration-500 ${
                   openCategory
-                    ? "max-h-full opacity-100 pointer-events-auto"
+                    ? " opacity-100 pointer-events-auto"
                     : " pointer-events-none max-h-0 opacity-0"
                 }`}
               >
-                <ul className="bg-white">
+                <ul className="  ">
                   {categories.map((category) => (
                     <div
                       key={category?.category_id}
@@ -242,7 +242,7 @@ export const Navbar = () => {
                             category?.category_id
                           )
                         }
-                        className={`flex items-center hover:bg-primary shadow-md mt-2 h-16 w-64 justify-between px-4 ${
+                        className={`flex items-center hover:bg-primary shadow-md mt-1 h-12 w-64 justify-between px-4 ${
                           selected === category?.category_name
                             ? "bg-primary text-white font-extrabold"
                             : "bg-white"
