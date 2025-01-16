@@ -7,6 +7,7 @@ import { publicRequest } from "@/config/axios.config";
 import { useRouter } from "next/navigation";
 import { Toastify } from "@/components/toastify";
 import { useProduct } from "@/hooks/useProducts";
+import Image from "next/image";
 
 const ForgotPass = () => {
   const [loading, setLoading] = useState(false);
@@ -46,9 +47,9 @@ const ForgotPass = () => {
           Forgot your password?
         </h1>
         <div className="bg-primary w-full sm:w-[550px] p-6 sm:p-10 rounded-xl flex flex-col items-center justify-center">
-          <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px]">
-            <RxAvatar className="text-white h-full w-full bg-primary" />
-          </div>
+          <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] ">
+                    <Image src={'/logo.png'} height={200} width={2000} alt="" className="bg-white rounded-full p-2"/>
+                    </div>
           <form
             className="w-full flex flex-col justify-center"
             onSubmit={handleSubmit(onSubmit)}
@@ -62,7 +63,7 @@ const ForgotPass = () => {
                 Phone Number or E-mail
               </label>
               <input
-                className={` outline-none px-5 sm:px-14 w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
+                className={` outline-none px-5  w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
                   errors.contact ? "border-red-500" : ""
                 }`}
                 type="text"
@@ -75,6 +76,7 @@ const ForgotPass = () => {
                   },
                 })}
               />
+              
               {errors.contact && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.contact.message}

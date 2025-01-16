@@ -69,8 +69,8 @@ const Banner = () => {
           <SwiperSlide key={item?.banner_id}>
             <div className="relative h-80 bg-[#F5F5F5]">
               {/* Static Content Container */}
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="text-center">
+              <div className="absolute inset-0 flex items-center md:justify-start justify-center lg:left-44 md:left-24 z-10 ">
+                <div className="text-start ">
                   <h1 className="text-primary text-2xl md:text-3xl lg:text-[35px] font-extrabold">
                     {item?.name}
                   </h1>

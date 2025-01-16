@@ -7,7 +7,11 @@ import { publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css'
+import InnerImageZoom from "react-inner-image-zoom";
+
 
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
@@ -24,8 +28,7 @@ const ProductDetails = () => {
   const [selectdAtribute_id, setSelectedAttribute_id] = useState();
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
-
-console.log(variant)
+const [selectedDiscount,setSelectedDiscount]=useState(null)
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -55,6 +58,7 @@ console.log(variant)
         setSelectedAttribute_id(productVariants[0]?.attribute?.attribute_id);
         setSelectedColor_id(productVariants[0]?.color_id);
         setSelectedWeight(productVariants[0]?.weight);
+        setSelectedDiscount(productVariants[0]?.discount_price);
       } else {
         setSelectedPrice(res?.data?.data?.sell_price);
         setSelectedWeight(res?.data?.data?.weight);
@@ -81,6 +85,7 @@ console.log(variant)
     attribute_id: item?.attribute?.attribute_id,
     weight: item?.weight,
     attribute_weight: item?.attribute?.attribute_weight,
+    discount_price:item?.discount_price
   }));
   console.log(product)
   console.log(data)
@@ -164,31 +169,35 @@ console.log(product?.product_variants)
 
   const [have, setHave] = useState(true);
   const handleColor = (colordata) => {
-   
     setSelectedColor(colordata?.color_name);
     setSelectedColor_id(colordata.color_id);
+  
     const newColor = data?.find(
       (item) =>
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
     );
+  console.log(newColor)
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
-
+    setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
   };
+  
   const attributeHandle = (attributedata) => {
     setSelectedAttribute(attributedata?.attribute);
     setSelectedAttribute_id(attributedata?.attribute_id);
+  
     const newAttribute = data?.find(
       (item) =>
         item?.attribute === attributedata?.attribute &&
         item?.color_name === selectedColor
     );
+  
     setSelectedPrice(newAttribute?.price || product?.sell_price);
     setSelectedWeight(newAttribute?.weight || product?.weight);
-   
+    setSelectedDiscount(newAttribute?.discount_price || product?.discount_price); // Updated line
   };
-
+  
   //change thumbnile image base on galllery
   const handleThumb = (img) => {
     setThumb(img);
@@ -200,15 +209,22 @@ console.log(product?.product_variants)
     <div className="mx-auto container px-2 mt-36 pt-5">
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between">
         <div className="flex flex-col contents-between">
-          <div className="max-w-[540px] max-h-[540px]">
-            <Image
-              src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-              alt={product?.title}
-              width={500}
-              height={500}
-              className="lg:h-[400px] lg:w-[450px] h-[400px] w-[400px]"
-            />
-          </div>
+        <div className="flex justify-center items-center">
+      <div className=" relative">
+        <InnerImageZoom
+          src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}  // Image source
+          zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`} // High-res image for zoom
+          alt="Product Thumbnail"
+          zoomType="hover"          // Enable zoom on hover
+          zoomPreload={true}        // Preload the zoomed image to avoid flickering
+             // Ensure the zoomed image is displayed only on hover
+          zoomPosition="right"      // Position of the zoom effect (you can change to 'left', 'top', 'bottom')
+          fillAvailableSpace={true}
+          className=" max-h-64 w-64" // Make the image fill the available space
+        />
+      </div>
+    </div>
+
           <div className="flex py-5 gap-4 w-1/2">
             {imageArray?.map((img, index) => (
               <Image
@@ -224,10 +240,13 @@ console.log(product?.product_variants)
           </div>
         </div>
         <div className="flex flex-col content-between items- w-full lg:w-1/2">
+        
           <>
             <h1 className="font-medium text-3xl text-start leading-10">
               {product?.title}
+              
             </h1>
+           
             <p className="text-lg pt-4 pb-3 leading-4 font-bold text-secondary">
               {categoryName}
             </p>
@@ -304,11 +323,26 @@ console.log(product?.product_variants)
                 </span>
               </span>
               {
-                product?.flat_discount && <span className="text-secondary flex lg:text-2xl line-through">
-               {product?.flat_discount}
+                selectedDiscount && <span className="text-secondary flex lg:text-2xl line-through">
+               {selectedDiscount}
               </span>
               }
+          
             </p>
+            {   product?.rating &&      <span className="flex justify-start py-2">
+                  {product &&
+                    Array(Math.floor(product?.rating)-1)
+                      .fill(null)
+                      .map((_, index) => (
+                        <FaStar key={index} className="text-secondary" />
+                      ))}
+                  {product?.rating % 2 !== 0 ? (
+                    
+                    <FaStar className="text-secondary" />
+                  ) : (
+                    <FaStarHalfAlt className="text-secondary" />
+                  )}
+                </span>}
             <div className="">
               <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl md:border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 border-[#D9D9D9] lg:p-3">
                 <span className="flex items-center gap-2">
@@ -330,6 +364,7 @@ console.log(product?.product_variants)
                   Add To Cart
                 </button>
               </p>
+            
             </div>
           </>
 
@@ -341,7 +376,11 @@ console.log(product?.product_variants)
                     </div> */}
         </div>
       </div>
-      <TopFeature title='Releted Products' dataUrl={'home-page-category'} categoryid={product?.category_id} itemLimit="5" ></TopFeature>
+      <TopFeature   key={id}
+          categoryid={id}
+          title='Related Products'
+          dataUrl={"home-page-category"}
+           ></TopFeature>
     </div>
   );
 };

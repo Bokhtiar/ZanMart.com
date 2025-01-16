@@ -3,6 +3,7 @@ import PrivacyPolicy from "@/components/termAndConiton/PrivacyPolicy";
 import { Toastify } from "@/components/toastify";
 import { publicRequest } from "@/config/axios.config";
 import { networkErrorHandeller } from "@/utils/helpers";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -50,6 +51,9 @@ const Register = () => {
           Create your Zanmart Account
         </h1>
         <div className="bg-primary w-full max-w-md md:max-w-lg lg:max-w-xl p-6 md:p-8 lg:p-10 rounded-xl flex flex-col items-center justify-center">
+         <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] rounded-full">
+                   <Image src={'/logo.png'} height={200} width={2000} alt="" className="bg-white  p-5"/>
+                   </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full flex flex-col justify-center"
@@ -63,7 +67,7 @@ const Register = () => {
                 Full Name*
               </label>
               <input
-                className={`outline-none px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
+                className={`outline-none px-2 md:px-4  w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
                   errors.fullName ? "border-red-500" : ""
                 }`}
                 type="text"
@@ -81,12 +85,12 @@ const Register = () => {
             <div className="mt-5">
               <label
                 htmlFor="email"
-                className="o text-sm px-2 md:px-4 text-white flex pb-3 items-center gap-4 font-semibold"
+                className=" text-sm px-2 md:px-4 text-white flex pb-3 items-center gap-4 font-semibold"
               >
                 Email*
               </label>
               <input
-                className={` outline-none px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
+                className={` outline-none px-2 md:px-4  w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
                   errors.email ? "border-red-500" : ""
                 }`}
                 type="email"
@@ -117,7 +121,7 @@ const Register = () => {
                 Phone Number*
               </label>
               <input
-                className={` outline-none px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
+                className={` outline-none px-2 md:px-4 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
                   errors.phoneNumber ? "border-red-500" : ""
                 }`}
                 type="text"
@@ -146,8 +150,9 @@ const Register = () => {
               >
                 Password
               </label>
-              <input
-                className={`outline-none px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
+            <div className="relative">
+            <input
+                className={`outline-none px-4 md:px-4  w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
                   errors.password ? "border-red-500" : ""
                 }`}
                 type={showPass2 ? "text" : "password"}
@@ -172,6 +177,7 @@ const Register = () => {
                   <FaEye className="h-5 w-5" />
                 )}
               </span>
+            </div>
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.password.message}
@@ -187,8 +193,9 @@ const Register = () => {
               >
                 Re-Type Password
               </label>
-              <input
-                className={`outline-none px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
+            <div className="relative">
+            <input
+                className={`outline-none px-4 md:px-4  w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
                   errors.retypePassword ? "border-red-500" : ""
                 }`}
                 type={showPass ? "text" : "password"}
@@ -210,6 +217,7 @@ const Register = () => {
                   <FaEye className="h-5 w-5" />
                 )}
               </span>
+            </div>
               {errors.retypePassword && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.retypePassword.message}
@@ -217,49 +225,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Birth Date Input */}
-            <div className="mt-5">
-              <label
-                htmlFor="birthDate"
-                className="text-sm px-2 md:px-4 flex pb-3 items-center text-white gap-4 font-semibold"
-              >
-                Birth Date
-              </label>
-              <div className="flex gap-2 md:gap-4 lg:gap-5">
-                <input
-                  className={`outline-none px-4 md:px-6 lg:px-10 text-center w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
-                    errors.birthDay ? "border-red-500" : ""
-                  }`}
-                  type="text"
-                  id="birthDay"
-                  placeholder="Day"
-                  {...register("birthDay", { required: "Day is required" })}
-                />
-                <input
-                  className={`outline-none px-4 md:px-6 lg:px-10 text-center w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
-                    errors.birthMonth ? "border-red-500" : ""
-                  }`}
-                  type="text"
-                  id="birthMonth"
-                  placeholder="Month"
-                  {...register("birthMonth", { required: "Month is required" })}
-                />
-                <input
-                  className={`outline-none px-4 md:px-6 lg:px-10 text-center w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-lg ${
-                    errors.birthYear ? "border-red-500" : ""
-                  }`}
-                  type="text"
-                  id="birthYear"
-                  placeholder="Year"
-                  {...register("birthYear", { required: "Year is required" })}
-                />
-              </div>
-              {(errors.birthDay || errors.birthMonth || errors.birthYear) && (
-                <p className="text-red-500 text-sm mt-1">
-                  Birth date is required
-                </p>
-              )}
-            </div>
             <TermsAndConditions
               setShowTerms={setShowTerms}
               showTerms={showTerms}

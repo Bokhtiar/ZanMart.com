@@ -222,13 +222,13 @@ export const Navbar = () => {
                 )}
               </button>
               <div
-                className={`absolute h-80    top-12 transition-all duration-500 ${
+                className={`absolute h-80    top-10 transition-all duration-700 ${
                   openCategory
                     ? " opacity-100 pointer-events-auto"
-                    : " pointer-events-none max-h-0 opacity-0"
+                    : " pointer-events-none opacity-0"
                 }`}
               >
-                <ul className="  ">
+                <ul className=" bg-white shadow-lg  ">
                   {categories.map((category) => (
                     <div
                       key={category?.category_id}
@@ -242,17 +242,17 @@ export const Navbar = () => {
                             category?.category_id
                           )
                         }
-                        className={`flex items-center hover:bg-primary shadow-md mt-1 h-12 w-64 justify-between px-4 ${
+                        className={`flex items-center hover:bg-primary  mt-1 h-12 w-64 justify-between px-4 ${
                           selected === category?.category_name
                             ? "bg-primary text-white font-extrabold"
-                            : "bg-white"
+                            : ""
                         }`}
                       >
                         {category.category_name} <MdKeyboardArrowRight />
                       </Link>
 
                       {/* Child Menu - Will appear when hovering over Parent */}
-                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-8 flex flex-col absolute top-0 -right-40 bg-white transition-all duration-2000">
+                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-6 flex flex-col absolute top-0 -right-[155px] bg-white transition-all duration-2000">
                         {category?.children?.map((child) => (
                           <div
                             key={child?.category_id}
@@ -272,7 +272,7 @@ export const Navbar = () => {
                             </Link>
 
                             {/* Grandchild Menu - Will appear when hovering over Child */}
-                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-40 bg-white transition-all duration-2000">
+                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-[155px] bg-white transition-all duration-2000">
                               {child?.children?.map((subChild) => (
                                 <Link
                                   key={subChild?.category_id}

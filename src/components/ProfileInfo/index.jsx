@@ -2,6 +2,7 @@ import { privateRequest } from "@/config/axios.config";
 import React, { useState, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { Toastify } from "../toastify";
+import Image from "next/image";
 
 const ProfileInfo = ({ profile }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +85,12 @@ const ProfileInfo = ({ profile }) => {
       <h1 className="text-2xl font-bold my-10">Manage Your Account</h1>
       <hr className="border-2" />
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col  md:flex-row-reverse items-center  justify-between ">
+        
+        <div className="flex flex-col justify-center me-20 items-center">
+          <Image src={`${process?.env.NEXT_PUBLIC_API_SERVER}/${profile?.profile_pic}`}  height={150} width={150} alt="" className="rounded-full" />
+          <h1 className="text-xl font-semibold">{profile?.name}</h1>
+        </div>
         <div>
           <h3 className="text-xl font-semibold flex items-center  py-5">
             Personal Profile

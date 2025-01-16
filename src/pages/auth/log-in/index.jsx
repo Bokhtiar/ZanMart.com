@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Toastify } from "@/components/toastify";
 import { getToken, networkErrorHandeller, setToken } from "@/utils/helpers";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Image from "next/image";
 
 const Login = () => {
   const {
@@ -47,8 +48,8 @@ const Login = () => {
           Welcome to Zanmart.com Login
         </h1>
         <div className="bg-primary w-full sm:w-[550px] p-6 sm:p-10 rounded-xl flex flex-col items-center justify-center">
-          <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px]">
-            <RxAvatar className="text-white h-full w-full bg-primary" />
+          <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] rounded-full">
+          <Image src={'/logo.png'} height={200} width={2000} alt="" className="bg-white  p-5"/>
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -63,7 +64,7 @@ const Login = () => {
                 Phone Number or E-mail
               </label>
               <input
-                className={`outline-none px-5 sm:px-14 w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
+                className={`outline-none px-5  w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
                   errors.contactInfo ? "border-red-500" : ""
                 }`}
                 type="text"
@@ -93,7 +94,7 @@ const Login = () => {
               </label>
               <div className="relative">
                 <input
-                  className={`outline-none px-5 sm:px-14 w-full py-3 sm:py-5 text-sm font-light rounded-lg pr-10 ${
+                  className={`outline-none px-5  w-full py-3 sm:py-5 text-sm font-light rounded-lg pr-10 ${
                     errors.password ? "border-red-500" : ""
                   }`}
                   type={showPass ? "text" : "password"}
