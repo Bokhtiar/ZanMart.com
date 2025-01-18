@@ -44,7 +44,7 @@ const Products = () => {
       <div className="flex container-custom mx-auto items-start gap-4 w-full">
         {/* Filter options */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col ">
-          <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-100 my-2 px-2 rounded">
+          <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded">
             Filter
           </h1>
 
@@ -67,7 +67,7 @@ const Products = () => {
           </div>
           {/* All product show */}
           <section>
-            <div className="flex items-center justify-between bg-gray-100 px-2 my-2 rounded">
+            <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
               <h1 className="font-extrabold text-primary text-xl py-2">
                 All Products
               </h1>
