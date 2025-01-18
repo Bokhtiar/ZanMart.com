@@ -81,7 +81,7 @@ const Banner = () => {
                   onClick={() => bannerProduct(item?.banner_id)}
                   className=" hover:bg-secondary rounded-full font-bold btn text-sm bg-primary text-white w-36 py-2 flex items-center justify-center gap-2"
                 >
-                  <CiShoppingBasket className="text-xl animate-bounce" /> Shop
+                  <CiShoppingBasket className="text-xl animate-bounce text-white font-bold" /> Shop
                   Now
                 </Link>
               </div>

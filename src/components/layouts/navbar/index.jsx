@@ -308,7 +308,7 @@ export const Navbar = () => {
                 className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full
                  h-12 outline-none"
                 type="text"
-                placeholder="search your product here"
+                placeholder="Search your product here"
               />
               <Link
                 href={`/search-products/?search=${searchQuery}`}
@@ -316,7 +316,7 @@ export const Navbar = () => {
                 className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white 
                 w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2"
               >
-                search <IoSearch className="h-4 w-4" />
+                Search <IoSearch className="h-4 w-4" />
               </Link>
             </div>
             <div>
