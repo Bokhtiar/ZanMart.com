@@ -56,14 +56,6 @@ export default function Home() {
           itemLimit={dataLimit(category)}
         ></TopFeature>
       ))}
-      {/* <TopFeature title="FLAS nbH SALE" dataUrl={'home-page-category'} itemLimit={5}></TopFeature>
-      <TopFeature title="MAN'S CLOTHING" dataUrl={'home-page-category'} itemLimit={10} ></TopFeature>
-      <OfferBanner></OfferBanner>
-      <TopFeature title="WOMEN'S  CLOTHING" dataUrl={'/data.json'} itemLimit={10} ></TopFeature>
-      <SpecialDiscount></SpecialDiscount>
-      <TopFeature title="MEDICAL EQUIPMENT" dataUrl={'/data.json'} itemLimit={5} ></TopFeature>
-      <TopFeature title="STATIONARY" dataUrl={'/data.json'} itemLimit={5} ></TopFeature>
-      <TopFeature title="OTHERS PRODUCTS" dataUrl={'/data.json'} itemLimit={5} ></TopFeature> */}
       <PaymentOptions></PaymentOptions>
 
       {/* <CookieConsent /> */}

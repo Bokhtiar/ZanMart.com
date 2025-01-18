@@ -38,8 +38,8 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-[#F5F5F5] pt-10 mt-5">
-      <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
+    <footer className="bg-[#F5F5F5] pt-10 mt-5 ">
+      <div className="grid justify-center grid-cols-1 px-5 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
        <div className="flex justify-center">
        <div className="text-start">
           <div className="flex justify-start">
@@ -71,7 +71,8 @@ const Footer = () => {
           </p>
         </div>
        </div>
-       <div className="flex justify-center">
+      <div className="flex md:justify-center ">
+      <div className="flex justify-start">
        <div className="text-start">
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
             Categories
@@ -91,7 +92,8 @@ const Footer = () => {
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
        </div>
-        <div className="flex justify-center ">
+      </div>
+        <div className="flex md:justify-center justify-start ">
         <div className="text-start">
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
           Information
@@ -111,7 +113,7 @@ const Footer = () => {
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
         </div>
-       <div className="flex justify-center">
+       <div className="flex md:justify-center justify-start">
        <div className="text-start">
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
             Account

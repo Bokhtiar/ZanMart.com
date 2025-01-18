@@ -27,7 +27,7 @@ const SearchProdut = () => {
       <div className="w-full">
         
         {/* All product show */}
-        <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-12 md:gap-8 justify-between">
+        <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-5 lg:gap-8 md:gap-8 justify-between">
           {products && Array.isArray(products) ? (
             products.map((product) => (
               <SingleCart key={product?.product_id} item={product} />
