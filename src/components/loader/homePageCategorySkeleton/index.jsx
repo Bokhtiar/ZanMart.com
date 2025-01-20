@@ -36,3 +36,5 @@ const HomePageCategorySkeletonLoader = () => {
 };
 
 export default HomePageCategorySkeletonLoader;
+
+

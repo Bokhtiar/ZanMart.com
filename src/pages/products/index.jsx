@@ -9,6 +9,8 @@ import Paginations from "@/components/pagination";
 import { PiDotsNineBold } from "react-icons/pi";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { PiDotsThreeVertical } from "react-icons/pi";
+import { RiFilterOffLine } from "react-icons/ri";
+import { HiClipboardDocumentList } from "react-icons/hi2";
 
 
 
@@ -44,8 +46,8 @@ const Products = () => {
       <div className="flex container-custom mx-auto items-start gap-4 w-full">
         {/* Filter options */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col ">
-          <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded">
-            Filter
+          <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded flex items-center gap-1">
+            <RiFilterOffLine /> Filter
           </h1>
 
           <PriceFilter api="products" setProducts={setProducts} />
@@ -53,7 +55,7 @@ const Products = () => {
           <Image
             height={1000}
             width={300}
-            className="mt-10 w-full rounded"
+            className="mt-4 w-full rounded"
             src="/images/filterbanner.svg"
             alt=""
           />
@@ -68,8 +70,8 @@ const Products = () => {
           {/* All product show */}
           <section>
             <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
-              <h1 className="font-extrabold text-primary text-xl py-2">
-                All Products
+              <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+                <HiClipboardDocumentList /> All Products
               </h1>
 
               <p className="flex items-center gap-2">

@@ -6,11 +6,18 @@ import TopFeature from "@/components/TopFeature";
 import { publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
 import InnerImageZoom from "react-inner-image-zoom";
+import { networkErrorHandeller } from "@/utils/helpers";
+import SingleCart from "@/components/singleCart";
+import { PiDotsThreeVertical } from "react-icons/pi";
+import { PiDotsNineBold } from "react-icons/pi";
+import { HiClipboardDocumentList } from "react-icons/hi2";
+import { PiDotsSixVerticalBold } from "react-icons/pi";
+import ProductSkeleton from "@/components/loader/ProductSkeleton";
 
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
@@ -28,6 +35,11 @@ const ProductDetails = () => {
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
   const [selectedDiscount, setSelectedDiscount] = useState(null);
+  const [reletedProduct, setReletedProduct] = useState([]);
+  const [gridCount, setGridCount] = useState(5);
+  const [reletedProductLoading, setReletedProductLoading] = useState(false);
+
+  /** product details */
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -67,6 +79,22 @@ const ProductDetails = () => {
     }
     setLoading(false);
   };
+
+  /** category releted product */
+  const reletedProductCategory = useCallback(async () => {
+    try {
+      setReletedProductLoading(true);
+      const response = await publicRequest.get(
+        `category/product/${product?.category_id}`
+      );
+      if (response && response.status === 200) {
+        setReletedProduct(response?.data?.data?.data);
+        setReletedProductLoading(false);
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+    }
+  }, [product?.category_id]);
 
   const handelIncriment = () => setQuantity(quantity + 1);
   const handelDiccriment = () => {
@@ -145,6 +173,12 @@ const ProductDetails = () => {
   useEffect(() => {
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    if (product?.category_id) {
+      reletedProductCategory();
+    }
+  }, [product?.category_id]);
 
   console.log(product?.product_variants);
   const [imageArray, setImageArray] = useState([]);
@@ -248,7 +282,7 @@ const ProductDetails = () => {
         </div>
         <div className="flex flex-col content-between items- w-full lg:w-1/2">
           <>
-            <h1 className="font-medium text-3xl text-start leading-10">
+            <h1 className="font-medium text-3xl text-start leading-10 text-gray-600">
               {product?.title}
             </h1>
 
@@ -349,7 +383,7 @@ const ProductDetails = () => {
               </span>
             )}
             <div className="">
-              <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl md:border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 border-[#D9D9D9] lg:p-3">
+              <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 lg:p-3">
                 <span className="flex items-center gap-2">
                   Qty:
                   <span className="border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]">
@@ -380,12 +414,52 @@ const ProductDetails = () => {
                     </div> */}
         </div>
       </div>
-      <TopFeature
+      {/* <TopFeature
         key={id}
         categoryid={id}
         title="Related Products"
         dataUrl={"home-page-category"}
-      ></TopFeature>
+      ></TopFeature> */}
+      <section>
+        <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
+          <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+            <HiClipboardDocumentList /> Releted Products
+          </h1>
+
+          <p className="flex items-center gap-2">
+            <PiDotsNineBold
+              onClick={() => setGridCount(5)}
+              className={`border border-primary text-2xl rounded-md ${
+                gridCount === 5 ? "bg-primary text-white" : ""
+              } cursor-pointer`}
+            />
+            <PiDotsSixVerticalBold
+              onClick={() => setGridCount(4)}
+              className={`border border-primary text-2xl ${
+                gridCount === 4 ? "bg-primary text-white" : ""
+              } rounded-md cursor-pointer`}
+            />
+            <PiDotsThreeVertical
+              onClick={() => setGridCount(3)}
+              className={`border border-primary text-2xl  ${
+                gridCount === 3 ? "bg-primary text-white" : ""
+              } rounded-md cursor-pointer`}
+            />
+          </p>
+        </div>
+
+        {reletedProductLoading ? (
+          <ProductSkeleton />
+        ) : (
+          <div
+            className={`bg-gray-50 p-5 w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+          >
+            {reletedProduct.map((product) => (
+              <SingleCart key={product?.product_id} item={product} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 };
