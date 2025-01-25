@@ -96,7 +96,7 @@ const ProfileInfo = ({ profile }) => {
           onClick={handleOpenModal}
           className="text-lg bg-primary px-9 py-1  gap-2 flex items-center text-white rounded-3xl"
         >
-          Edit <AiFillEdit className="cursor-pointer" />
+          <AiFillEdit className="cursor-pointer" /> Edit
         </button>
       </div>
 
