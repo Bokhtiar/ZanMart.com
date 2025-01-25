@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from "next/image";
-const ProductSkeleton = () => {
+const ProductSkeleton = ({count}) => {
+  console.log("count", count);
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-4 lg:gap-4">
-      {[...Array(10)].map((_, index) => (
+    <div className={`grid grid-cols-2 md:grid-cols-${count} lg:grid-cols-${count} gap-4 md:gap-4 lg:gap-4`}>
+      {[...Array(count)].map((_, index) => (
         <div key={index} className="bg-gray-50 rounded-md p-4 animate-pulse">
           {/* Image Skeleton */}
           <div className="w-full h-42 bg-gray-100 rounded-md mb-4">
