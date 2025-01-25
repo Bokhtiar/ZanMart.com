@@ -75,7 +75,7 @@ const Profile = () => {
   }, []);
   return (
     <div className="  mx-auto flex flex-col lg:flex-row   mt-36">
-      <div className="lg:w-1/4 p-4 container-custom flex gap-2 lg:block bg-slate-100">
+      <div className="lg:w-1/4 p-4 container-custom flex  lg:block bg-slate-100">
         <div className="flex left-0  flex-col pb-10 justify-center  ">
           <div className="flex justify-center md:pb-4">
             <Image
@@ -133,7 +133,7 @@ const Profile = () => {
       </div>
 
       {/* Content Section */}
-      <div className="lg:w-3/4 p-8">
+      <div className="lg:w-3/4 p-4 ">
         {renderContent()} 
       </div>
     </div>
