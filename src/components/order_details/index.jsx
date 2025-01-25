@@ -21,11 +21,14 @@ const OrderDetails = () => {
     fetchOrderDetails();
   }, []);
   return (
-    <div className="container mx-auto my-10 p-5">
-      <h1 className="text-2xl font-bold mb-6">Your Orders</h1>
-      <hr className="border-2" />
+    <div className="">
+      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          Order Show
+        </h1>
+      </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 shadow rounded gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-gray-100 p-4 shadow rounded gap-4">
         <div>
           <h2 className="text-xl font-bold">Order {orderDetails?.order_id}</h2>
           <span className="bg-green-200 text-green-700 px-2 py-1 rounded text-sm">
@@ -42,7 +45,7 @@ const OrderDetails = () => {
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 ">
         <p>
           <strong>Paid on:</strong>{" "}
           {orderDetails?.created_at &&
