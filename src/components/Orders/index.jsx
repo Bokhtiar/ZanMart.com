@@ -3,8 +3,9 @@ import isAuth from "@/middleware/auth.middleware";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { RiEyeLine } from "react-icons/ri";
+import { FaRegListAlt } from "react-icons/fa";
+import { CiCircleChevDown } from "react-icons/ci";
 
 const Orders = () => {
   const [data, setData] = useState([]);
@@ -42,6 +43,21 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "processing":
+        return "bg-blue-100 text-blue-600";
+      case "shipped":
+        return "bg-yellow-100 text-yellow-600";
+      case "delivered":
+        return "bg-green-100 text-green-600";
+      case "canceled":
+        return "bg-red-100 text-red-600";
+      default:
+        return "bg-gray-100 text-gray-600";
+    }
+  };
+
   const renderStatus = (status) => {
     switch (status) {
       case "processing":
@@ -58,12 +74,14 @@ const Orders = () => {
   };
 
   return (
-    <div className="container mx-auto my-10 p-4 sm:p-5">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-        Your Orders
-      </h1>
-      <hr className="border" />
-      <div className="flex flex-wrap justify-start gap-2 sm:gap-4 mt-2 pb-4">
+    <div className="">
+      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          <FaRegListAlt /> Order
+        </h1>
+      </div>
+
+      <div className="flex flex-wrap justify-start gap-2 sm:gap-4 mt-2 pb-4 ">
         {["", "processing", "shipped", "delivered", "canceled"].map(
           (status) => (
             <button
@@ -89,23 +107,19 @@ const Orders = () => {
             data.map((item) => (
               <div
                 key={item?.id}
-                className="flex flex-col bg-white shadow rounded-md p-4 sm:p-5 space-y-4"
+                className="flex flex-col bg-gray-100 shadow rounded-md p-4 sm:p-5 space-y-4 "
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                   <div className="space-y-1">
                     <p className="text-sm text-gray-600">
                       <span className="font-medium">Order ID:</span>{" "}
                       <span className="text-primary font-bold">
-                        {item["order Details"]?.order_id}
+                        #{item["order Details"]?.order_id}
                       </span>
                     </p>
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Customer:</span>{" "}
+                      <span className="font-medium">Name:</span>{" "}
                       {item["order Details"]?.shipping_address?.name}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-medium">Phone:</span>{" "}
-                      {item["order Details"]?.shipping_address?.phone}
                     </p>
                   </div>
 
@@ -131,35 +145,34 @@ const Orders = () => {
                   </div>
                   <div className="flex md:flex-col flex-row md:items-center justify-between gap-2">
                     <p
-                      className={`px-4 py-2 rounded-full text-sm font-medium ${
-                        item["order Details"]?.order_status === "delivered"
-                          ? "bg-green-100 text-green-600"
-                          : "bg-primary text-white"
-                      }`}
+                      className={`px-4 rounded-full text-sm font-medium ${getStatusClass(
+                        item["order Details"]?.order_status
+                      )}`}
                     >
                       {renderStatus(item["order Details"]?.order_status)}
                     </p>
-                    <div className="flex items-center gap-2">
+                  </div>
+
+                  <div className="flex items-end gap-2">
+                    <div className="flex items-center ">
                       <button
                         onClick={() =>
                           toggleOrderDetails(item["order Details"]?.order_id)
                         }
-                        className="flex items-center gap-2 px-4 lg:py-2 bg-gray-100 hover:bg-gray-200 text-sm rounded-md"
+                        className="flex items-center gap-2 px-2 lg:py-1 text-white bg-primary hover:bg-gray-200 text-sm rounded-md"
                       >
-                        <RiEyeLine />
-                        {expandedOrders[item["order Details"]?.order_id]
+                        <CiCircleChevDown className="text-2xl" />
+                        {/* {expandedOrders[item["order Details"]?.order_id]
                           ? "Hide Details"
-                          : "View More"}
+                          : "View More"} */}
                       </button>
                     </div>
-                  </div>
 
-                  <div className="flex items-end justify-end">
                     <Link
                       href={`/profile?section=order-details&id=${item["order Details"]?.order_id}`}
-                      className="flex  gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-sm rounded-md"
+                      className="flex  gap-2 px-2 py-1 bg-blue-500 text-white hover:bg-gray-200 text-sm rounded-md"
                     >
-                      Details
+                      <RiEyeLine className="text-2xl" />
                     </Link>
                   </div>
                 </div>

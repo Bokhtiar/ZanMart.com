@@ -7,6 +7,7 @@ import { TiWarning } from "react-icons/ti";
 import { Toastify } from "../toastify";
 import { useRouter } from "next/router";
 import Modal from "../modal";
+import { FaShoppingCart } from "react-icons/fa";
 import AddressModal from "../AddressModal";
 
 const MyCart = () => {
@@ -130,9 +131,9 @@ const MyCart = () => {
     if (shipping_address?.shipping_address_id) {
       setIsModalOpen(true);
       setModalAction("confirm");
-    } else{
-     setAddressModal(true)
-    };
+    } else {
+      setAddressModal(true);
+    }
   };
 
   const handleConfirm = async () => {
@@ -169,96 +170,122 @@ const MyCart = () => {
   };
 
   return (
-    <div >
-      <h1 className="text-2xl font-bold my-10">Manage your Cart</h1>
-      <hr className="border-2" />
-      <div className="flex flex-col lg:flex-row gap-4 mt-5 lg:gap-6">
-  <div className="w-full lg:w-2/3 p-5  lg:p-10">
-    {data?.length > 0 ? (
-      <div className="py-5">
-        <div className="flex flex-col gap-4">
-          {data.map((item) => (
-            <div
-              key={item?.product_id}
-              className="flex flex-col sm:flex-row items-center bg-white shadow-custom2 p-3 rounded-lg gap-3"
-            >
-              <Image
-                height={500}
-                width={500}
-                className="h-24 w-24 object-cover rounded-lg"
-                src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
-                alt={item.title}
-              />
-              <div className="flex-grow">
-                <p className="text-sm font-medium">{item.title}</p>
-                <p className="text-xs text-gray-500">
-                  <span className="text-[#FFAA00]">{item?.category}</span> | Color: {item?.color} | Size: {item?.attribute}
-                </p>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-bold text-primary">{item?.sell_price} Tk</p>
-              </div>
-              <div className="text-center">
-                <p className="text-xs font-bold">Subtotal</p>
-                <p className="text-sm font-bold text-primary">
-                  {(item?.sell_price * (quantities[item.product_id] || item.qty)).toFixed(2)} Tk
-                </p>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-xs font-bold">Quantity</p>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => handleDecrease(item.product_id)} className="p-1 border rounded">-</button>
-                  <span>{quantities[item.product_id] || item.qty}</span>
-                  <button onClick={() => handleIncrease(item.product_id)} className="p-1 border rounded">+</button>
-                </div>
-                <button
-                  onClick={() => handleDelete(item.product_variant_id)}
-                  className="text-xs text-red-500 flex items-center gap-1"
-                >
-                  <RiDeleteBin6Line /> Delete
-                </button>
+    <div>
+      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 rounded-md">
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          <FaShoppingCart /> Add To Cart
+        </h1>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 bg-gray-100 p-3">
+        <div className="w-full ">
+          {data?.length > 0 ? (
+            <div className="">
+              <div className="flex flex-col gap-4">
+                {data.map((item) => (
+                  <div
+                    key={item?.product_id}
+                    className="flex flex-col sm:flex-row items-center bg-white shadow-custom2 p-3 rounded-lg gap-3"
+                  >
+                    <Image
+                      height={500}
+                      width={500}
+                      className="h-24 w-24 object-cover rounded-lg"
+                      src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
+                      alt={item.title}
+                    />
+                    <div className="flex-grow">
+                      <p className="text-sm font-medium">{item.title}</p>
+                      <p className="text-xs text-gray-500">
+                        <span className="text-[#FFAA00]">{item?.category}</span>{" "}
+                        | Color: {item?.color} | Size: {item?.attribute}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-bold">Price</p>
+                      <p className="text-sm font-bold text-primary">
+                        {item?.sell_price} Tk
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-bold">Subtotal</p>
+                      <p className="text-sm font-bold text-primary">
+                        {(
+                          item?.sell_price *
+                          (quantities[item.product_id] || item.qty)
+                        ).toFixed(2)}{" "}
+                        Tk
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-xs font-bold">Quantity</p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleDecrease(item.product_id)}
+                          className="p-1 border rounded"
+                        >
+                          -
+                        </button>
+                        <span>{quantities[item.product_id] || item.qty}</span>
+                        <button
+                          onClick={() => handleIncrease(item.product_id)}
+                          className="p-1 border rounded"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => handleDelete(item.product_variant_id)}
+                        className="text-xs text-red-500 flex items-center gap-1"
+                      >
+                        <RiDeleteBin6Line /> Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          ) : (
+            <p>Cart is Empty</p>
+          )}
         </div>
-      </div>
-    ) : (
-      <p>Cart is Empty</p>
-    )}
-  </div>
 
-  {/* Total Summary Section */}
-  {cart?.cart_items?.length > 0 && (
-    <div className="w-full lg:w-1/3 p-5 bg-white shadow-custom2 rounded-lg">
-      <p className="text-sm font-bold mb-4">Total Summary</p>
-      <div className="flex justify-between items-center mb-2">
-        <p className="text-xs">Subtotal ({data.length} Items)</p>
-        <p className="text-xs font-bold">{calculateSubtotal().toFixed(2)} Tk</p>
+        {/* Total Summary Section */}
+        {cart?.cart_items?.length > 0 && (
+          <div className="w-full lg:w-1/3 p-5 bg-white shadow-custom2 rounded-lg">
+            <p className="text-sm font-bold mb-4">Total Summary</p>
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-xs">Subtotal ({data.length} Items)</p>
+              <p className="text-xs font-bold">
+                {calculateSubtotal().toFixed(2)} Tk
+              </p>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-xs">Shipping Fee</p>
+              <p className="text-xs font-bold">Based on E-corier</p>
+            </div>
+            <hr />
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-xs">Total</p>
+              <p className="text-xs font-bold">
+                {calculateSubtotal().toFixed(2)} Tk
+              </p>
+            </div>
+            <hr />
+            {hasPrePaymentOnly && (
+              <p className="text-xs flex items-center gap-1 text-[#FFA000]">
+                <TiWarning /> This order is pre-payment only
+              </p>
+            )}
+            <button
+              onClick={handleCheckout}
+              className="w-full py-3 mt-4 bg-primary text-white text-sm font-bold rounded"
+            >
+              Proceed to Checkout
+            </button>
+          </div>
+        )}
       </div>
-      <div className="flex justify-between items-center mb-2">
-        <p className="text-xs">Shipping Fee</p>
-        <p className="text-xs font-bold">Based on E-corier</p>
-      </div>
-      <hr />
-      <div className="flex justify-between items-center mb-2">
-        <p className="text-xs">Total</p>
-        <p className="text-xs font-bold">{calculateSubtotal().toFixed(2)} Tk</p>
-      </div>
-      <hr />
-      {hasPrePaymentOnly && (
-        <p className="text-xs flex items-center gap-1 text-[#FFA000]">
-          <TiWarning /> This order is pre-payment only
-        </p>
-      )}
-      <button
-        onClick={handleCheckout}
-        className="w-full py-3 mt-4 bg-primary text-white text-sm font-bold rounded"
-      >
-        Proceed to Checkout
-      </button>
-    </div>
-  )}
-</div>
 
       <Modal
         isOpen={isModalOpen}
@@ -267,9 +294,7 @@ const MyCart = () => {
         message="Are you sure you want to confirm the order?"
         title={"Confirm Order"}
       />
-      {
-        addressModal && <AddressModal setAddressModal={setAddressModal} />
-      }
+      {addressModal && <AddressModal setAddressModal={setAddressModal} />}
     </div>
   );
 };
