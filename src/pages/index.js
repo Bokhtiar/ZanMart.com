@@ -77,8 +77,8 @@ export default function Home() {
             ></TopFeature>
           ))} */}
 
-          {categories.map((category) => (
-            <div className="container-custom pb-5 mx-auto mt-6 bg-gray-50 py-2 rounded">
+          {categories.map((category, i) => (
+            <div key={i} className="container-custom pb-5 mx-auto mt-6 bg-gray-50 py-2 rounded">
               <h1 className="font-bold  my-1 md:text-[25px]  lg:text-[25px]  flex items-center justify-between text-primary capitalize">
                 {category?.category_name}
                 <Link
