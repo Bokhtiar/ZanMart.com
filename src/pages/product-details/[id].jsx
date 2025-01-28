@@ -1,8 +1,6 @@
-import Loader from "@/components/loader";
-import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
-import SingleCartSkeleton from "@/components/loader/singleCartSkeleton";
-import { Toastify } from "@/components/toastify";
-import TopFeature from "@/components/TopFeature";
+ 
+import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton"; 
+import { Toastify } from "@/components/toastify"; 
 import { publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
