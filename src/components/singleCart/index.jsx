@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 const SingleCart = ({ item }) => {
+  console.log(item);
   return (
     <Link
-      href={`/product-details/${item.product_id}`}
+      href={`/product-details/${item?.product_id}`}
       className="w-full h-fit rounded-lg  shadow-lg "
     >
       <div className="overflow-hidden w-full   p-2 ">
@@ -41,20 +42,30 @@ const SingleCart = ({ item }) => {
           )}
         </p>
         <p className="flex items-center  justify-between ">
-          <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+          {
+            item?.variants? <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
             {item?.variants[0]?.price}
             <span className="text-xs font-normal text-gray-500 mt-[5px]">
               Tk
             </span>
-          </span>{" "}
-          {item?.variants[0]?.discount_price && (
-            <span className="flex text-secondary text-xs line-through items-center  ">
-              {item?.variants[0]?.discount_price}{" "}
+          </span>:<span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+            {item?.sell_price}
+            <span className="text-xs font-normal text-gray-500 mt-[5px]">
+              Tk
+            </span>
+          </span>
+          }
+          {item?.variants? <span className="flex text-secondary text-xs line-through items-center  ">
+              {item?.variants[0]?.flat_discount}{" "}
               <span className="text-xs font-normal text-gray-500 mt-[0px]">
                 Tk
               </span>
-            </span>
-          )}
+            </span>:<span className="flex text-secondary text-xs line-through items-center  ">
+              {item?.flat_discount}{" "}
+              <span className="text-xs font-normal text-gray-500 mt-[0px]">
+                Tk
+              </span>
+            </span>}
         </p>
       </div>
     </Link>
