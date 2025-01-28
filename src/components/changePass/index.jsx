@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Toastify } from "../toastify";
 import { useRouter } from "next/navigation";
 import { removeToken } from "@/utils/helpers";
+import { MdOutlinePassword } from "react-icons/md";
+
 
 const ChangePass = () => {
   // State to store password inputs
@@ -62,11 +64,15 @@ const ChangePass = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold my-10">Manage Your Password</h1>
-      <hr className="border-2" />
+      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          <MdOutlinePassword /> Manage Your Account
+        </h1>
+      </div>
+
       <form
         onSubmit={handleSubmit}
-        className="w-1/2 flex flex-col justify-center"
+        className="w-2/3 flex flex-col justify-center"
       >
         <h1 className="text-center text-white text-sm font-semibold ">
           Hello, Muhtasim Shakil <br />{" "}

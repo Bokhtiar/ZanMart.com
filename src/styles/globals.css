@@ -15,7 +15,7 @@ body {
   background: white;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 14px;
-  color: #000;
+  color: rgb(10, 10, 10);
   margin: 0;
   padding: 0;
 }
@@ -72,3 +72,58 @@ body {
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
   scrollbar-width: none; /* For Firefox */
 }
+.container-custom {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 768px) {
+  .container-custom {
+    width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .container-custom {
+    width: 960px;
+  }
+  
+}
+@media (min-width: 1200px) {
+  .container-custom {
+    width: 1140px;
+  }
+}
+
+
+@media (min-width: 1400px) {
+  .container-custom {
+    width:1320px;
+}}
+@media (min-width: 1600px) {
+  .container-custom {
+    width:1550px;
+}}
+
+
+   /* custom scrollbar   */
+   .scrollbar_thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  /* Track */
+  .scrollbar_thin::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+    
+  /* Handle */
+  .scrollbar_thin::-webkit-scrollbar-thumb {
+    background: #6395a7;  
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  .scrollbar_thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(202, 202, 246); 
+  }

@@ -2,6 +2,13 @@ import { privateRequest } from "@/config/axios.config";
 import React, { useState, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { Toastify } from "../toastify";
+import Image from "next/image";
+import { MdAccountCircle } from "react-icons/md";
+import { FaPhoneAlt } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+
+
 
 const ProfileInfo = ({ profile }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,39 +87,54 @@ const ProfileInfo = ({ profile }) => {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold my-10">Manage Your Account</h1>
-      <hr className="border-2" />
+    <div className="">
+      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          <MdAccountCircle /> Manage Your Account
+        </h1>
+        <button
+          onClick={handleOpenModal}
+          className="text-lg bg-primary px-9 py-1  gap-2 flex items-center text-white rounded-3xl"
+        >
+          <AiFillEdit className="cursor-pointer" /> Edit
+        </button>
+      </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-xl font-semibold flex items-center  py-5">
+      <div className="flex flex-col  md:flex-row-reverse items-center  justify-between bg-gray-100 p-4 rounded-md">
+        <div className="flex flex-col justify-center me-20 items-center">
+          <Image
+            src={`${process?.env.NEXT_PUBLIC_API_SERVER}/${profile?.profile_pic}`}
+            height={150}
+            width={150}
+            alt=""
+            className="rounded-full"
+          />
+          <h1 className="text-xl font-semibold">{profile?.name}</h1>
+        </div>
+        <div className="w-96">
+          {/* <h3 className="text-lg font-semibold flex items-center ">
             Personal Profile
-          </h3>
-          <p className="flex pb-2 font-medium text-lg">
-            Name:
+          </h3> */}
+          <p className="flex justify-between items-center pb-2 font-medium text-lg">
+            <CgProfile />
             <span className="flex font-light ps-2 gap-5 items-center">
               {profile?.name}
             </span>
           </p>
-          <p className="flex pb-2 font-medium text-lg">
-            Phone:
+          <p className="flex justify-between items-center pb-2 font-medium text-lg">
+            <p className="flex items-center">
+              <FaPhoneAlt />
+            </p>
             <span className="flex font-light ps-2 gap-5 items-center">
               {profile?.phone}
             </span>
           </p>
-          <p className="flex pb-2 font-medium text-lg">
-            Email:
+          <p className="flex justify-between items-center pb-2 font-medium text-lg">
+            <MdEmail />
             <span className="flex font-light ps-2 gap-5 items-center">
               {profile?.email}
             </span>
           </p>
-          <button
-            onClick={handleOpenModal}
-            className="text-lg bg-primary px-5 py-2  gap-2 mt-10 flex items-center text-white rounded-3xl"
-          >
-            Edit <AiFillEdit className="cursor-pointer" />
-          </button>
         </div>
       </div>
 

@@ -20,6 +20,8 @@ import CategoriesList from "./components/CategoryRender";
 import style from "./components/style.module.css";
 import { CategoryItem } from "./components/LargCategory";
 import { getToken } from "@/utils/helpers";
+import { BiCategoryAlt } from "react-icons/bi";
+
 const navList = [
   { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
@@ -135,8 +137,8 @@ export const Navbar = () => {
   }, []);
   return (
     <div ref={dropdownRef}>
-      <div className="fixed h w-full h z-10 bg-white">
-        <nav className="py-3 flex container mx-auto justify-between items-center">
+      <div className="fixed h w-full h z-10 bg-white  ">
+        <nav className="py-3 flex container-custom mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
             {/* Drawer Toggle Button for Small Devices */}
             <button
@@ -207,14 +209,16 @@ export const Navbar = () => {
           </div>
         </nav>
         {/* bottom navbar start  */}
-        <section className="bg-primary">
-          <div className="flex gap-3 justify-between items-center container mx-auto py-2">
+        <section className="bg-primary ">
+          <div className="flex gap-3 justify-between items-center container-custom container mx-auto py-2">
             <div className="relative lg:flex md:flex hidden">
               <button
                 onClick={handleCategory}
                 className="flex items-center text-white text-base"
               >
-                <span className="me-2">Categories</span>
+                <span className="me-2 flex items-center gap-1 font-medium">
+                  <BiCategoryAlt /> Categories
+                </span>
                 {openCategory ? (
                   <MdOutlineKeyboardArrowUp />
                 ) : (
@@ -222,13 +226,13 @@ export const Navbar = () => {
                 )}
               </button>
               <div
-                className={`absolute  top-12 transition-all duration-500 ${
+                className={`absolute h-80    top-10 transition-all duration-700 ${
                   openCategory
-                    ? "max-h-full opacity-100 pointer-events-auto"
-                    : " pointer-events-none max-h-0 opacity-0"
+                    ? " opacity-100 pointer-events-auto"
+                    : " pointer-events-none opacity-0"
                 }`}
               >
-                <ul className="bg-white">
+                <ul className=" bg-white shadow-lg  ">
                   {categories.map((category) => (
                     <div
                       key={category?.category_id}
@@ -242,17 +246,17 @@ export const Navbar = () => {
                             category?.category_id
                           )
                         }
-                        className={`flex items-center hover:bg-primary shadow-md mt-2 h-16 w-64 justify-between px-4 ${
+                        className={`flex items-center hover:bg-primary font-medium text-gray-600 hover:text-white  mt-1 h-12 w-64 justify-between px-4 ${
                           selected === category?.category_name
                             ? "bg-primary text-white font-extrabold"
-                            : "bg-white"
+                            : ""
                         }`}
                       >
                         {category.category_name} <MdKeyboardArrowRight />
                       </Link>
 
                       {/* Child Menu - Will appear when hovering over Parent */}
-                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-8 flex flex-col absolute top-0 -right-40 bg-white transition-all duration-2000">
+                      <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-6 flex flex-col absolute top-0 -right-[155px] bg-white transition-all duration-2000">
                         {category?.children?.map((child) => (
                           <div
                             key={child?.category_id}
@@ -266,13 +270,13 @@ export const Navbar = () => {
                                   child?.category_id
                                 )
                               }
-                              className="border-b  p-2 hover:bg-primary flex w-[155px] justify-between items-center"
+                              className="border-b  p-2 hover:bg-primary hover:text-white  text-gray-600 flex w-[155px] justify-between items-center"
                             >
                               {child?.category_name} <MdKeyboardArrowRight />
                             </Link>
 
                             {/* Grandchild Menu - Will appear when hovering over Child */}
-                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-40 bg-white transition-all duration-2000">
+                            <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-[155px] bg-white transition-all duration-2000">
                               {child?.children?.map((subChild) => (
                                 <Link
                                   key={subChild?.category_id}
@@ -283,7 +287,7 @@ export const Navbar = () => {
                                       subChild?.category_id
                                     )
                                   }
-                                  className="grandchild  hover:bg-primary border-b p-2 flex w-[155px] justify-between items-center"
+                                  className="grandchild  hover:bg-primary hover:text-white text-gray-600 border-b p-2 flex w-[155px] justify-between items-center"
                                 >
                                   {subChild?.category_name}{" "}
                                   <MdKeyboardArrowRight />
@@ -304,15 +308,15 @@ export const Navbar = () => {
                 className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full
                  h-12 outline-none"
                 type="text"
-                placeholder="search your product here"
+                placeholder="Search your product here"
               />
               <Link
-                href={`/category-products/?category=${searchQuery}`}
+                href={`/search-products/?search=${searchQuery}`}
                 onClick={handleSearch}
                 className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white 
                 w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2"
               >
-                search <IoSearch className="h-4 w-4" />
+                Search <IoSearch className="h-4 w-4" />
               </Link>
             </div>
             <div>

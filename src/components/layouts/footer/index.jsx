@@ -38,10 +38,11 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-[#F5F5F5] pt-10 mt-5">
-      <div className="grid justify-center grid-cols-1 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
-        <div className="text-center">
-          <div className="flex justify-center">
+    <footer className="bg-[#F5F5F5] pt-10 mt-5 ">
+      <div className="grid justify-center grid-cols-1 px-5 md:grid-cols-2 lg:grid-cols-4 container mx-auto">
+       <div className="flex justify-center">
+       <div className="text-start">
+          <div className="flex justify-start">
             {data.logo && (
               <Image
                 height={400}
@@ -69,7 +70,10 @@ const Footer = () => {
             {data.location}
           </p>
         </div>
-        <div className="text-center">
+       </div>
+      <div className="flex md:justify-center ">
+      <div className="flex justify-start">
+       <div className="text-start">
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
             Categories
           </h1>
@@ -87,42 +91,48 @@ const Footer = () => {
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
-        <div className="text-center">
+       </div>
+      </div>
+        <div className="flex md:justify-center justify-start ">
+        <div className="text-start">
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
-            Categories
+          Information
           </h1>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Clothing
+            Terms & Conditon
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Stationary
+           Privecy Policy
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Medical Equipment
+            Customer Service
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Handcraft
+            FAQs
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
-        <div className="text-center">
+        </div>
+       <div className="flex md:justify-center justify-start">
+       <div className="text-start">
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
-            Categories
+            Account
           </h1>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Clothing
+            My Account
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Stationary
+            Order Tracking
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Medical Equipment
+            Wish List
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
-            Handcraft
+           Shopping Cart
           </p>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">Others</p>
         </div>
+       </div>
       </div>
       <div className="bg-white">
         <div className="container flex mx-auto items-center justify-between">

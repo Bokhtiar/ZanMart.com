@@ -4,6 +4,8 @@ import { AiFillEdit } from "react-icons/ai";
 import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Toastify } from "../toastify";
+import { FaAddressBook } from "react-icons/fa";
+
 
 const Address = () => {
   const [modal, setModal] = useState(false);
@@ -74,7 +76,7 @@ const Address = () => {
             union_id: formData.union_id || "",
             postal_code: formData.postal_code || "",
             type: formData.type || "", // Example: 'home', 'office'
-            _method: "PUT",
+             _method: "PUT",
         };
 
         if (isEdit) {
@@ -92,12 +94,13 @@ const Address = () => {
                             : item
                     )
                 );
+                userAddresses()
                 Toastify.Success("Address updated successfully!");
             }
         } else {
             const response = await privateRequest.post(
                 "user/address",
-                updatedFormData
+                formData
             );
 
             if (response.data?.success === true) {
@@ -105,9 +108,10 @@ const Address = () => {
                     ...prevAddresses,
                     response.data.data,
                 ]);
+                userAddresses()
                 Toastify.Success(response.data.message);
             } else {
-                Toastify.Error(response.error);
+                Toastify.Error(response.errors);
             }
         }
     } catch (error) {
@@ -210,12 +214,24 @@ const Address = () => {
         setAddress((prevAddresses) =>
           prevAddresses.filter((item) => item.address_id !== id)
         );
+  
+        // Clear the cart's shipping and billing address if they match the deleted ID
+        const updatedCart = {
+          ...cart,
+          shipping_address_id: cart.shipping_address_id === id ? null : cart.shipping_address_id,
+          billing_address_id: cart.billing_address_id === id ? null : cart.billing_address_id,
+        };
+  
+        setCart(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+  
         Toastify.Success(res.data.message);
       }
     } catch (error) {
       Toastify.Error(error.message || "Failed to delete address.");
     }
   };
+  
 
   const [cart, setCart] = useState({
     cart_items: [],
@@ -240,22 +256,30 @@ const Address = () => {
       setCart(JSON.parse(cartData));
     }
   }, []);
-
+ 
   return (
     <div>
-      <h1 className="text-2xl font-bold my-10">Manage your address</h1>
-      <hr className="border-2" />
+      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          <FaAddressBook /> Address Book
+        </h1>
+        <button
+          onClick={handleAddressModal}
+          className="flex  items-center gap-2 text-lg bg-primary px-9 py-1 text-white rounded-3xl"
+        >
+          <FaPlusCircle /> Add New
+        </button>
+      </div>
 
       {/* Existing Addresses */}
       <div>
-        <h3 className="text-xl font-semibold py-5">Delivery Addresses</h3>
         {address?.map((item, index) => (
           <div
             key={item?.address_id}
-            className="grid grid-cols-3 justify-between items-center gap-10"
+            className="bg-gray-100 p-3  flex flex-col md:grid md:grid-cols-3 justify-between items-start md:items-center gap-6 md:gap-10 mb-3"
           >
-            <div className="w-full gap-2 flex">
-              <p className="pb-2 font-light space-y-2 text-start text-lg leading-6">
+            <div className="flex  w-full gap-2">
+              <p className="font-light space-y-2 text-start  md:text-sm leading-4 md:leading-4">
                 <strong className="font-medium whitespace-nowrap">
                   Address {index + 1}:
                 </strong>
@@ -263,28 +287,35 @@ const Address = () => {
                 {item.upazila?.name}, {item.district?.name},{" "}
                 {item.division?.name}
               </p>
-              <button onClick={() => handleEditModal(item)}>
-                <AiFillEdit className="text-[#AAAAAA] h-4 w-5" />
-              </button>
             </div>
-            <div className="flex w-full justify-center items-end gap-2">
+            <div className="flex w-full justify-start md:justify-center items-center gap-2">
               <button
                 onClick={() => handelDefaultAdress(item?.address_id)}
-                className={`flex gap-5 items-center ${
+                className={`flex gap-3 items-center ${
                   cart?.shipping_address_id !== item?.address_id
-                    ? "text-[#666666] "
+                    ? "text-gray-600"
                     : "font-bold text-primary"
                 }`}
               >
-                <FaCheckCircle className="me-2" /> { cart?.shipping_address_id !== item?.address_id ? 'Set as Default Delivery Address': 'Default Delivery Address'} 
+                <FaCheckCircle className="me-2" />
+                {cart?.shipping_address_id !== item?.address_id
+                  ? "Set as Default Delivery Address"
+                  : "Default Delivery Address"}
               </button>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-start md:justify-center gap-2">
+              <button
+                onClick={() => handleEditModal(item)}
+                className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
+              >
+                <AiFillEdit className=" h-5 w-5" />
+              </button>
+
               <button
                 onClick={() => handleDelete(item.address_id)}
-                className="flex font-semibold items-center text-lg gap-5 text-red-700"
+                className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
               >
-                <RiDeleteBin6Line className="font-semibold" /> Delete
+                <RiDeleteBin6Line className="font-semibold" />
               </button>
             </div>
           </div>
@@ -292,202 +323,197 @@ const Address = () => {
       </div>
 
       {/* Add New Address Button */}
-      <button
-        onClick={handleAddressModal}
-        className="flex my-10 items-center gap-2 border-primary border-2 rounded-lg px-5 text-xs py-2 text-primary"
-      >
-        <FaPlusCircle /> Add New
-      </button>
 
       {/* Modal */}
       {modal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-        <div className="bg-white p-6 rounded-lg w-1/3">
-          <h2 className="text-xl font-bold mb-4">Select Location</h2>
-          <form onSubmit={handleSubmit}>
-            {/* Address Type */}
-            <div className="mb-4">
-              <span className="block mb-2 font-semibold">Address Type</span>
-              <div className="flex items-center gap-4">
-                <label className="flex items-center">
+        <div className=" ">
+          <div className="fixed inset-0  bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white   p-6 rounded-lg w-1/3">
+              <h2 className="text-xl font-bold mb-4">Select Location</h2>
+              <form onSubmit={handleSubmit}>
+                {/* Address Type */}
+                <div className="mb-4">
+                  <span className="block mb-2 font-semibold">Address Type</span>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="type"
+                        value="home"
+                        checked={formData.type === "home"}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      Home
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="type"
+                        value="office"
+                        checked={formData.type === "office"}
+                        onChange={handleChange}
+                        className="mr-2"
+                      />
+                      Office
+                    </label>
+                  </div>
+                </div>
+
+                {/* Address Fields */}
+                <div className="mb-4">
                   <input
-                    type="radio"
-                    name="type"
-                    value="home"
-                    checked={formData.type === "home"}
+                    type="text"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
-                    className="mr-2"
+                    placeholder="Full Name"
+                    className="w-full border p-2"
+                    required
                   />
-                  Home
-                </label>
-                <label className="flex items-center">
+                </div>
+                <div className="mb-4">
                   <input
-                    type="radio"
-                    name="type"
-                    value="office"
-                    checked={formData.type === "office"}
+                    type="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
-                    className="mr-2"
+                    placeholder="Email"
+                    className="w-full border p-2"
+                    required
                   />
-                  Office
-                </label>
-              </div>
+                </div>
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Phone"
+                    className="w-full border p-2"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="address_line1"
+                    value={formData.address_line1}
+                    onChange={handleChange}
+                    placeholder="Address Line 1"
+                    className="w-full border p-2"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="address_line2"
+                    value={formData.address_line2}
+                    onChange={handleChange}
+                    placeholder="Address Line 2"
+                    className="w-full border p-2"
+                  />
+                </div>
+
+                {/* Division, District, Upazila, Union */}
+                <div className="mb-4">
+                  <select
+                    name="division_id"
+                    value={formData.division_id}
+                    onChange={handleDivisionChange}
+                    className="w-full border p-2"
+                    required
+                  >
+                    <option value="">Select Division</option>
+                    {division.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <select
+                    name="district_id"
+                    value={formData.district_id}
+                    onChange={handleDistrictChange}
+                    className="w-full border p-2"
+                    required
+                  >
+                    <option value="">Select District</option>
+                    {district.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <select
+                    name="upazila_id"
+                    value={formData.upazila_id}
+                    onChange={handleUpazilaChange}
+                    className="w-full border p-2"
+                    required
+                  >
+                    <option value="">Select Upazila</option>
+                    {upazila.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <select
+                    name="union_id"
+                    value={formData.union_id}
+                    onChange={handleChange}
+                    className="w-full border p-2"
+                  >
+                    <option value="">Select Union</option>
+                    {union.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Postal Code */}
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    name="postal_code"
+                    value={formData.postal_code}
+                    onChange={handleChange}
+                    placeholder="Postal Code"
+                    className="w-full border p-2"
+                    required
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="mr-4 bg-gray-500 text-white px-4 py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-primary text-white px-4 py-2 rounded"
+                  >
+                    {isEdit ? "Update" : "Add"}
+                  </button>
+                </div>
+              </form>
             </div>
-      
-            {/* Address Fields */}
-            <div className="mb-4">
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Full Name"
-                className="w-full border p-2"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email"
-                className="w-full border p-2"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Phone"
-                className="w-full border p-2"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="address_line1"
-                value={formData.address_line1}
-                onChange={handleChange}
-                placeholder="Address Line 1"
-                className="w-full border p-2"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <input
-                type="text"
-                name="address_line2"
-                value={formData.address_line2}
-                onChange={handleChange}
-                placeholder="Address Line 2"
-                className="w-full border p-2"
-              />
-            </div>
-      
-            {/* Division, District, Upazila, Union */}
-            <div className="mb-4">
-              <select
-                name="division_id"
-                value={formData.division_id}
-                onChange={handleDivisionChange}
-                className="w-full border p-2"
-                required
-              >
-                <option value="">Select Division</option>
-                {division.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <select
-                name="district_id"
-                value={formData.district_id}
-                onChange={handleDistrictChange}
-                className="w-full border p-2"
-                required
-              >
-                <option value="">Select District</option>
-                {district.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <select
-                name="upazila_id"
-                value={formData.upazila_id}
-                onChange={handleUpazilaChange}
-                className="w-full border p-2"
-                required
-              >
-                <option value="">Select Upazila</option>
-                {upazila.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <select
-                name="union_id"
-                value={formData.union_id}
-                onChange={handleChange}
-                className="w-full border p-2"
-              >
-                <option value="">Select Union</option>
-                {union.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-      
-            {/* Postal Code */}
-            <div className="mb-4">
-              <input
-                type="text"
-                name="postal_code"
-                value={formData.postal_code}
-                onChange={handleChange}
-                placeholder="Postal Code"
-                className="w-full border p-2"
-                required
-              />
-            </div>
-      
-            {/* Submit Button */}
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={onClose}
-                className="mr-4 bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-primary text-white px-4 py-2 rounded"
-              >
-                {isEdit ? "Update" : "Add"}
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
-      
       )}
     </div>
   );
