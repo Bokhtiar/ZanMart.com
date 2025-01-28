@@ -10,6 +10,7 @@ const Products = () => {
   const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  // console.log("all product show ------------------------------------->",products);
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
