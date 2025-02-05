@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { MdOutlineLock } from "react-icons/md";
+import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
 import { FiPhone } from "react-icons/fi";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -9,8 +9,12 @@ import { Toastify } from "@/components/toastify";
 import { getToken, networkErrorHandeller, setToken } from "@/utils/helpers";
 import Image from "next/image";
 import { PasswordInput, TextInput } from "@/components/input";
+import { UserContext } from "@/contex/UserContex";
+import { useProduct } from "@/hooks/useProducts";
 
 const Login = () => {
+  const userInfo = useProduct()
+  console.log(userInfo);
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -26,6 +30,7 @@ const Login = () => {
     try {
       const response = await publicRequest.post("login", newData);
       if (response.data.data.token) {
+        userInfo.setToken(response.data.data.token)
         setToken(response.data.data.token);
         Toastify.Success("Successfully Login");
         router.push("/");
@@ -65,23 +70,23 @@ const Login = () => {
               {/* email field  */}
               <TextInput
                 name="contactInfo"
-                type="emailor"
+                type="email"
                 control={control}
                 label={
                   <div className="flex gap-2 pb-2 pl-3.5 text-white">
-                    <FiPhone className="h-5 w-5" />
-                    Phone Number or E-mail
+                 <MdOutlineMailOutline className="h-5 w-5" />
+                   E-mail
                   </div>
                 }
                 rules={{
-                  required: "Email or phone required",
+                  required: "Email required",
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$|^\d{10}$/,
                     message: "Invalid phone number or email",
                   },
                 }}
                 error={errors?.contactInfo?.message}
-                placeholder="Enter your phone or email"
+                placeholder="Enter your email"
                 trigger={trigger}
               />
             </div>

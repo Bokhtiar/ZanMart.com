@@ -21,6 +21,8 @@ import style from "./components/style.module.css";
 import { CategoryItem } from "./components/LargCategory";
 import { getToken } from "@/utils/helpers";
 import { BiCategoryAlt } from "react-icons/bi";
+import { UserProvider } from "@/contex/UserContex";
+import { useUser } from "@/hooks/useUser";
 
 const navList = [
   { name: "Home", href: "/" },
@@ -30,6 +32,8 @@ const navList = [
 ];
 
 export const Navbar = () => {
+  const userInfo = useProduct() 
+  const {token,setToken} = userInfo;
   const pathName = usePathname();
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState("");
@@ -113,12 +117,12 @@ export const Navbar = () => {
   /*   if (productLoading) {
     //return <ProductSkeleton/>
   } */
-  const [token, setToken] = useState(false);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setToken(getToken() ? true : false);
-    }
-  }, []);
+  // const [token, setToken] = useState(false);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     setToken(getToken() ? true : false);
+  //   }
+  // }, []);
   // my code
   const dropdownRef = useRef(null);
 
