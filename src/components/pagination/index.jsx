@@ -63,7 +63,7 @@ const Paginations = ({ api, data }) => {
   };
 
   return (
-    <div className="flex  items-center justify-center mt-4 space-x-4">
+    <div className="flex  items-center justify-end mt-4 space-x-4">
       <Pagination
         totalPage={totalPage}
         page={page}
@@ -103,7 +103,7 @@ const Pagination = ({ totalPage, page, limits, siblings, handleChange }) => {
   const arr = returnPagination(totalPage, page, limits, siblings);
 
   return (
-    <div className="flex justify-center  ">
+    <div className="flex justify-end  ">
       <div>
         <div className="pag flex gap-6 ">
           <button

@@ -8,164 +8,221 @@ import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 
 /* Text input */
 export const TextInput = (props) => {
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
-    });
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
+  const handleValidation = (e) => {
+    onChange(e); // Sync value with React Hook Form
+    onBlur(e);
+    props.trigger(props.name); // Validate field in real-time
+  };
+  return (
+    <div>
+      <span className="text-sm mb-1 text-gray-500 flex gap-1">
+        {props?.label}{" "}
+        <span className="text-white">{props?.rules?.required ? "*" : ""}</span>
+      </span>
 
-    return (
-        <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-red-500">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label} <span className="text-red-500">{props.rules.required ? "*" : ""}</span></p>
-            )}
-            <input
-                onChange={onChange} // send value to hook form
-                onBlur={onBlur} // notify when input is touched/blur
-                value={value} // input value
-                name={props.name} // send down the input name
-                placeholder={props.placeholder}
-                disabled={props.disabled}
-                type={props.type || "text"}
-                min={0}
-                className={
-                    props.error
-                        ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border !border-danger ${props.className}`
-                        : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
-                }
-            />
-        </div>
-    );
+      <input
+        onChange={handleValidation} // send value to hook form
+        onBlur={handleValidation} // notify when input is touched/blur
+        value={value} // input value
+        name={props.name} // send down the input name
+        placeholder={props.placeholder}
+        disabled={props.disabled}
+        type={props.type || "text"}
+        min={0}
+        className={
+          props?.error
+            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-red-500 ${props?.className}`
+            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props?.className}`
+        }
+      />
+      {props?.error && (
+        <p className="text-xs text-red-500 pl-3.5">{props?.error}</p>
+      )}
+    </div>
+  );
 };
 
 /* checkbox input */
 export const TextCheckbox = (props) => {
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
-    });
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
 
-    return (
-        <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-red-500">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label} <span className="text-red-500">{props.rules.required ? "*" : ""}</span></p>
-            )}
-            <input
-                onChange={onChange} // send value to hook form
-                onBlur={onBlur} // notify when input is touched/blur
-                value={value} // input value
-                name={props.name} // send down the input name
-                placeholder={props.placeholder}
-                disabled={props.disabled}
-                type={props.type || "text"}
-                min={0}
-                className={
-                    props.error
-                        ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border !border-danger ${props.className}`
-                        : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
-                }
-            />
-        </div>
-    );
+  return (
+    <div>
+      {props.error ? (
+        <p className="text-sm mb-1 text-red-500">{props.error}</p>
+      ) : (
+        <p className="text-sm mb-1 text-gray-500">
+          {props.label}{" "}
+          <span className="text-red-500">
+            {props.rules.required ? "*" : ""}
+          </span>
+        </p>
+      )}
+      <input
+        onChange={onChange} // send value to hook form
+        onBlur={onBlur} // notify when input is touched/blur
+        value={value} // input value
+        name={props.name} // send down the input name
+        placeholder={props.placeholder}
+        disabled={props.disabled}
+        type={props.type || "text"}
+        min={0}
+        className={
+          props.error
+            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border !border-danger ${props.className}`
+            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
+        }
+      />
+    </div>
+  );
 };
 
 /* Password input */
 export const PasswordInput = (props) => {
-    const [show, setShow] = useState(false);
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
-    });
+  const [show, setShow] = useState(false);
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
+  const handleValidation = (e) => {
+    onChange(e); // Sync value with React Hook Form
+    onBlur(e);
+    props.trigger(props.name); // Validate field in real-time
+  };
+  return (
+    <div>
+      <span className="text-sm mb-1 text-gray-500 flex gap-1">
+        {props?.label}{" "}
+        <span className="text-white">{props?.rules?.required ? "*" : ""}</span>
+      </span>
 
-    return (
-        <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-danger">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label} </p>
-            )}
-
-            <div className="relative">
-                <input
-                    onChange={onChange} // send value to hook form
-                    onBlur={onBlur} // notify when input is touched/blur
-                    value={value} // input value
-                    name={props.name} // send down the input name
-                    placeholder={props.placeholder}
-                    type={show ? "text" : "password"}
-                    disabled={props.disabled}
-                    className={
-                        props.error
-                            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-danger ${props.className}`
-                            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
-                    }
-                />
-
-                {show ? (
-                    <AiOutlineEye
-                        size={21}
-                        className="cursor-pointer absolute top-3 right-3 text-gray-500"
-                        onClick={() => setShow(!show)}
-                    />
-                ) : (
-                    <AiOutlineEyeInvisible
-                        size={21}
-                        className="cursor-pointer absolute top-3 right-3 text-gray-500"
-                        onClick={() => setShow(!show)}
-                    />
-                )}
-            </div>
-        </div>
-    );
+      <div className="relative">
+        <input
+          onChange={handleValidation} // send value to hook form
+          onBlur={handleValidation} // notify when input is touched/blur
+          value={value} // input value
+          name={props.name} // send down the input name
+          placeholder={props.placeholder}
+          type={show ? "text" : "password"}
+          disabled={props.disabled}
+          className={
+            props.error
+              ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-red-500 ${props.className}`
+              : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
+          }
+        />
+        {props?.error && (
+          <p className="text-xs text-red-500 pl-3.5">{props?.error}</p>
+        )}
+        {show ? (
+          <AiOutlineEye
+            size={21}
+            className="cursor-pointer absolute top-3 right-3 text-gray-500"
+            onClick={() => setShow(!show)}
+          />
+        ) : (
+          <AiOutlineEyeInvisible
+            size={21}
+            className="cursor-pointer absolute top-3 right-3 text-gray-500"
+            onClick={() => setShow(!show)}
+          />
+        )}
+      </div>
+    </div>
+  );
 };
 
 /* Textarea input */
 export const TextAreaInput = (props) => {
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
-    });
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
 
-    return (
+  return (
+    <div>
+      {props.error ? (
+        <p className="text-sm mb-1 text-red-500">{props.error}</p>
+      ) : (
+        <p className="text-sm mb-1 text-gray-500">
+          {props.label}
+          <span className="text-red-500">
+            {props.rules.required ? "*" : ""}
+          </span>
+        </p>
+      )}
+
+      <textarea
+        onChange={onChange} // send value to hook form
+        onBlur={onBlur} // notify when input is touched/blur
+        value={value} // input value
+        name={props.name} // send down the input name
+        placeholder={props.placeholder}
+        disabled={props.disabled}
+        rows={props.rows || 4}
+        className={
+          props.error
+            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-danger ${props.className}`
+            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
+        }
+      />
+    </div>
+  );
+};
+
+/* Date input */
+export const DateInput = (props) => {
+  const {
+    field: { onChange, onBlur, value, ref },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue ? new Date(props.defaultvalue) : null,
+  });
+
+  return (
+    <div>
+      {props.error ? (
+        <p className="text-sm mb-1 text-danger">{props.error}</p>
+      ) : (
+        <p className="text-sm mb-1 text-gray-500">{props.label}</p>
+      )}
+
       <div>
-        {props.error ? (
-          <p className="text-sm mb-1 text-red-500">{props.error}</p>
-        ) : (
-          <p className="text-sm mb-1 text-gray-500">
-            {props.label}
-            <span className="text-red-500">
-              {props.rules.required ? "*" : ""}
-            </span>
-          </p>
-        )}
-
-        <textarea
+        <ReactDatePicker
           onChange={onChange} // send value to hook form
           onBlur={onBlur} // notify when input is touched/blur
           value={value} // input value
           name={props.name} // send down the input name
-          placeholder={props.placeholder}
+          ref={ref} // send input ref, so we can focus on input when error appear
+          placeholderText={props.placeholder}
+          selected={value ? new Date(value) : null}
           disabled={props.disabled}
-          rows={props.rows || 4}
+          dateFormat="dd-MM-yyyy"
           className={
             props.error
               ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-danger ${props.className}`
@@ -173,88 +230,48 @@ export const TextAreaInput = (props) => {
           }
         />
       </div>
-    );
-};
-
-/* Date input */
-export const DateInput = (props) => {
-    const {
-        field: { onChange, onBlur, value, ref },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue ? new Date(props.defaultvalue) : null,
-    });
-
-    return (
-        <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-danger">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label}</p>
-            )}
-
-            <div>
-                <ReactDatePicker
-                    onChange={onChange} // send value to hook form
-                    onBlur={onBlur} // notify when input is touched/blur
-                    value={value} // input value
-                    name={props.name} // send down the input name
-                    ref={ref} // send input ref, so we can focus on input when error appear
-                    placeholderText={props.placeholder}
-                    selected={value ? new Date(value) : null}
-                    disabled={props.disabled}
-                    dateFormat="dd-MM-yyyy"
-                    className={
-                        props.error
-                            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-danger ${props.className}`
-                            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props.className}`
-                    }
-                />
-            </div>
-        </div>
-    );
+    </div>
+  );
 };
 
 /* ------------------------ Single Select field -------------------- */
 
 const customStyles = (error) => {
-    const myStyles = {
-        control: (provided, state) => ({
-            ...provided,
-            minHeight: 50,
-            fontSize: 14,
-            color: "#000",
-            background: "#fff",
-            boxShadow: "none",
-            "&:hover": { borderColor: "1px solid #fff" },
-            border: error ? "1px solid red" : "1px solid #dfdfdf",
-            borderRadius: 6,
-        }),
-    };
-    return myStyles;
+  const myStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      minHeight: 50,
+      fontSize: 14,
+      color: "#000",
+      background: "#fff",
+      boxShadow: "none",
+      "&:hover": { borderColor: "1px solid #fff" },
+      border: error ? "1px solid red" : "1px solid #dfdfdf",
+      borderRadius: 6,
+    }),
+  };
+  return myStyles;
 };
 
 /* Single select field */
 export const SingleSelect = (props) => {
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
-    });
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
 
-    const handleSelect = (event) => {
-        onChange(event);
-        props.onSelected?.(event);
-    };
+  const handleSelect = (event) => {
+    onChange(event);
+    props.onSelected?.(event);
+  };
 
-    return (
-      <div>
-        {/* {props.error ? (
+  return (
+    <div>
+      {/* {props.error ? (
           <p className="text-sm mb-1 text-red-500">{props.error}</p>
         ) : (
           <p className="text-sm mb-1 text-gray-500">
@@ -265,143 +282,143 @@ export const SingleSelect = (props) => {
           </p>
         )} */}
 
-        {props.error ? (
-          <p className="text-sm mb-1 text-red-500">{props.error}</p>
-        ) : (
-          <p className="text-sm mb-1 text-gray-500">
-            {props.label}
-            <span className="text-red-500">
-              {props.rules.required ? "*" : ""}
-            </span>
-          </p>
-        )}
+      {props.error ? (
+        <p className="text-sm mb-1 text-red-500">{props.error}</p>
+      ) : (
+        <p className="text-sm mb-1 text-gray-500">
+          {props.label}
+          <span className="text-red-500">
+            {props.rules.required ? "*" : ""}
+          </span>
+        </p>
+      )}
 
-        <Select
-          classNamePrefix={`custom-select`}
-          onBlur={onBlur} // notify when input is touched/blur
-          value={value} // input value
-          name={props.name} // send down the input name
-          styles={customStyles(props.error)}
-          components={{
-            DropdownIndicator: () => null,
-            IndicatorSeparator: () => null,
-          }}
-          options={props.options}
-          onChange={handleSelect}
-          isClearable={props.isClearable}
-          defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
-          placeholder={props.placeholder}
-        />
-      </div>
-    );
+      <Select
+        classNamePrefix={`custom-select`}
+        onBlur={onBlur} // notify when input is touched/blur
+        value={value} // input value
+        name={props.name} // send down the input name
+        styles={customStyles(props.error)}
+        components={{
+          DropdownIndicator: () => null,
+          IndicatorSeparator: () => null,
+        }}
+        options={props.options}
+        onChange={handleSelect}
+        isClearable={props.isClearable}
+        defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
+        placeholder={props.placeholder}
+      />
+    </div>
+  );
 };
 
 /* ------------------------ Multi Select field -------------------- */
 export const MultiSelect = (props) => {
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
-    });
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
 
-    const handleSelect = (event) => {
-        onChange(event);
-        props.onSelected?.(event);
-    };
+  const handleSelect = (event) => {
+    onChange(event);
+    props.onSelected?.(event);
+  };
 
-    return (
-        <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-danger">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label}</p>
-            )}
+  return (
+    <div>
+      {props.error ? (
+        <p className="text-sm mb-1 text-danger">{props.error}</p>
+      ) : (
+        <p className="text-sm mb-1 text-gray-500">{props.label}</p>
+      )}
 
-            <Select
-                isMulti
-                value={value}
-                onBlur={onBlur}
-                name={props.name}
-                options={props.options}
-                onChange={handleSelect}
-                classNamePrefix={`custom-select`}
-                styles={customStyles(props.error)}
-                components={{
-                    DropdownIndicator: () => null,
-                    IndicatorSeparator: () => null,
-                }}
-                isClearable={props.isClearable}
-                placeholder={props.placeholder}
-                defaultValue={
-                    props.defaultvalue
-                        ? props.defaultvalue.map((item) => ({
-                            value: item.value,
-                            label: item.label,
-                        }))
-                        : null
-                }
-            />
-        </div>
-    );
+      <Select
+        isMulti
+        value={value}
+        onBlur={onBlur}
+        name={props.name}
+        options={props.options}
+        onChange={handleSelect}
+        classNamePrefix={`custom-select`}
+        styles={customStyles(props.error)}
+        components={{
+          DropdownIndicator: () => null,
+          IndicatorSeparator: () => null,
+        }}
+        isClearable={props.isClearable}
+        placeholder={props.placeholder}
+        defaultValue={
+          props.defaultvalue
+            ? props.defaultvalue.map((item) => ({
+                value: item.value,
+                label: item.label,
+              }))
+            : null
+        }
+      />
+    </div>
+  );
 };
 
 /* ------------------------ Searchable Select field -------------------- */
 export const SearchableSelect = (props) => {
-    const {
-        field: { onChange, onBlur, value },
-    } = useController({
-        name: props.name,
-        control: props.control,
-        rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: { ...props.rules },
+    defaultValue: props.defaultvalue,
+  });
+
+  /* Search from API */
+  const searchOptions = (inputValue, callback) => {
+    props.onSearch(inputValue).then((results) => {
+      if (results) {
+        setTimeout(() => {
+          callback(results);
+        }, 500);
+      }
     });
+  };
 
-    /* Search from API */
-    const searchOptions = (inputValue, callback) => {
-        props.onSearch(inputValue).then((results) => {
-            if (results) {
-                setTimeout(() => {
-                    callback(results);
-                }, 500);
-            }
-        });
-    };
+  const handleSelect = (event) => {
+    onChange(event);
+    props.onSelected?.(event);
+  };
 
-    const handleSelect = (event) => {
-        onChange(event);
-        props.onSelected?.(event);
-    };
+  return (
+    <div>
+      {props.error ? (
+        <p className="text-sm mb-1 text-danger">{props.error}</p>
+      ) : (
+        <p className="text-sm mb-1 text-gray-500">{props.label}</p>
+      )}
 
-    return (
-        <div>
-            {props.error ? (
-                <p className="text-sm mb-1 text-danger">{props.error}</p>
-            ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label}</p>
-            )}
-
-            <AsyncSelect
-                classNamePrefix={`custom-select`}
-                cacheOptions
-                onBlur={onBlur} // notify when input is touched/blur
-                value={value} // input value
-                name={props.name} // send down the input name
-                styles={customStyles(props.error)}
-                onChange={handleSelect}
-                loadOptions={searchOptions}
-                isClearable={props.isClearable}
-                defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
-                placeholder={props.placeholder}
-                loadingMessage={() => "Searching ..."}
-                noOptionsMessage={() => "No results found !"}
-                components={{
-                    DropdownIndicator: () => null,
-                    IndicatorSeparator: () => null,
-                }}
-            />
-        </div>
-    );
+      <AsyncSelect
+        classNamePrefix={`custom-select`}
+        cacheOptions
+        onBlur={onBlur} // notify when input is touched/blur
+        value={value} // input value
+        name={props.name} // send down the input name
+        styles={customStyles(props.error)}
+        onChange={handleSelect}
+        loadOptions={searchOptions}
+        isClearable={props.isClearable}
+        defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
+        placeholder={props.placeholder}
+        loadingMessage={() => "Searching ..."}
+        noOptionsMessage={() => "No results found !"}
+        components={{
+          DropdownIndicator: () => null,
+          IndicatorSeparator: () => null,
+        }}
+      />
+    </div>
+  );
 };
