@@ -8,19 +8,23 @@ import { useRouter } from "next/navigation";
 import { Toastify } from "@/components/toastify";
 import { useProduct } from "@/hooks/useProducts";
 import Image from "next/image";
+import { MdOutlineMailOutline } from "react-icons/md";
+import { TextInput } from "@/components/input";
 
 const ForgotPass = () => {
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useProduct()
+  const { user, setUser } = useProduct();
   const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState: { errors,isValid },
+    trigger,
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data?.contact)
+    console.log(data?.contact);
     try {
       setLoading(true);
       const response = await publicRequest.post("forgot/password/mail-send", {
@@ -48,46 +52,50 @@ const ForgotPass = () => {
         </h1>
         <div className="bg-primary w-full sm:w-[550px] p-6 sm:p-10 rounded-xl flex flex-col items-center justify-center">
           <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] ">
-                    <Image src={'/logo.png'} height={200} width={2000} alt="" className="bg-white rounded-full p-2"/>
-                    </div>
+            <Image
+              src={"/logo.png"}
+              height={200}
+              width={2000}
+              alt=""
+              className="bg-white rounded-full p-2"
+            />
+          </div>
           <form
             className="w-full flex flex-col justify-center"
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="mt-5">
-              <label
-                htmlFor="contact"
-                className="text-sm px-5 flex pb-3 items-center text-white gap-4 font-semibold"
-              >
-                <FiPhone className="h-5 w-5" />
-                Phone Number or E-mail
-              </label>
-              <input
-                className={` outline-none px-5  w-full py-3 sm:py-5 text-sm font-light rounded-lg ${
-                  errors.contact ? "border-red-500" : ""
-                }`}
-                type="text"
-                placeholder="Enter your phone or Email"
-                {...register("contact", {
-                  required: "Email or Phone number or email is required",
+              <TextInput
+                name="contact"
+                type="email"
+                control={control}
+                label={
+                  <div className="flex gap-2 pb-2 pl-3.5 text-white">
+                    <MdOutlineMailOutline className="h-5 w-5" />
+                    E-mail
+                  </div>
+                }
+                rules={{
+                  required: "Email  is required",
                   pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$|^[0-9]{11}$/,
-                    message: "Please enter a valid email or phone number",
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$|^\d{10}$/,
+                    message: "Invalid  email",
                   },
-                })}
+                }}
+                error={errors?.contact?.message}
+                placeholder="Enter your  email"
+                trigger={trigger}
               />
               
-              {errors.contact && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.contact.message}
-                </p>
-              )}
             </div>
 
             <div className="flex justify-center">
-              <button
+            <button
                 type="submit"
-                className="mt-8 sm:mt-10 text-primary bg-white rounded-lg text-xs font-bold py-4 sm:py-5 px-16 sm:px-20"
+                disabled={!isValid}
+                className={`mt-8 sm:mt-10 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                  !isValid ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
                 Send OTP
               </button>
@@ -95,7 +103,7 @@ const ForgotPass = () => {
             <div className="mt-5 text-center">
               <p className="text-white font-light text-sm leading-6">
                 Don’t have an account?{" "}
-                <Link href="/auth/register">
+                <Link href="/auth/register" className="hover:underline">
                   <strong className="text-sm font-semibold">Sign Up Now</strong>
                 </Link>
               </p>
