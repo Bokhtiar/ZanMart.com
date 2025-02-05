@@ -36,7 +36,7 @@ const ProductDetails = () => {
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
-
+console.log(selectedDiscount)
   /** product details */
   const fetchProduct = async () => {
     setLoading(true);
@@ -59,6 +59,7 @@ const ProductDetails = () => {
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
       setvarient(productVariants);
+      console.log(productVariants);
 
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
@@ -141,7 +142,8 @@ const ProductDetails = () => {
         category: categoryName,
         title: product?.title,
         payment: product?.delivery_status,
-        product_variant_id: selectedVariant?.product_variant_id, // Include the variant ID
+        product_variant_id: selectedVariant?.product_variant_id,
+        attribute_discount_price:selectedDiscount || 0// Include the variant ID
       };
 
       let cart = localStorage.getItem("cart");

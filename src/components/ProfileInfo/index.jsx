@@ -7,82 +7,59 @@ import { MdAccountCircle } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-
-
+import { useForm } from "react-hook-form";
+import { ImageUpload, TextInput } from "../input";
 
 const ProfileInfo = ({ profile }) => {
+  
+  const { 
+    control,
+    handleSubmit,
+    formState: { errors },
+    trigger, 
+    setValue, 
+  } = useForm();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    profile_pic: "",
-    role: profile?.role,
-  });
 
   // Set form data when profile prop changes
   useEffect(() => {
     if (profile) {
-      setFormData({
-        name: profile?.name || "",
-        email: profile?.email || "",
-        phone: profile?.phone || "",
-        role: profile?.role, // Ensure role is correctly set
-      });
+      setValue("name", profile?.name);
+      setValue("email", profile?.email);
+      setValue("phone", profile?.phone);
+      setValue("role", profile?.role); // Ensure role is correctly set
     }
   }, [profile]);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prevData) => ({ ...prevData, profile_pic: file }));
-    }
-  };
-
-  const handleSaveChanges = async () => {
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.role
-    ) {
-      alert("Please fill out all required fields.");
+  //  edit profile  
+  const onSubmit = async (data) => {
+    if (!data?.name || !data?.email || !data?.phone || !data?.role) {
+      Toastify.Error("Please fill up missing value");
       return;
     }
-
     try {
       const formDataObj = new FormData();
       // Make sure role is included
-
-      if (formData.profile_pic) {
-        formDataObj.append("profile_pic", formData?.profile_pic); // File object
+      if (data.profile_pic) {
+        formDataObj.append("profile_pic", data?.profile_pic); // File object
       }
-      console.log(formData?.profile_pic);
       const res = await privateRequest.post("user/profile", {
-        name: formData?.name,
-        email: formData?.email,
-        phone: formData?.phone,
-        role: formData?.role,
-        profile_pic: formData?.profile_pic,
+        name: data?.name,
+        email: data?.email,
+        phone: data?.phone,
+        role: data?.role,
+        profile_pic: data?.profile_pic,
         _method: "PUT",
       });
       if (res?.status == 200) {
         Toastify.Success(res.data?.message);
+        handleCloseModal();
       }
-      handleCloseModal();
     } catch (error) {
-      console.error(
-        "Error updating profile:",
-        error.response?.data || error.message
-      );
+      Toastify.Error(error.response?.data[0]);
     }
   };
 
@@ -140,52 +117,55 @@ const ProfileInfo = ({ profile }) => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-96">
+          <form
+            className="bg-white rounded-lg shadow-lg p-8 w-96"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
             <div className="flex flex-col gap-4">
               <div>
-                <label className="block font-medium mb-2">Name</label>
-                <input
-                  type="text"
+                <TextInput
                   name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2"
+                  control={control}
+                  trigger={trigger}
+                  label={<span className="pl-3.5">Name</span>}
+                  rules={{ required: "Name is required" }}
+                  placeholder="Enter your name"
+                  error={errors?.name?.message}
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2">Email</label>
-                <input
-                  type="email"
+                <TextInput
                   name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2"
+                  control={control}
+                  trigger={trigger}
+                  label={<span className="pl-3.5">Email</span>}
+                  rules={{ required: "email is required" }}
+                  placeholder="Enter your email"
+                  error={errors?.email?.message}
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2">Phone</label>
-                <input
-                  type="number"
+                <TextInput
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2"
+                  control={control}
+                  trigger={trigger}
+                  label={<span className="pl-3.5">Phone</span>}
+                  rules={{ required: "phone is required" }}
+                  placeholder="Enter your Phone Number"
+                  error={errors?.phone?.message}
                 />
               </div>
               <div>
-                <label className="block font-medium mb-2">
-                  Profile Picture
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="file-input w-full border rounded px-3 py-2"
+                <ImageUpload
+                  name="profile_pic"
+                  control={control}
+                  label="Profile Picture"
+                  // required="false"
+                  onUpload={(file) => setValue("profile_pic", file)}
+                  imgUrl = {profile?.profile_pic}
                 />
-                <p className="text-sm text-gray-500 mt-2">
-                  Supported formats: JPEG, PNG. Max size: 2MB.
-                </p>
+                 
               </div>
             </div>
             <div className="flex justify-end gap-4 mt-6">
@@ -195,14 +175,11 @@ const ProfileInfo = ({ profile }) => {
               >
                 Cancel
               </button>
-              <button
-                onClick={handleSaveChanges}
-                className="bg-primary text-white px-4 py-2 rounded"
-              >
+              <button className="bg-primary text-white px-4 py-2 rounded">
                 Save
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>

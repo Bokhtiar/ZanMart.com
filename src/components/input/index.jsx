@@ -15,11 +15,13 @@ export const TextInput = (props) => {
     control: props.control,
     rules: { ...props.rules },
     defaultValue: props.defaultvalue,
+    // value:props.value
+    
   });
   const handleValidation = (e) => {
     onChange(e); // Sync value with React Hook Form
     onBlur(e);
-    props.trigger(props.name); // Validate field in real-time
+    props.trigger(props.name); // Validate field in real-time 
   };
   return (
     <div>
@@ -31,11 +33,12 @@ export const TextInput = (props) => {
       <input
         onChange={handleValidation} // send value to hook form
         onBlur={handleValidation} // notify when input is touched/blur
-        value={value} // input value
+        value={ value||""} // input value
         name={props.name} // send down the input name
         placeholder={props.placeholder}
         disabled={props.disabled}
         type={props.type || "text"}
+        defaultValue={props?.defaultValue}
         min={0}
         className={
           props?.error
@@ -419,6 +422,79 @@ export const SearchableSelect = (props) => {
           IndicatorSeparator: () => null,
         }}
       />
+    </div>
+  );
+};
+
+export const ImageUpload = (props) => {
+  const {
+    field: { onChange, onBlur, value },
+    fieldState: { error },
+  } = useController({
+    name: props.name,
+    control: props.control,
+    rules: {
+      required: props.required ? "Image is required" : false,
+      validate: (file) => {
+        if (!file && props.required) return "Image is required";
+        return !file || file.size < 2 * 1024 * 1024 || "File must be less than 2MB";
+      },
+    },
+    defaultValue: props.defaultValue || null,
+  });
+
+  const [preview, setPreview] = useState(
+    value ? URL.createObjectURL(value) : props.defaultValue || null
+  );
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      onChange(file);
+      setPreview(URL.createObjectURL(file)); // Show file preview
+      props.onUpload?.(file); // Callback for additional handling
+    }
+  }; 
+  return (
+    <div className="flex flex-col space-y-2">
+      {
+        props?.imgUrl
+      }
+       <span className="text-sm mb-1 text-gray-500 flex gap-1">
+        {props?.label}{" "}
+        <span className="text-white">{props?.rules?.required ? "*" : ""}</span>
+      </span>
+      <div className="relative border rounded-md w-full cursor-pointer bg-white">
+        <input
+          type="file"
+          accept="image/*"
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          onBlur={onBlur}
+          onChange={handleFileChange}
+        />
+        <div className="flex items-center space-x-2 cursor-pointer">
+          {preview ? (
+            <img
+              src={preview}
+              alt="Preview"
+              className="h-12 w-12 object-cover rounded-md cursor-pointer"
+            />
+          ) : (
+            <div className="h-12 w-12 flex items-center justify-center bg-gray-200 rounded-md cursor-pointer">
+         {
+          props?.imgUrl?  <img src={`${process.env.NEXT_PUBLIC_API_SERVER}${props?.imgUrl}`}alt="loading"  className="h-12 w-12 object-cover rounded-md cursor-pointer"/> : "📷"
+         }     
+               
+           
+            </div>
+          )}
+          <span className="text-gray-700">Click to upload</span>
+        </div>
+        
+      </div>
+      {props?.error && (
+        <p className="text-xs text-red-500 pl-3.5">{props?.error}</p>
+      )}
     </div>
   );
 };
