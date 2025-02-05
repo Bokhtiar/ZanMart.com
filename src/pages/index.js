@@ -47,7 +47,7 @@ export default function Home() {
     <section className={`${poppins.className} px-2 pt-36  `}>
       <Banner></Banner>
       <ServiceQuality></ServiceQuality>
-      {categories.map((category) => (
+      {categories?.map((category) => (
         <TopFeature
           key={category?.category_id}
           categoryid={category?.category_id}

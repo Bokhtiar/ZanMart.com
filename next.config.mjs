@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['127.0.0.1', 'localhost','test.zanvisionslabs.com.zanvisionlabs.com'], // Add your local domains here
+    domains: ['127.0.0.1', 'localhost','http://127.0.0.1:8000/'], // Add your local domains here
 },
 };
 
