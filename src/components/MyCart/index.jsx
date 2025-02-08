@@ -1,14 +1,13 @@
 import { privateRequest } from "@/config/axios.config";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import React, { useState, useEffect, useCallback } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiWarning } from "react-icons/ti";
 import { Toastify } from "../toastify";
 import { useRouter } from "next/router";
-import Modal from "../modal";
-import { FaShoppingCart } from "react-icons/fa";
-import AddressModal from "../AddressModal";
+import { FaCheckCircle, FaPlusCircle, FaShoppingCart } from "react-icons/fa";
+import AddressModal from "../AddressModal"; 
+import Link from "next/link";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -287,7 +286,7 @@ const MyCart = () => {
         )}
       </div>
 
-      <Modal
+      <ConfirmModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onConfirm={handleConfirm}
@@ -300,3 +299,69 @@ const MyCart = () => {
 };
 
 export default MyCart;
+
+const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title }) => {
+  const [address, setAddress] = useState([]);
+  const fetchAddress = useCallback(async () => {
+    try {
+      const res = await privateRequest.get("user/address");
+      setAddress(res.data?.data);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    }
+  }, []);
+  useEffect(() => {
+    fetchAddress();
+  }, []);
+ 
+  const [selected, setSelected] = useState(null);
+  const handleChange = (index,addressItem) => {
+    console.log(addressItem);
+    setSelected(index);
+  };
+   
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg md:2/4 lg:w-3/4  w-full m">
+         <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
+         <span className="block text-xs p-2">Please select address</span>
+         <Link href={"/profile?section=Address Book"} className="flex items-center gap-1 bg-primary rounded-md px-2 py-1"> <FaPlusCircle /> Add New</Link>
+         </div>
+        {address.length > 0 &&
+          address.map((item, index) => {
+            return (
+              <div htmlFor={`address-${address.address_id}`}  name="address" key={address.address_id} className={` ${selected === index + 1 ? 'bg-blue-100' : 'bg-gray-100 '} mb-4 gap-2   p-3 flex rounded-md cursor-pointer`}
+               onClick={()=>handleChange(index+1,item)}
+              >
+              <FaCheckCircle className={`  ${selected === index + 1 ? 'text-blue-500' : 'text-gray-400'} w-8 h-8 `} />
+
+                <div>{item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
+                {item?.upazila?.name}, {item?.district?.name},{" "}
+                {item?.division?.name}</div>
+              </div>
+            );
+          })}
+        <h2 className="text-lg font-semibold mb-4">{title}</h2>
+        <p className="text-sm mb-4">{message}</p>
+        <div className="flex justify-end space-x-4">
+          <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            // className="bg-blue-500 text-white px-4 py-2 rounded"
+            disabled={!selected}
+            className={`  text-primary px-4 bg-gray-300 rounded  text-xs font-bold     hover:bg-gray-400 ${
+              !selected
+                ? "opacity-50 cursor-not-allowed bg-gray-200 px-4 py-2"
+                : ""
+            }`}
+            onClick={onConfirm} 
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
