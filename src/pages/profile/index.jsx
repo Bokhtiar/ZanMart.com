@@ -21,7 +21,9 @@ import { Toastify } from "@/components/toastify";
 import { privateRequest } from "@/config/axios.config";
 import OrderDetails from "@/components/order_details";
 import isAuth from "@/middleware/auth.middleware";
+import { useProduct } from "@/hooks/useProducts";
 const Profile = () => {
+  const userInfo = useProduct()
   const router = useRouter();
   const { section } = router.query;
   const [profile, setprofile] = useState({});
@@ -60,6 +62,7 @@ const Profile = () => {
     localStorage.removeItem("token");
     Toastify.Success("Logout Succesfully");
     router.push("/");
+    userInfo.setToken()
   };
   const fetchProfile = useCallback(async () => {
     try {

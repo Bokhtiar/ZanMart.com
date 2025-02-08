@@ -115,7 +115,7 @@ export const PasswordInput = (props) => {
     <div>
       <span className="text-sm mb-1 text-gray-500 flex gap-1">
         {props?.label}{" "}
-        <span className="text-white">{props?.rules?.required ? "*" : ""}</span>
+        <span className="text-w">{props?.rules?.required ? "*" : ""}</span>
       </span>
 
       <div className="relative">
@@ -457,9 +457,7 @@ export const ImageUpload = (props) => {
   }; 
   return (
     <div className="flex flex-col space-y-2">
-      {
-        props?.imgUrl
-      }
+       
        <span className="text-sm mb-1 text-gray-500 flex gap-1">
         {props?.label}{" "}
         <span className="text-white">{props?.rules?.required ? "*" : ""}</span>

@@ -1,52 +1,36 @@
 import { privateRequest } from "@/config/axios.config";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Toastify } from "../toastify";
 import { useRouter } from "next/navigation";
 import { removeToken } from "@/utils/helpers";
-import { MdOutlinePassword } from "react-icons/md";
-
+import { MdOutlineLock, MdOutlinePassword } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import { PasswordInput } from "../input";
 
 const ChangePass = () => {
   // State to store password inputs
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
   const router = useRouter();
-  // Handle input changes for all fields
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
+  const {
+    formState: { errors ,isValid},
+    handleSubmit,
+    trigger,
+    control,
+    watch
+  } = useForm( );
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { currentPassword, newPassword, confirmPassword } = formData;
-  
-    // Ensure all fields are filled
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      Toastify.Error("All fields are required!");
-      return;
-    }
-  
+  const onSubmit = async (e) => {
     // Check if new password and confirm password match
-    if (newPassword !== confirmPassword) {
+    if (e?.newPassword !== e?.confirmPassword) {
       Toastify.Error("New password and confirm password do not match!");
       return;
     }
-  
     try {
       const response = await privateRequest.post("password/reset", {
-        password: currentPassword,
-        new_password: newPassword,
-        confirm_password: confirmPassword,
+        password: e?.currentPassword,
+        new_password: e?.newPassword,
+        confirm_password:e?.confirmPassword,
       });
-  
+
       if (response.status === 200) {
         Toastify.Success(response.data?.message);
         removeToken(); // Ensure token removal on successful password reset
@@ -56,12 +40,14 @@ const ChangePass = () => {
         console.log(response?.data?.message);
       }
     } catch (error) {
-      console.error("Error resetting password:", error?.response?.data?.errors[0]);
+      console.error(
+        "Error resetting password:",
+        error?.response?.data?.errors[0]
+      );
       Toastify.Error(error?.response?.data?.errors[0]);
     }
   };
-  
-
+  const password = watch("newPassword");
   return (
     <div>
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
@@ -71,7 +57,7 @@ const ChangePass = () => {
       </div>
 
       <form
-        onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
         className="w-2/3 flex flex-col justify-center"
       >
         <h1 className="text-center text-white text-sm font-semibold ">
@@ -82,60 +68,82 @@ const ChangePass = () => {
         </h1>
 
         <div className="mt-5">
-          <label
-            htmlFor="currentPassword"
-            className="text-base px-2 md:px-4 lg:px-10 flex pb-3 items-center gap-4 font-semibold"
-          >
-            Your Current Password*
-          </label>
-          <input
-            className="px-4 md:px-6 lg:px-10 w-full py-3 border-2 md:py-4 lg:py-5 text-sm font-light rounded-xl"
-            type="password"
-            id="currentPassword"
-            name="currentPassword" // Added name attribute for input
-            placeholder="Enter your current password"
-            value={formData.currentPassword}
-            onChange={handleChange}
+          <PasswordInput
+            name="currentPassword"
+            placeholder="Enter your Current Password"
+            control={control}
+            rules={{
+              required: "Current Password is required",
+              minLength: {
+                value: 6,
+                message: "Current Password must be at least 6 characters",
+              },
+            }}
+            label={
+              <div className="flex gap-2 pb-2 pl-3.5 text-gray-500">
+                <MdOutlineLock className="h-5 w-5" />
+                Current Password
+              </div>
+            }
+            error={errors?.currentPassword?.message}
+            trigger={trigger}
           />
         </div>
         <div className="mt-5">
-          <label
-            htmlFor="newPassword"
-            className="text-base px-2 md:px-4 lg:px-10 flex pb-3 items-center gap-4 font-semibold"
-          >
-            New Password*
-          </label>
-          <input
-            className="px-4 md:px-6 border-2 lg:px-10 w-full py-3 md:py-4 lg:py-5 text-sm font-light rounded-xl"
-            type="password"
-            id="newPassword"
-            name="newPassword" // Added name attribute for input
-            placeholder="Enter your new password"
-            value={formData.newPassword}
-            onChange={handleChange}
+          <PasswordInput
+            name="newPassword"
+            placeholder="Enter your New Password"
+            control={control}
+            rules={{
+              required: "New Password is required",
+              minLength: {
+                value: 6,
+                message: "New Password must be at least 6 characters",
+              },
+            }}
+            label={
+              <div className="flex gap-2 pb-2 pl-3.5 text-gray-500">
+                <MdOutlineLock className="h-5 w-5" />
+                New Password
+              </div>
+            }
+            error={errors?.newPassword?.message}
+            trigger={trigger}
           />
         </div>
         <div className="mt-5">
-          <label
-            htmlFor="confirmPassword"
-            className="text-base px-2 md:px-4 lg:px-10 flex pb-3 items-center gap-4 font-semibold"
-          >
-            Re-Type Password*
-          </label>
-          <input
-            className="px-4 md:px-6 lg:px-10 w-full py-3 md:py-4 border-2 lg:py-5 text-sm font-light rounded-xl"
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword" // Added name attribute for input
-            placeholder="Re-enter your new password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
+          <PasswordInput
+            name="confirmPassword"
+            placeholder="Enter your Confirm Password"
+            control={control}
+            rules={{
+              required: "Confirm Password is required",
+              minLength: {
+                value: 6,
+                message: "Confirm Password must be at least 6 characters",
+              },
+              validate:(value)=> value===password || "Please enter a match password"
+            }}
+            label={
+              <div className="flex gap-2 pb-2 pl-3.5 text-gray-500">
+                <MdOutlineLock className="h-5 w-5" />
+                Confirm Password
+              </div>
+            }
+            error={errors?.confirmPassword?.message}
+            trigger={trigger}
           />
         </div>
         <div className="flex justify-start">
-          <button className="mt-10 text-center bg-primary text-white rounded-lg text-xs md:text-sm font-bold py-4 px-8 lg:px-12">
-            Reset Password
-          </button>
+        <button
+                type="submit"
+                disabled={!isValid}
+                className={`mt-8 sm:mt-10 text-white bg-primary rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-blue-400 ${
+                  !isValid ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+               Reset Password
+              </button>
         </div>
       </form>
     </div>
