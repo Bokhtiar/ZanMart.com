@@ -26,7 +26,7 @@ const Products = () => {
     fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice });
     // console.log(prd ,"-----------------------");
   }, [page, minPrice, maxPrices]);
-  console.log(product, "-----------------------");
+  // console.log(product, "-----------------------");
 
   //  console.log(value,"value------------------>");
   //  console.log(products,"my products ------------------------->");

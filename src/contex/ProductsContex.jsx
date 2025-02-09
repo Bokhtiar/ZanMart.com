@@ -38,15 +38,16 @@ const MyProvider = ({ children }) => {
   useEffect(() => {
     fetchProductss();
   }, []);
-  // second area 
-  const [newProduct,setNewProduct] = useState({});
+  // second area
+  const [newProduct, setNewProduct] = useState({});
   const fetchProducts = useCallback(async (filters) => {
-    try { 
-      setLoading(true)
+    try {
+      setLoading(true);
       const isEmpty = Object.keys(filters).length === 0;
-      if (isEmpty) { 
-        return;
-      }
+      // if (isEmpty) {
+      //   return;
+      // }
+      console.log("---------------------", filters);
       setLoading(true);
       const queryParams = new URLSearchParams();
       if (filters.max_price) queryParams.append("max_price", filters.max_price);
@@ -54,16 +55,23 @@ const MyProvider = ({ children }) => {
       if (filters.page) queryParams.append("page", filters.page);
       if (filters.title) queryParams.append("title", filters.title);
 
-      const res = await publicRequest.get(`products${
-        queryParams.toString() ? `?${queryParams.toString()}` : ""
-      }`);
+      let res;
+      if (filters?.title) {
+        res = await publicRequest.get(`products?title=${filters?.title}`);
+      } else {
+        res = await publicRequest.get(
+          `products${
+            queryParams.toString() ? `?${queryParams.toString()}` : ""
+          }`
+        );
+      }
       const fetchedProducts = res?.data?.data || {};
       // console.log(fetchedProducts,"-------------------");
       setNewProduct(fetchedProducts);
       // setOriginalProducts(fetchedProducts);
       setLoading(false); // Store the original products
     } catch (error) {}
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchProducts({});
@@ -110,7 +118,6 @@ const MyProvider = ({ children }) => {
         setToken,
         newProduct,
         fetchProducts,
-         
       }}
     >
       {children}
