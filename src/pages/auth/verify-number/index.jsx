@@ -20,7 +20,7 @@ const VerifyNumber = () => {
 
   const handleSubmit = async () => {
     const otpValue = otp.join("");
-    console.log("OTP Entered:", otpValue);
+    // console.log("OTP Entered:", otpValue);
     setForgotCode(otpValue)
     try {
       const res = await publicRequest.post("forgot-code-check", {

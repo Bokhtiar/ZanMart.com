@@ -14,7 +14,7 @@ const AddressModal = ({setAddressModal}) => {
       console.error("Error fetching addresses:", error);
     }
   };
-  console.log(address)
+  // console.log(address)
   const [cart, setCart] = useState({
     cart_items: [],
     shipping_address_id: 1,

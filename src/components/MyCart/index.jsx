@@ -32,7 +32,7 @@ const MyCart = () => {
               const response = await privateRequest.get(
                 `/current/product/price?product_id=${item.product_id}&product_variant_id=${item.product_variant_id}`
               );
-              console.log(response.data?.data.price);
+              // console.log(response.data?.data.price);
 
               if (response.data?.data.price) {
                 updatedCartItems[index].sell_price = response.data?.data.price;
@@ -122,10 +122,18 @@ const MyCart = () => {
     setIsModalOpen(false);
     setModalAction(null);
   };
+ 
+ const [address,setAddress] = useState({});
 
-  const address = localStorage.getItem("cart");
-  const shipping_address = JSON.parse(address);
-  console.log(shipping_address?.shipping_address_id);
+ useEffect(()=>{
+  if(typeof window !== 'undefined'){
+    setAddress(JSON.parse(localStorage.getItem("cart")));
+   }
+  
+ },[])  
+  //  address = localStorage.getItem("cart")||{};
+  const shipping_address = address;
+  // console.log(shipping_address?.shipping_address_id);
   const handleCheckout = async () => {
     if (shipping_address?.shipping_address_id) {
       setIsModalOpen(true);
@@ -316,7 +324,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title }) => {
  
   const [selected, setSelected] = useState(null);
   const handleChange = (index,addressItem) => {
-    console.log(addressItem);
+    // console.log(addressItem);
     setSelected(index);
   };
    

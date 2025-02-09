@@ -37,7 +37,7 @@ const Address = () => {
   const onClose = () => {
     setModal(false);
   };
-  console.log(address);
+  // console.log(address);
   const handleEditModal = (address) => {
     setIsEdit(true);
     setModal(true);
@@ -60,7 +60,7 @@ const Address = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    // console.log(formData);
 
     try {
         const updatedFormData = {
@@ -80,7 +80,7 @@ const Address = () => {
         };
 
         if (isEdit) {
-            console.log(updatedFormData);
+            // console.log(updatedFormData);
             const res = await privateRequest.post(
                 `user/address/${editAddressId}`,
                 updatedFormData
@@ -247,7 +247,7 @@ const Address = () => {
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
-  console.log(cart);
+  // console.log(cart);
   useEffect(() => {
     handleDivision();
     userAddresses();
