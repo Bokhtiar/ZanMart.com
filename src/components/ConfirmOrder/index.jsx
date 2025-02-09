@@ -10,7 +10,7 @@ import isAuth from "@/middleware/auth.middleware";
 
 const ConfirmOrder = () => {
   const router = useRouter();
-  const id = router.query?.id;
+  const id = router.query?.slug;
   const [payment, setPayment] = useState("");
   const [orders, setOrders] = useState([]);
   const { "order Details": orderDetails } = orders;
