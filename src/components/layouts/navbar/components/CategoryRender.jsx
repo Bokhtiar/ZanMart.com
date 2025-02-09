@@ -18,7 +18,7 @@ const id=router.query?.category_id;
   };
 
   const handleSelect =async (id) => {
-    console.log('clicked')
+    // console.log('clicked')
    try {
    
     const categoryFilterd = await publicRequest.get(`category/product/${id}`);

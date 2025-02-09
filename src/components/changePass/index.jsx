@@ -37,7 +37,7 @@ const ChangePass = () => {
         router.push("/auth/log-in");
       } else {
         Toastify.Error(response?.data?.message);
-        console.log(response?.data?.message);
+        // console.log(response?.data?.message);
       }
     } catch (error) {
       console.error(

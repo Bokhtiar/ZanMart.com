@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 const SingleCart = ({ item }) => {
-  console.log(item);
+  // console.log(item);
   return (
     <Link
       href={`/product-details/${item?.product_id}`}

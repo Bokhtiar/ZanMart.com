@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from "next/image";
 const ProductSkeleton = ({count}) => {
-  console.log("count", count);
+  // console.log("count", count);
   return (
     <div className={`grid grid-cols-2 md:grid-cols-${count} lg:grid-cols-${count} gap-4 md:gap-4 lg:gap-4`}>
       {[...Array(count)].map((_, index) => (

@@ -1,7 +1,7 @@
 import { Toastify } from "@/components/toastify";
 
 export const networkErrorHandeller = (error) => {
-    console.log("error", error);
+    // console.log("error", error);
     if (
         error &&
         error.response &&

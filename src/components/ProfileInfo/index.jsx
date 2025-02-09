@@ -9,9 +9,10 @@ import { MdEmail } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { useForm } from "react-hook-form";
 import { ImageUpload, TextInput } from "../input";
+import { useProduct } from "@/hooks/useProducts";
 
-const ProfileInfo = ({ profile }) => {
-  
+const ProfileInfo = ( ) => {
+  const {user:profile} = useProduct();
   const { 
     control,
     handleSubmit,
@@ -62,7 +63,7 @@ const ProfileInfo = ({ profile }) => {
       Toastify.Error(error.response?.data[0]);
     }
   };
-
+ 
   return (
     <div className="">
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
@@ -80,7 +81,7 @@ const ProfileInfo = ({ profile }) => {
       <div className="flex flex-col  md:flex-row-reverse items-center  justify-between bg-gray-100 p-4 rounded-md">
         <div className="flex flex-col justify-center me-20 items-center">
           <Image
-            src={`${process?.env.NEXT_PUBLIC_API_SERVER}/${profile?.profile_pic}`}
+            src={`${process?.env.NEXT_PUBLIC_API_SERVER}${profile?.profile_pic}`}
             height={150}
             width={150}
             alt=""

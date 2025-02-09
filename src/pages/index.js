@@ -36,7 +36,7 @@ export default function Home() {
     categoryFetch();
   }, []);
 
-  console.log("categoryies", categories);
+  // console.log("categoryies", categories);
   // const dataLimit = (item) => {
   //   switch (item?.category_name) {
   //     case "stationary":
@@ -47,7 +47,7 @@ export default function Home() {
   // };
 
   const viewAll = async (id) => {
-    console.log(id);
+    // console.log(id);
     try {
       const categoryFilterd = await publicRequest.get(`category/product/${id}`);
       setProducts(categoryFilterd?.data?.data?.data);

@@ -11,7 +11,7 @@ const Paginations = ({ api, data }) => {
     try {
       const res = await publicRequest.get(`${api}?page=${page}`);
       const result = res?.data?.data?.data;
-      console.log(res);
+      // console.log(res);
       data(result);
       setCurrentPage(res?.data?.data?.current_page); // Set current page
       setTotalPages(res?.data?.data?.last_page); // Set total pages
@@ -39,7 +39,7 @@ const Paginations = ({ api, data }) => {
   // const totalPage = Math.ceil(500 / 7);
   useEffect(() => {
     fetchProducts(page);
-    console.log("page is-------------------------->" , page);
+    // console.log("page is-------------------------->" , page);
   }, [data, page, limit]);
   const handleChange = (e) => {
     if (e == "prev") {

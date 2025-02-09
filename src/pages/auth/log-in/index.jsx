@@ -4,7 +4,7 @@ import { FiPhone } from "react-icons/fi";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { publicRequest } from "@/config/axios.config";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { Toastify } from "@/components/toastify";
 import { getToken, networkErrorHandeller, setToken } from "@/utils/helpers";
 import Image from "next/image";
@@ -14,7 +14,7 @@ import { useProduct } from "@/hooks/useProducts";
 
 const Login = () => {
   const userInfo = useProduct()
-  console.log(userInfo);
+  // console.log(userInfo);
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -22,6 +22,8 @@ const Login = () => {
     trigger,
   } = useForm();
   const router = useRouter();
+  const { redirect } = router.query; 
+  // console.log(router.query);
   const onSubmit = async (data) => {
     const newData = {
       email: data.contactInfo,
@@ -33,10 +35,11 @@ const Login = () => {
         userInfo.setToken(response.data.data.token)
         setToken(response.data.data.token);
         Toastify.Success("Successfully Login");
-        router.push("/");
+        // router.push("/");
+        router.replace(redirect ? String(redirect) : "/");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       networkErrorHandeller(error);
     }
   };

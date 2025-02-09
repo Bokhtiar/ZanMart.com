@@ -1,27 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { getToken } from "@/utils/helpers";
 
 export default function isAuth(Component) {
-    return function IsAuth(props) {
-        const [isLoading, setIsLoading] = useState(true);
+    return function ProtectedPage(props ) {
         const router = useRouter();
-
+        const [loading, setLoading] = useState(true);
+        const [authenticated, setAuthenticated] = useState(false);
+    
         useEffect(() => {
-            const auth = getToken(); // Retrieve the authentication token
-
-            if (!auth) {
-                router.replace("/auth/log-in"); // Client-side redirect
-            } else {
-                setIsLoading(false); // Allow rendering the protected component
-            }
+          const token =  getToken();
+    
+          if (!token) {
+            router.replace(`/auth/log-in?redirect=${router.asPath}`); 
+          } else {
+            setAuthenticated(true);
+          }
+          setLoading(false);
         }, [router]);
-
-        if (isLoading) {
-            return <div>Loading...</div>; // Optional: Add a loading spinner or fallback UI
-        }
-
-        return <Component {...props} />;
-    };
+    
+        if (loading) return <div>Loading...</div>;
+        return authenticated ? <Component {...props} /> : null;
+      };
 }
