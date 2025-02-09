@@ -1,12 +1,13 @@
+import ProfileLayout from '@/components/layouts/ProfileLayout/ProfileLayout';
 import Link from 'next/link';
 import React from 'react';
-import {  FaShippingFast } from 'react-icons/fa';
-const Trackorder = () => {
-  return (
-    
+import { FaShippingFast } from 'react-icons/fa';
 
-    <div className="mt-36 container-custom flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+const TrackOrder = () => {
+    return (
+        <div>
+             <div className="   w-full  mt-12 ">
+      <div className="bg-white p-8 rounded-lg shadow-lg   w-full">
         <h1 className="text-2xl font-semibold text-gray-800 pb-5">Track Your Order</h1>
         <p className="text-sm text-gray-500 mb-6">Enter your order number below to track your order status.</p>
         
@@ -18,7 +19,7 @@ const Trackorder = () => {
           />
           
           <div className="mt-5 w-full flex justify-center">
-            <Link 
+            <Link
               href="track-order-information" 
               className="text-white bg-primary py-3 px-12 rounded-lg shadow-md hover:bg-primary-dark focus:ring-4 focus:ring-primary-dark active:bg-primary-dark transition duration-200 flex items-center justify-center gap-3"
             >
@@ -29,9 +30,8 @@ const Trackorder = () => {
         </div>
       </div>
     </div>
-    
-
-  );
+        </div>
+    );
 };
-
-export default Trackorder;
+TrackOrder.getLayout = (page) => <ProfileLayout>{page}</ProfileLayout>;
+export default TrackOrder;
