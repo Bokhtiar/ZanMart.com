@@ -325,7 +325,7 @@ export const Navbar = () => {
             </div>
             <div>
               <p className="flex items-center md:gap-4  lg:gap-5 gap-2">
-                <Link href="/profile" className="relative">
+                <Link href="/profile/cart" className="relative">
                   <span
                     className="absolute text-xs -top-1 -right-1 bg-yellow-500 leading-0 px-1 py-.5 text-center 
                   rounded-full"

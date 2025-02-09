@@ -158,13 +158,7 @@ const MyCart = () => {
             JSON.stringify({ ...cart, cart_items: [] })
           );
           window.dispatchEvent(new Event("cartUpdated"));
-          router.push({
-            pathname: "/profile",
-            query: {
-              section: "confirm-order",
-              id: res?.data?.order_id?.order_id,
-            },
-          });
+          router.push(`/profile/confirm-order/${res?.data?.order_id?.order_id}`)
         } else {
           Toastify.Error(res.error);
         }

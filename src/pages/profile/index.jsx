@@ -37,12 +37,9 @@ const Profile = () => {
   ];
   const renderContent = () => {
     switch (section) {
-      
-      case "order-details":
-        return <OrderDetails />;
-      case "Orders/{id}":
-        return <Orders />;
-     
+       
+      // case "Orders/{id}":
+      //   return <Orders />;
       case "Payment Proceed":
         return <PaymetnProceed />;
       case "confirm-order":

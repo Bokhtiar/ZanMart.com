@@ -169,7 +169,7 @@ const Orders = () => {
                     </div>
 
                     <Link
-                      href={`/profile?section=order-details&id=${item["order Details"]?.order_id}`}
+                      href={`/profile/order-details/${item["order Details"]?.order_id}`}
                       className="flex  gap-2 px-2 py-1 bg-blue-500 text-white hover:bg-gray-200 text-sm rounded-md"
                     >
                       <RiEyeLine className="text-2xl" />

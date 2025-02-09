@@ -5,23 +5,24 @@ import { format } from "date-fns";
 import Image from "next/image";
 const OrderDetails = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const  id  = router?.query?.slug;
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderItems, setOrderitems] = useState([]);
   const fetchOrderDetails = useCallback(async () => {
     try {
+      if(!id) return ;
       const res = await privateRequest.get(`user/order/${id}`);
       if (res.status == 200) {
         setOrderDetails(res?.data?.data["order Details"]);
         setOrderitems(res?.data?.data["order item"]);
       }
     } catch (error) {}
-  }, []);
+  }, [id]);
   useEffect(() => {
     fetchOrderDetails();
   }, []);
   return (
-    <div className="">
+    <div  >
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
         <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
           Order Show
