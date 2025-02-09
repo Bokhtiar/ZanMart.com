@@ -23,7 +23,7 @@ const MyProvider = ({ children }) => {
       setToken(getToken() ? true : false);
     }
   }, []);
-  const fetchProducts = async () => {
+  const fetchProductss = async () => {
     try {
       setLoading(true);
       const res = await publicRequest.get("products");
@@ -36,9 +36,38 @@ const MyProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProductss();
   }, []);
+  // second area 
+  const [newProduct,setNewProduct] = useState({});
+  const fetchProducts = useCallback(async (filters) => {
+    try { 
+      setLoading(true)
+      const isEmpty = Object.keys(filters).length === 0;
+      if (isEmpty) { 
+        return;
+      }
+      setLoading(true);
+      const queryParams = new URLSearchParams();
+      if (filters.max_price) queryParams.append("max_price", filters.max_price);
+      if (filters.min_price) queryParams.append("min_price", filters.min_price);
+      if (filters.page) queryParams.append("page", filters.page);
+      if (filters.title) queryParams.append("title", filters.title);
 
+      const res = await publicRequest.get(`products${
+        queryParams.toString() ? `?${queryParams.toString()}` : ""
+      }`);
+      const fetchedProducts = res?.data?.data || {};
+      // console.log(fetchedProducts,"-------------------");
+      setNewProduct(fetchedProducts);
+      // setOriginalProducts(fetchedProducts);
+      setLoading(false); // Store the original products
+    } catch (error) {}
+  },[]);
+
+  useEffect(() => {
+    fetchProducts({});
+  }, []);
   // Fetch user profile
   const fetchUserProfile = useCallback(async () => {
     if (!token) {
@@ -79,6 +108,9 @@ const MyProvider = ({ children }) => {
         setForgotCode,
         token,
         setToken,
+        newProduct,
+        fetchProducts,
+         
       }}
     >
       {children}
