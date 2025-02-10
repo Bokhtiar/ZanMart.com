@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { RiEyeLine } from "react-icons/ri";
 import { FaRegListAlt } from "react-icons/fa";
 import { CiCircleChevDown } from "react-icons/ci";
+import OrderSkeleton from "../loader/OrderSkeleton";
 
 const Orders = () => {
   const [data, setData] = useState([]);
@@ -87,7 +88,7 @@ const Orders = () => {
             <button
               key={status}
               onClick={() => handleStatus(status)}
-              className={`py-2 px-3 sm:px-4 text-sm font-semibold rounded ${
+              className={`py-2 px-3 sm:px-4 text-sm font-semibold   ${
                 selectedStatus === status
                   ? "text-primary border-b-2 border-primary"
                   : "text-gray-600 hover:text-primary"
@@ -100,7 +101,16 @@ const Orders = () => {
       </div>
 
       {loading ? (
-        <p className="text-center text-gray-500">Loading...</p>
+        <>
+        {
+          Array.from({ length: 10 }).map((_, index) => (
+          <>
+            <OrderSkeleton key={index} /><br/>
+          </>
+          ))
+        } 
+        </>
+       
       ) : (
         <div className="space-y-4">
           {data.length > 0 ? (
@@ -230,4 +240,4 @@ const Orders = () => {
   );
 };
 
-export default isAuth(Orders);
+export default  Orders;

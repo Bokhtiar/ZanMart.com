@@ -1,6 +1,6 @@
 import SingleCart from "@/components/singleCart";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
@@ -11,26 +11,33 @@ import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { PiDotsThreeVertical } from "react-icons/pi";
 import { RiFilterOffLine } from "react-icons/ri";
 import { HiClipboardDocumentList } from "react-icons/hi2";
-
-
-
-
+import { useProduct } from "@/hooks/useProducts";
+import PaginationSkeleton from "@/components/loader/PaginationSkeleton";
 const Products = () => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
-  const [gridCount, setGridCount] = useState(4)
+  const [gridCount, setGridCount] = useState(4);
+  const [page, setPage] = useState(1);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrices, setMaxPrice] = useState(20);
+  const { fetchProducts, newProduct: product, loading } = useProduct();
+  useEffect(() => {
+    fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice });
+    // console.log(prd ,"-----------------------");
+  }, [page, minPrice, maxPrices]);
+  // console.log(product, "-----------------------");
 
+  //  console.log(value,"value------------------>");
+  //  console.log(products,"my products ------------------------->");
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-  if (loading) {
-    return <ProductSkeleton />;
-  } 
+
   const maxPrice = products.reduce(
     (max, product) => Math.max(max, product.sell_price),
     0
-  ); 
+  );
   return (
     <div className="mt-36">
       {/* product banner --------------------------- */}
@@ -49,9 +56,8 @@ const Products = () => {
           <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded flex items-center gap-1">
             <RiFilterOffLine /> Filter
           </h1>
-
-          <PriceFilter api="products" setProducts={setProducts} />
-
+         {/* filter using price  */}
+          <PriceFilter setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
           <Image
             height={1000}
             width={300}
@@ -60,7 +66,6 @@ const Products = () => {
             alt=""
           />
         </div>
-
         <div className="w-full">
           <div className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2">
             <button onClick={toggleDrawer} className="text-xl">
@@ -95,19 +100,31 @@ const Products = () => {
                 />
               </p>
             </div>
-
-            <div
-              className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
-            >
-              {products && Array.isArray(products) ? (
-                products.map((product) => (
-                  <SingleCart key={product?.product_id} item={product} />
-                ))
-              ) : (
-                <p>No products available</p>
-              )}
-            </div>
-            <Paginations api="products" data={setProducts} />
+            {loading || !product?.data ? (
+              <ProductSkeleton count={10} />
+            ) : (
+              <div
+                className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+              >
+                {product?.data && Array.isArray(product?.data) ? (
+                  product?.data?.map((product) => (
+                    <SingleCart key={product?.product_id} item={product} />
+                  ))
+                ) : (
+                  <p>No products available</p>
+                )}
+              </div>
+            )}
+            {/* pagination component  */}
+            {loading ? (
+              <PaginationSkeleton />
+            ) : (
+              <Paginations
+                page={page}
+                setPage={setPage}
+                totalPage={product?.last_page}
+              />
+            )}
           </section>
         </div>
       </div>
@@ -126,11 +143,8 @@ const Products = () => {
           <div className="flex-grow mt-4 overflow-y-auto">
             {" "}
             {/* Ensures the content area has scrollable overflow */}
-            <PriceFilter
-              api="products"
-              setProducts={setProducts}
-              maxPrice={maxPrice}
-            />
+            {/* small device price filter  */}
+            <PriceFilter setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
           </div>
         </div>
       </div>

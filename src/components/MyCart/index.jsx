@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { FaCheckCircle, FaPlusCircle, FaShoppingCart } from "react-icons/fa";
 import AddressModal from "../AddressModal"; 
 import Link from "next/link";
+import CartSkeleton from "../loader/CartSkeleton";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -173,9 +174,9 @@ const MyCart = () => {
   return (
     <div>
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 rounded-md">
-        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+        {data?.length>0 && <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
           <FaShoppingCart /> Add To Cart
-        </h1>
+        </h1>}
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 bg-gray-100 p-3">
@@ -247,7 +248,7 @@ const MyCart = () => {
               </div>
             </div>
           ) : (
-            <p>Cart is Empty</p>
+            <CartSkeleton/>
           )}
         </div>
 

@@ -1,5 +1,6 @@
 import { Toastify } from "@/components/toastify";
 import { useProduct } from "@/hooks/useProducts";
+import { removeToken } from "@/utils/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -10,42 +11,57 @@ import { MdOutlineVerifiedUser } from "react-icons/md";
 import { TbCircleKey, TbShoppingBag } from "react-icons/tb";
 import { TiDocumentText } from "react-icons/ti";
 
-const ProfileSidebar = ({profile}) => {
-    const {user,setToken} = useProduct(); 
+const ProfileSidebar = ({ profile }) => {
+  const { user, setToken } = useProduct();
   const sections = [
-    { logo: <CgProfile />, name: "Profile",path: "/profile"},
-    { logo: <IoLocationOutline />, name: "Address Book" , path:"/profile/address" },
-    { logo: <TbShoppingBag />,name:"Cart", path: "/profile/cart" },
-    { logo: <TiDocumentText />, name: "Orders",path:"/profile/orders" },
-    { logo: <TbCircleKey />, name: "Change Password", path:"/profile/change-password" },
+    { logo: <CgProfile />, name: "Profile", path: "/profile" },
+    {
+      logo: <IoLocationOutline />,
+      name: "Address Book",
+      path: "/profile/address",
+    },
+    { logo: <TbShoppingBag />, name: "Cart", path: "/profile/cart" },
+    { logo: <TiDocumentText />, name: "Orders", path: "/profile/orders" },
+    {
+      logo: <TbCircleKey />,
+      name: "Change Password",
+      path: "/profile/change-password",
+    },
   ];
-   const router  = useRouter();
+  const router = useRouter();
   const handleLogOut = () => {
     localStorage.removeItem("token");
     Toastify.Success("Logout Succesfully");
     router.push("/");
-    setToken()
+    setToken();
+    removeToken();
   };
   return (
-   <div className="">
-     <div className="p-4  ">
+    <div className="">
+      <div className="p-4  ">
         <div className="   ">
           <div className="flex justify-center md:pb-4">
             <Image
-              height={400}
-              width={400}
-              className="rounded-full  h-16 w-16 "
-              src={`${process.env.NEXT_PUBLIC_API_SERVER}${user?.profile_pic}`}
-              al="true"
+              height={64} // Matches Tailwind h-16 (16 * 4 = 64px)
+              width={64} // Matches Tailwind w-16
+              className="rounded-full"
+              src={
+                user?.profile_pic
+                  ? `${process.env.NEXT_PUBLIC_API_SERVER}${user.profile_pic}`
+                  : "/profile_avatar/profile_avater.png" // Default fallback
+              }
               alt="Profile Image"
-            ></Image>
+              onError={(e) => {
+                e.target.src = "/profile_avatar/profile_avater.png"; // Ensure a fallback image
+              }}
+            />
           </div>
           <p className="text-base py-2 text-center">
             {" "}
             <span className="font-light border-b border-dashed ">
               Hello, <br />
             </span>{" "}
-            {user?.name}
+            {user?.name ? user?.name : "Jhon Don"}
           </p>
           <div className="flex justify-center">
             <p className="bg-[#00E381] flex items-center px-3 py-1 rounded-full  text-center text-white text-xs font-semibold ">
@@ -59,7 +75,11 @@ const ProfileSidebar = ({profile}) => {
               <li key={data?.name} className="bg-red-0 py-1 ">
                 <Link href={`${data?.path}`} className="bg-red-900 ">
                   <p
-                    className={`flex gap-2 py-2 items-center px-2 rounded-lg text-primary hover:text-white text-base ${data?.path==router?.pathname?'bg-primary text-white hover:bg-blue-300':"hover:bg-primary "} `}
+                    className={`flex gap-2 py-2 items-center px-2 rounded-lg text-primary hover:text-white text-base ${
+                      data?.path == router?.pathname
+                        ? "bg-primary text-white hover:bg-blue-300"
+                        : "hover:bg-primary "
+                    } `}
                   >
                     {" "}
                     {data.logo} {data.name}
@@ -80,7 +100,7 @@ const ProfileSidebar = ({profile}) => {
           </ul>
         </div>
       </div>
-   </div>
+    </div>
   );
 };
 

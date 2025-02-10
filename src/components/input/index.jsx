@@ -113,9 +113,9 @@ export const PasswordInput = (props) => {
   };
   return (
     <div>
-      <span className="text-sm mb-1 text-gray-500 flex gap-1">
+      <span className="text-sm mb-1   flex gap-1">
         {props?.label}{" "}
-        <span className="text-w">{props?.rules?.required ? "*" : ""}</span>
+        <span className="text-white">{props?.rules?.required ? "*" : ""}</span>
       </span>
 
       <div className="relative">

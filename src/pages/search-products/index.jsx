@@ -1,46 +1,67 @@
-import PriceFilter from '@/components/priceFilter';
-import SingleCart from '@/components/singleCart';
-import { useProduct } from '@/hooks/useProducts';
-import { useRouter } from 'next/router';
-import React from 'react';
+import ProductSkeleton from "@/components/loader/ProductSkeleton"; 
+import SingleCart from "@/components/singleCart";
+import { publicRequest } from "@/config/axios.config"; 
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useState } from "react";
 
 const SearchProdut = () => {
-  const router=useRouter()
-  const searchData=router.query.search
-  const { products, setProducts, loading: productLoading } = useProduct();
+  const router = useRouter();
+  const searchText = router.query.search;
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const fetchSearchProduct = useCallback(
+    async (searchText) => {
+      try {
+        // if search text is empty then return without making request.
+        setLoading(true);
+        if (!searchText) return;
+        setLoading(true);
+        const result = await publicRequest.get(`/products?title=${searchText}`);
+        setProducts(result?.data?.data);
+      } catch (error) {}
+      setLoading(false);
+    },
+    [searchText]
+  );
+
+  useEffect(() => {
+    if (!searchText) return;
+    fetchSearchProduct(searchText);
+  }, [searchText]);
+  if (loading)
+    return (
+      <div className="grid grid-cols-3 lg:grid-cols-6 gap-4 mt-44">
+        {Array.from({ length: 10 }, (_, index) => (
+          <ProductSkeleton key={index} />
+        ))}
+      </div>
+    );
   return (
     <div className="mt-36">
+      <div className="text-center py-10">
+        <h1 className="font-extrabold text-primary text-4xl py-2">
+          You search for {searchText}
+        </h1>
+        <p className="font-normal text-xl leading-7">
+          Choose form the best collections
+        </p>
+      </div>
 
-    <div className="text-center py-10">
-      <h1 className="font-extrabold text-primary text-4xl py-2">
-        You search for {searchData}
-      </h1>
-      <p className="font-normal text-xl leading-7">
-        Choose form the best collections
-      </p>
-   
-    </div>
-
-    <div className="flex container-custom mx-auto items-start gap-10 w-full">
-   
-
-      <div className="w-full">
-        
-        {/* All product show */}
-        <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-5 lg:gap-8 md:gap-8 justify-between">
-          {products && Array.isArray(products) ? (
-            products.map((product) => (
-              <SingleCart key={product?.product_id} item={product} />
-            ))
-          ) : (
-            <p>No products available</p>
-          )}
+      <div className="flex container-custom mx-auto items-start gap-10 w-full">
+        <div className="w-full">
+          {/* All product show */}
+          <div className="w-full grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-5 lg:gap-8 md:gap-8 justify-between">
+            {products?.data && Array.isArray(products?.data) ? (
+              products?.data.map((product) => (
+                <SingleCart key={product?.product_id} item={product} />
+              ))
+            ) : (
+              <p>No products available</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
-
-    
-  </div>
   );
 };
 

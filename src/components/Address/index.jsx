@@ -5,6 +5,7 @@ import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Toastify } from "../toastify";
 import { FaAddressBook } from "react-icons/fa";
+import AddressSkeleton from "../loader/AddressSkeleton";
 
 
 const Address = () => {
@@ -273,53 +274,60 @@ const Address = () => {
 
       {/* Existing Addresses */}
       <div>
-        {address?.map((item, index) => (
-          <div
-            key={item?.address_id}
-            className="bg-gray-100 p-3  flex flex-col md:grid md:grid-cols-3 justify-between items-start md:items-center gap-6 md:gap-10 mb-3"
-          >
-            <div className="flex  w-full gap-2">
-              <p className="font-light space-y-2 text-start  md:text-sm leading-4 md:leading-4">
-                <strong className="font-medium whitespace-nowrap">
-                  Address {index + 1}:
-                </strong>
-                {item.address_line1} {item.address_line2} {item.union?.name}{" "}
-                {item.upazila?.name}, {item.district?.name},{" "}
-                {item.division?.name}
-              </p>
+        {
+          address.length>0 ? <>{address?.map((item, index) => (
+            <div
+              key={item?.address_id}
+              className="bg-gray-100 p-3  flex flex-col md:grid md:grid-cols-3 justify-between items-start md:items-center gap-6 md:gap-10 mb-3"
+            >
+              <div className="flex  w-full gap-2">
+                <p className="font-light space-y-2 text-start  md:text-sm leading-4 md:leading-4">
+                  <strong className="font-medium whitespace-nowrap">
+                    Address {index + 1}:
+                  </strong>
+                  {item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
+                  {item?.upazila?.name}, {item?.district?.name},{" "}
+                  {item?.division?.name}
+                </p>
+              </div>
+              <div className="flex w-full justify-start md:justify-center items-center gap-2">
+                <button
+                  onClick={() => handelDefaultAdress(item?.address_id)}
+                  className={`flex gap-3 items-center ${
+                    cart?.shipping_address_id !== item?.address_id
+                      ? "text-gray-600"
+                      : "font-bold text-primary"
+                  }`}
+                >
+                  <FaCheckCircle className="me-2" />
+                  {cart?.shipping_address_id !== item?.address_id
+                    ? "Set as Default Delivery Address"
+                    : "Default Delivery Address"}
+                </button>
+              </div>
+              <div className="flex justify-start md:justify-center gap-2">
+                <button
+                  onClick={() => handleEditModal(item)}
+                  className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
+                >
+                  <AiFillEdit className=" h-5 w-5" />
+                </button>
+  
+                <button
+                  onClick={() => handleDelete(item.address_id)}
+                  className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
+                >
+                  <RiDeleteBin6Line className="font-semibold" />
+                </button>
+              </div>
             </div>
-            <div className="flex w-full justify-start md:justify-center items-center gap-2">
-              <button
-                onClick={() => handelDefaultAdress(item?.address_id)}
-                className={`flex gap-3 items-center ${
-                  cart?.shipping_address_id !== item?.address_id
-                    ? "text-gray-600"
-                    : "font-bold text-primary"
-                }`}
-              >
-                <FaCheckCircle className="me-2" />
-                {cart?.shipping_address_id !== item?.address_id
-                  ? "Set as Default Delivery Address"
-                  : "Default Delivery Address"}
-              </button>
-            </div>
-            <div className="flex justify-start md:justify-center gap-2">
-              <button
-                onClick={() => handleEditModal(item)}
-                className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
-              >
-                <AiFillEdit className=" h-5 w-5" />
-              </button>
-
-              <button
-                onClick={() => handleDelete(item.address_id)}
-                className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
-              >
-                <RiDeleteBin6Line className="font-semibold" />
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}</>:<>
+            {
+              Array.from({length:20}).map((_,i)=><AddressSkeleton key={i}/>)
+            }
+          </>
+        }
+        
       </div>
 
       {/* Add New Address Button */}
