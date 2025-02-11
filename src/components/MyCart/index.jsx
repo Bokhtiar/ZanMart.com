@@ -112,8 +112,8 @@ const MyCart = () => {
   const hasPrePaymentOnly = data.some((item) => item.payment !== "cash");
 
   const cartForOrder = {
-    billing_address_id: cart?.billing_address_id,
-    shipping_address_id: cart?.shipping_address_id,
+    // billing_address_id: cart?.billing_address_id,
+    // shipping_address_id: cart?.shipping_address_id,
     cart_items: cart.cart_items.map(
       ({ image, payment, title, color, attribute, ...rest }) => rest
     ),
@@ -136,21 +136,24 @@ const MyCart = () => {
   const shipping_address = address;
   // console.log(shipping_address?.shipping_address_id);
   const handleCheckout = async () => {
-    if (shipping_address?.shipping_address_id) {
       setIsModalOpen(true);
       setModalAction("confirm");
-    } else {
-      setAddressModal(true);
-    }
   };
-
+   const [addressData,setAddressData] = useState({});
   const handleConfirm = async () => {
+   
+    const newMyOrder = {
+      ...cartForOrder,
+      billing_address_id: addressData?.address_id ,
+      shipping_address_id: addressData?.address_id  
+    }
+    // return;
     try {
       if (
-        cartForOrder?.shipping_address_id &&
-        cartForOrder?.billing_address_id
+        newMyOrder?.shipping_address_id &&
+        newMyOrder?.billing_address_id
       ) {
-        const res = await privateRequest.post("user/orders", cartForOrder);
+        const res = await privateRequest.post("user/orders", newMyOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
           setCart({ ...cart, cart_items: [] });
@@ -295,6 +298,7 @@ const MyCart = () => {
         onConfirm={handleConfirm}
         message="Are you sure you want to confirm the order?"
         title={"Confirm Order"}
+        setAddressData={setAddressData}
       />
       {addressModal && <AddressModal setAddressModal={setAddressModal} />}
     </div>
@@ -303,7 +307,7 @@ const MyCart = () => {
 
 export default MyCart;
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title }) => {
+const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title,setAddressData }) => {
   const [address, setAddress] = useState([]);
   const fetchAddress = useCallback(async () => {
     try {
@@ -320,6 +324,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title }) => {
   const [selected, setSelected] = useState(null);
   const handleChange = (index,addressItem) => {
     // console.log(addressItem);
+    setAddressData(addressItem)
     setSelected(index);
   };
    
@@ -334,11 +339,10 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title }) => {
         {address.length > 0 &&
           address.map((item, index) => {
             return (
-              <div htmlFor={`address-${address.address_id}`}  name="address" key={address.address_id} className={` ${selected === index + 1 ? 'bg-blue-100' : 'bg-gray-100 '} mb-4 gap-2   p-3 flex rounded-md cursor-pointer`}
+              <div htmlFor={`address-${address.address_id}`}  name="address" key={address.address_id} className={` ${selected === index + 1 ? 'bg-blue-100 ' : 'bg-gray-100 '} mb-4 gap-2   p-3 flex rounded-md cursor-pointer items-center`}
                onClick={()=>handleChange(index+1,item)}
               >
               <FaCheckCircle className={`  ${selected === index + 1 ? 'text-blue-500' : 'text-gray-400'} w-8 h-8 `} />
-
                 <div>{item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
                 {item?.upazila?.name}, {item?.district?.name},{" "}
                 {item?.division?.name}</div>
@@ -354,10 +358,10 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title }) => {
           <button
             // className="bg-blue-500 text-white px-4 py-2 rounded"
             disabled={!selected}
-            className={`  text-primary px-4 bg-gray-300 rounded  text-xs font-bold     hover:bg-gray-400 ${
+            className={`px-4   rounded  text-xs font-bold     hover:bg-blue-400 ${
               !selected
                 ? "opacity-50 cursor-not-allowed bg-gray-200 px-4 py-2"
-                : ""
+                : "bg-primary text-white"
             }`}
             onClick={onConfirm} 
           >

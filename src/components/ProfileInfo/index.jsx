@@ -140,7 +140,7 @@ const ProfileInfo = () => {
               {address?.length > 0 &&
                 address?.map((addressInfo, index) => (
                   <div
-                    className="space-y-1.5 bg-gray-50 px-2 py-4 rounded-lg text-sm"
+                    className="space-y-1.5 border px-2 py-4 rounded-lg text-sm"
                     key={addressInfo?.address_id}
                   >
                     <div className="flex flex-col md:flex md:flex-row  ">
