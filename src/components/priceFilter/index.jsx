@@ -5,10 +5,10 @@ import { Toastify } from "../toastify";
 import { FaArrowsAltH } from "react-icons/fa";
 
 const PriceFilter = ({  setMinPrice, setMaxPrice }) => {
-  const [minValue, setMinValue] = useState(20);
-  const [maxValue, setMaxValue] = useState(0);
-  const minGap = 100;
-  const sliderminValue = 0; // set this to your desired minimum value
+  const [minValue, setMinValue] = useState(10);
+  const [maxValue, setMaxValue] = useState(1000);
+  const minGap = 1000;
+  const sliderminValue = 10; // set this to your desired minimum value
   const sliderMaxValue = 5000;
   const handleMinChange = (e) => {
     const value = parseInt(e.target.value);
@@ -73,7 +73,7 @@ const PriceFilter = ({  setMinPrice, setMaxPrice }) => {
             className={style.minvalue}
             min={sliderminValue}
             max={sliderMaxValue}
-            value={minValue}
+            value={minValue-1}
             onChange={handleMinChange}
             onMouseUp={handleMouseUp}
           />

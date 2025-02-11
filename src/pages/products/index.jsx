@@ -19,8 +19,8 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [gridCount, setGridCount] = useState(4);
   const [page, setPage] = useState(1);
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrices, setMaxPrice] = useState(20);
+  const [minPrice, setMinPrice] = useState(1);
+  const [maxPrices, setMaxPrice] = useState(0);
   const { fetchProducts, newProduct: product, loading } = useProduct();
   useEffect(() => {
     fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice });

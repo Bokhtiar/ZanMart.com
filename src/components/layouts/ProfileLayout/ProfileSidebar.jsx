@@ -17,7 +17,7 @@ const ProfileSidebar = ({ profile }) => {
     { logo: <CgProfile />, name: "Profile", path: "/profile" },
     {
       logo: <IoLocationOutline />,
-      name: "Address Book",
+      name: "Address List",
       path: "/profile/address",
     },
     { logo: <TbShoppingBag />, name: "Cart", path: "/profile/cart" },

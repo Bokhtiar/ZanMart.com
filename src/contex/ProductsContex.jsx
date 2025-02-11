@@ -50,10 +50,12 @@ const MyProvider = ({ children }) => {
       console.log("---------------------", filters);
       setLoading(true);
       const queryParams = new URLSearchParams();
-      if (filters.max_price) queryParams.append("max_price", filters.max_price);
-      if (filters.min_price) queryParams.append("min_price", filters.min_price);
+      if (filters.max_price && filters.min_price) {
+        queryParams.append("min_price", filters.min_price);
+        queryParams.append("max_price", filters.max_price);
+      }
       if (filters.page) queryParams.append("page", filters.page);
-      if (filters.title) queryParams.append("title", filters.title);
+      // if (filters.title) queryParams.append("title", filters.title);
 
       let res;
       if (filters?.title) {

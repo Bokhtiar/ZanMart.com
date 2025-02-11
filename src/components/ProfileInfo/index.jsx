@@ -4,7 +4,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { Toastify } from "../toastify";
 import Image from "next/image";
 import { MdAccountCircle } from "react-icons/md";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,7 @@ const ProfileInfo = () => {
   } = useForm();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [addressLoading, setAddressLoading] = useState(false);
   // Set form data when profile prop changes
   useEffect(() => {
     if (profile) {
@@ -64,61 +64,161 @@ const ProfileInfo = () => {
       Toastify.Error(error.response?.data[0]);
     }
   };
-
+  const [address, setAddress] = useState([]);
+  // address fetch api here
+  const userAddresses = async () => {
+    try {
+      setAddressLoading(true);
+      const res = await privateRequest.get("user/address");
+      setAddress(res.data?.data);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    }
+    setAddressLoading(false);
+  };
+  useEffect(() => {
+    userAddresses();
+  }, []);
+  console.log(address);
   return (
-    <div className="">
-      {(loading || !profile) ? (
+    <div className="space-y-4">
+      <h1 className="text-xl text-gray-700 font-medium">My Profile</h1>
+      {/* profile basic info section  */}
+      {loading || !profile || addressLoading ? (
         <ProfileSkeleton />
       ) : (
         <>
-          <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
-            <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
-              <MdAccountCircle /> Manage Your Account
-            </h1>
-            <button
-              onClick={handleOpenModal}
-              className="text-lg bg-primary px-9 py-1  gap-2 flex items-center text-white rounded-3xl"
-            >
-              <AiFillEdit className="cursor-pointer" /> Edit
-            </button>
-          </div>
-          <div className="flex flex-col  md:flex-row-reverse items-center  justify-between bg-gray-100 p-4 rounded-md">
-            <div className="flex flex-col justify-center me-20 items-center">
+          {" "}
+          <section className="border rounded-lg p-4 flex justify-between">
+            <div className="flex gap-2 items-center">
               <Image
                 src={`${process?.env.NEXT_PUBLIC_API_SERVER}${profile?.profile_pic}`}
-                height={150}
-                width={150}
+                height={70}
+                width={70}
                 alt=""
                 className="rounded-full"
               />
-              <h1 className="text-xl font-semibold">{profile?.name}</h1>
+              <div>
+                <p>{profile?.name}</p>
+                {/* <p>{profile?.name}</p> */}
+                <span className="text-gray-500">{profile?.email}</span>
+              </div>
             </div>
-            <div className="w-96">
-              {/* <h3 className="text-lg font-semibold flex items-center ">
-            Personal Profile
-          </h3> */}
-              <p className="flex justify-between items-center pb-2 font-medium text-lg">
-                <CgProfile />
-                <span className="flex font-light ps-2 gap-5 items-center">
-                  {profile?.name}
-                </span>
-              </p>
-              <p className="flex justify-between items-center pb-2 font-medium text-lg">
-                <p className="flex items-center">
-                  <FaPhoneAlt />
+            <div>
+              <button
+                onClick={handleOpenModal}
+                className="text-sm bg-gray-50 px-3 py-1  gap-2 flex items-center text-gray-700 rounded-lg border"
+              >
+                <AiFillEdit className="cursor-pointer" /> Edit
+              </button>
+            </div>
+          </section>
+          {/* personal info detials page  */}
+          <section className="border rounded-lg p-4 space-y-1.5  ">
+            <h1 className="text-xl text-gray-700 font-medium pb-2.5">
+              Personal Information
+            </h1>
+            <div className="flex flex-col md:flex md:flex-row  ">
+              <p className="w-1/2 text-gray-600 font-medium  ">Name</p>
+              <p className="w-1/2 text-gray-500  ">{profile?.name}</p>
+            </div>
+            <div className="flex flex-col md:flex md:flex-row  ">
+              <p className="w-1/2 text-gray-600 font-medium  ">Phone</p>
+              <p className="w-1/2 text-gray-500  ">{profile?.phone}</p>
+            </div>
+            <div className="flex flex-col md:flex md:flex-row   ">
+              <p className="w-1/2 text-gray-600 font-medium  ">Email</p>
+              <p className="w-1/2 text-gray-500 mt-0 ">{profile?.email}</p>
+            </div>
+          </section>
+          {/* address show using list  */}
+          {address?.length > 0 ? (
+            <section className="border rounded-lg px-2 pb-4 space-y-2">
+              <h1 className="text-xl text-gray-700 font-medium py-3 px-2">
+                Adress List
+              </h1>
+              {address?.length > 0 &&
+                address?.map((addressInfo, index) => (
+                  <div
+                    className="space-y-1.5 bg-gray-50 px-2 py-4 rounded-lg text-sm"
+                    key={addressInfo?.address_id}
+                  >
+                    <div className="flex flex-col md:flex md:flex-row  ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        Country
+                      </p>
+                      <p className="w-1/2 text-gray-500  ">
+                        {addressInfo?.country}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row  ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        Division
+                      </p>
+                      <p className="w-1/2 text-gray-500  ">
+                        {addressInfo?.division?.name}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row   ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        District
+                      </p>
+                      <p className="w-1/2 text-gray-500 mt-0 ">
+                        {addressInfo?.district?.name}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row   ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        Upazila
+                      </p>
+                      <p className="w-1/2 text-gray-500 mt-0 ">
+                        {addressInfo?.upazila?.name}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row   ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">Union</p>
+                      <p className="w-1/2 text-gray-500 mt-0 ">
+                        {addressInfo?.union?.name}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row   ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        Postal Code
+                      </p>
+                      <p className="w-1/2 text-gray-500 mt-0 ">
+                        {addressInfo?.postal_code}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row   ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        Address 1
+                      </p>
+                      <p className="w-1/2 text-gray-500 mt-0 ">
+                        {addressInfo?.address_line1}
+                      </p>
+                    </div>
+                    <div className="flex flex-col md:flex md:flex-row   ">
+                      <p className="w-1/2 text-gray-600 font-medium  ">
+                        Addres 2
+                      </p>
+                      <p className="w-1/2 text-gray-500 mt-0 ">
+                        {addressInfo?.address_line2}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </section>
+          ) : (
+            <div>
+              <div className="flex flex-col items-center justify-center text-gray-500 py-10">
+                <FaMapMarkerAlt className="text-4xl mb-2" />
+                <p className="text-lg">No addresses found</p>
+                <p className="text-sm text-gray-400">
+                  Add a new address to see it listed here
                 </p>
-                <span className="flex font-light ps-2 gap-5 items-center">
-                  {profile?.phone}
-                </span>
-              </p>
-              <p className="flex justify-between items-center pb-2 font-medium text-lg">
-                <MdEmail />
-                <span className="flex font-light ps-2 gap-5 items-center">
-                  {profile?.email}
-                </span>
-              </p>
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
       {isModalOpen && (
