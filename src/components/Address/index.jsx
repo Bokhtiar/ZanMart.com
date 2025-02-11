@@ -7,7 +7,6 @@ import { Toastify } from "../toastify";
 import { FaAddressBook } from "react-icons/fa";
 import AddressSkeleton from "../loader/AddressSkeleton";
 
-
 const Address = () => {
   const [modal, setModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -64,69 +63,60 @@ const Address = () => {
     // console.log(formData);
 
     try {
-        const updatedFormData = {
-            ...formData,
-            name: formData.name || "",          // Ensure name is provided
-            phone: formData.phone || "",        // Ensure phone is provided
-            email: formData.email || "",        // Ensure email is provided
-            address_line1: formData.address_line1 || "",
-            address_line2: formData.address_line2 || "",
-            division_id: formData.division_id || "",
-            district_id: formData.district_id || "",
-            upazila_id: formData.upazila_id || "",
-            union_id: formData.union_id || "",
-            postal_code: formData.postal_code || "",
-            type: formData.type || "", // Example: 'home', 'office'
-             _method: "PUT",
-        };
+      const updatedFormData = {
+        ...formData,
+        name: formData.name || "", // Ensure name is provided
+        phone: formData.phone || "", // Ensure phone is provided
+        email: formData.email || "", // Ensure email is provided
+        address_line1: formData.address_line1 || "",
+        address_line2: formData.address_line2 || "",
+        division_id: formData.division_id || "",
+        district_id: formData.district_id || "",
+        upazila_id: formData.upazila_id || "",
+        union_id: formData.union_id || "",
+        postal_code: formData.postal_code || "",
+        type: formData.type || "", // Example: 'home', 'office'
+        _method: "PUT",
+      };
 
-        if (isEdit) {
-            // console.log(updatedFormData);
-            const res = await privateRequest.post(
-                `user/address/${editAddressId}`,
-                updatedFormData
-            );
-
-            if (res.status === 200) {
-                setAddress((prevAddresses) =>
-                    prevAddresses.map((item) =>
-                        item.address_id === editAddressId
-                            ? res.data.data
-                            : item
-                    )
-                );
-                userAddresses()
-                Toastify.Success("Address updated successfully!");
-            }
-        } else {
-            const response = await privateRequest.post(
-                "user/address",
-                formData
-            );
-
-            if (response.data?.success === true) {
-                setAddress((prevAddresses) => [
-                    ...prevAddresses,
-                    response.data.data,
-                ]);
-                userAddresses()
-                Toastify.Success(response.data.message);
-            } else {
-                Toastify.Error(response.errors);
-            }
-        }
-    } catch (error) {
-        console.error(
-            "Error submitting address:",
-            error.response?.data || error.message
+      if (isEdit) {
+        // console.log(updatedFormData);
+        const res = await privateRequest.post(
+          `user/address/${editAddressId}`,
+          updatedFormData
         );
-        Toastify.Error("Failed to submit address.");
+
+        if (res.status === 200) {
+          setAddress((prevAddresses) =>
+            prevAddresses.map((item) =>
+              item.address_id === editAddressId ? res.data.data : item
+            )
+          );
+          userAddresses();
+          Toastify.Success("Address updated successfully!");
+        }
+      } else {
+        const response = await privateRequest.post("user/address", formData);
+
+        if (response.data?.success === true) {
+          setAddress((prevAddresses) => [...prevAddresses, response.data.data]);
+          userAddresses();
+          Toastify.Success(response.data.message);
+        } else {
+          Toastify.Error(response.errors);
+        }
+      }
+    } catch (error) {
+      console.error(
+        "Error submitting address:",
+        error.response?.data || error.message
+      );
+      Toastify.Error("Failed to submit address.");
     }
 
     // Close the modal
     setModal(false);
-};
-
+  };
 
   // Fetch divisions
   const handleDivision = async () => {
@@ -215,54 +205,25 @@ const Address = () => {
         setAddress((prevAddresses) =>
           prevAddresses.filter((item) => item.address_id !== id)
         );
-  
-        // Clear the cart's shipping and billing address if they match the deleted ID
-        const updatedCart = {
-          ...cart,
-          shipping_address_id: cart.shipping_address_id === id ? null : cart.shipping_address_id,
-          billing_address_id: cart.billing_address_id === id ? null : cart.billing_address_id,
-        };
-  
-        setCart(updatedCart);
-        localStorage.setItem("cart", JSON.stringify(updatedCart));
-  
         Toastify.Success(res.data.message);
       }
     } catch (error) {
       Toastify.Error(error.message || "Failed to delete address.");
     }
   };
-  
-
-  const [cart, setCart] = useState({
-    cart_items: [],
-    shipping_address_id: 1,
-    billing_address_id: 1,
-  });
-  const handelDefaultAdress = (id) => {
-    const updatedCart = {
-      ...cart,
-      shipping_address_id: id,
-      billing_address_id: id,
-    };
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-  };
+   
   // console.log(cart);
   useEffect(() => {
     handleDivision();
     userAddresses();
-    const cartData = localStorage.getItem("cart");
-    if (cartData) {
-      setCart(JSON.parse(cartData));
-    }
+     
   }, []);
- 
+
   return (
     <div>
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
         <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
-          <FaAddressBook /> Address Book
+          <FaAddressBook /> Address List
         </h1>
         <button
           onClick={handleAddressModal}
@@ -274,60 +235,49 @@ const Address = () => {
 
       {/* Existing Addresses */}
       <div>
-        {
-          address.length>0 ? <>{address?.map((item, index) => (
-            <div
-              key={item?.address_id}
-              className="bg-gray-100 p-3  flex flex-col md:grid md:grid-cols-3 justify-between items-start md:items-center gap-6 md:gap-10 mb-3"
-            >
-              <div className="flex  w-full gap-2">
-                <p className="font-light space-y-2 text-start  md:text-sm leading-4 md:leading-4">
-                  <strong className="font-medium whitespace-nowrap">
-                    Address {index + 1}:
-                  </strong>
-                  {item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
-                  {item?.upazila?.name}, {item?.district?.name},{" "}
-                  {item?.division?.name}
-                </p>
+        {address.length > 0 ? (
+          <>
+            {address?.map((item, index) => (
+              <div
+                key={item?.address_id}
+                className="bg-gray-100 p-3  flex flex-col md:grid md:grid-cols-3 justify-between items-start md:items-center gap-6 md:gap-10 mb-3"
+              >
+                <div className="flex  w-full gap-2">
+                  <p className="font-light space-y-2 text-start  md:text-sm leading-4 md:leading-4">
+                    <strong className="font-medium whitespace-nowrap">
+                      Address {index + 1}:
+                    </strong>
+                    {item?.address_line1} {item?.address_line2}{" "}
+                    {item?.union?.name} {item?.upazila?.name},{" "}
+                    {item?.district?.name}, {item?.division?.name}
+                  </p>
+                </div>
+                <div className="flex w-full justify-start md:justify-center items-center gap-2"></div>
+                <div className="flex justify-start md:justify-center gap-2">
+                  <button
+                    onClick={() => handleEditModal(item)}
+                    className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
+                  >
+                    <AiFillEdit className=" h-5 w-5" />
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(item.address_id)}
+                    className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
+                  >
+                    <RiDeleteBin6Line className="font-semibold" />
+                  </button>
+                </div>
               </div>
-              <div className="flex w-full justify-start md:justify-center items-center gap-2">
-                <button
-                  onClick={() => handelDefaultAdress(item?.address_id)}
-                  className={`flex gap-3 items-center ${
-                    cart?.shipping_address_id !== item?.address_id
-                      ? "text-gray-600"
-                      : "font-bold text-primary"
-                  }`}
-                >
-                  <FaCheckCircle className="me-2" />
-                  {cart?.shipping_address_id !== item?.address_id
-                    ? "Set as Default Delivery Address"
-                    : "Default Delivery Address"}
-                </button>
-              </div>
-              <div className="flex justify-start md:justify-center gap-2">
-                <button
-                  onClick={() => handleEditModal(item)}
-                  className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
-                >
-                  <AiFillEdit className=" h-5 w-5" />
-                </button>
-  
-                <button
-                  onClick={() => handleDelete(item.address_id)}
-                  className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
-                >
-                  <RiDeleteBin6Line className="font-semibold" />
-                </button>
-              </div>
-            </div>
-          ))}</>:<>
-            {
-              Array.from({length:20}).map((_,i)=><AddressSkeleton key={i}/>)
-            }
+            ))}
           </>
-        }
-        
+        ) : (
+          <>
+            {Array.from({ length: 20 }).map((_, i) => (
+              <AddressSkeleton key={i} />
+            ))}
+          </>
+        )}
       </div>
 
       {/* Add New Address Button */}
