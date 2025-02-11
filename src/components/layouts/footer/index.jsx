@@ -77,9 +77,9 @@ const Footer = () => {
           <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
             Categories
           </h1>
-          <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
+          <Link href={"/clothing"} className="font-medium text-xs leading-8 text-[#AAAAAA]">
             Clothing
-          </p>
+          </Link>
           <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
             Stationary
           </p>
