@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { CiShoppingBasket } from "react-icons/ci";
+
+
 
 // Import Swiper styles
 import 'swiper/css';
@@ -60,43 +63,42 @@ const Banner = () => {
         clickable: true,
       }}
       speed={1000}
-
       modules={[Autoplay, Pagination, Navigation]}
       className="mySwiper"
     >
-      {
-        banner?.map(item =>
-          <SwiperSlide key={item?.banner_id}>
-            <div className="relative h-80 bg-[#F5F5F5]">
-              {/* Static Content Container */}
-              <div className="absolute inset-0 flex items-center md:justify-start justify-center lg:left-44 md:left-24 z-10 ">
-                <div className="text-start ">
-                  <h1 className="text-primary text-2xl md:text-3xl lg:text-[35px] font-extrabold">
-                    {item?.name}
-                  </h1>
-                  <p className="text-md mb-2">On the selected items</p>
-                  <Link
-                    href={`banner-products?sale=${item?.name}`}
-                    onClick={() => bannerProduct(item?.banner_id)}
-                    className="rounded-full btn text-sm bg-primary text-white px-5 py-2"
-                  >
-                    Shop Now
-                  </Link>
-                </div>
+      {banner?.map((item) => (
+        <SwiperSlide key={item?.banner_id}>
+          <div className="relative h-80 bg-[#F5F5F5]">
+            {/* Static Content Container */}
+            <div className="absolute inset-0 flex items-center md:justify-start justify-center lg:left-44 md:left-24 z-10 ">
+              <div className="text-start ">
+                <h1 className="text-primary text-2xl md:text-3xl lg:text-[45px] font-extrabold capitalize">
+                  {item?.name}
+                </h1>
+                <p className="text-xl font-thin mb-4 ">On the selected items</p>
+                <Link
+                  href={`banner-products?sale=${item?.name}`}
+                  onClick={() => bannerProduct(item?.banner_id)}
+                  className=" hover:bg-secondary rounded-full font-bold btn text-sm bg-primary text-white w-36 py-2 flex items-center justify-center gap-2"
+                >
+                  <CiShoppingBasket className="text-xl animate-bounce text-white font-bold" /> Shop
+                  Now
+                </Link>
               </div>
-              {/* Sliding Image */}
-              <Image height={1000} width={1000} priority        
-                className="w-full h-full object-cover"
-                src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
-                alt={item?.name}
-              />
             </div>
-          </SwiperSlide>
-        )
-      }
+            {/* Sliding Image */}
+            <Image
+              height={1000}
+              width={1000}
+              priority
+              className="w-full h-full object-cover"
+              src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
+              alt={item?.name}
+            />
+          </div>
+        </SwiperSlide>
+      ))}
     </Swiper>
-
-
   );
 };
 

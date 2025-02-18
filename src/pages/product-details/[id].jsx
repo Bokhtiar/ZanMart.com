@@ -1,17 +1,21 @@
-import Loader from "@/components/loader";
-import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
-import SingleCartSkeleton from "@/components/loader/singleCartSkeleton";
-import { Toastify } from "@/components/toastify";
-import TopFeature from "@/components/TopFeature";
+ 
+import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton"; 
+import { Toastify } from "@/components/toastify"; 
 import { publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import 'react-inner-image-zoom/lib/InnerImageZoom/styles.min.css'
+import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
 import InnerImageZoom from "react-inner-image-zoom";
-
+import { networkErrorHandeller } from "@/utils/helpers";
+import SingleCart from "@/components/singleCart";
+import { PiDotsThreeVertical } from "react-icons/pi";
+import { PiDotsNineBold } from "react-icons/pi";
+import { HiClipboardDocumentList } from "react-icons/hi2";
+import { PiDotsSixVerticalBold } from "react-icons/pi";
+import ProductSkeleton from "@/components/loader/ProductSkeleton";
 
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
@@ -28,7 +32,12 @@ const ProductDetails = () => {
   const [selectdAtribute_id, setSelectedAttribute_id] = useState();
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
-const [selectedDiscount,setSelectedDiscount]=useState(null)
+  const [selectedDiscount, setSelectedDiscount] = useState(null);
+  const [reletedProduct, setReletedProduct] = useState([]);
+  const [gridCount, setGridCount] = useState(5);
+  const [reletedProductLoading, setReletedProductLoading] = useState(false);
+console.log(selectedDiscount)
+  /** product details */
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -50,6 +59,7 @@ const [selectedDiscount,setSelectedDiscount]=useState(null)
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
       setvarient(productVariants);
+      console.log(productVariants);
 
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
@@ -69,6 +79,22 @@ const [selectedDiscount,setSelectedDiscount]=useState(null)
     setLoading(false);
   };
 
+  /** category releted product */
+  const reletedProductCategory = useCallback(async () => {
+    try {
+      setReletedProductLoading(true);
+      const response = await publicRequest.get(
+        `category/product/${product?.category_id}`
+      );
+      if (response && response.status === 200) {
+        setReletedProduct(response?.data?.data?.data);
+        setReletedProductLoading(false);
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+    }
+  }, [product?.category_id]);
+
   const handelIncriment = () => setQuantity(quantity + 1);
   const handelDiccriment = () => {
     if (quantity > 1) {
@@ -85,63 +111,76 @@ const [selectedDiscount,setSelectedDiscount]=useState(null)
     attribute_id: item?.attribute?.attribute_id,
     weight: item?.weight,
     attribute_weight: item?.attribute?.attribute_weight,
-    discount_price:item?.discount_price
+    discount_price: item?.discount_price,
   }));
-  console.log(product)
-  console.log(data)
+  console.log(product);
+  console.log(data);
   const handelCart = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>
-        item?.color_id === selectdColor_id && item?.attribute_id === selectdAtribute_id
+        item?.color_id === selectdColor_id &&
+        item?.attribute_id === selectdAtribute_id
     );
-    
-   if(selectedVariant && product?.low_stock_quantity_warning<=selectedVariant?.product_qty ){
-    const cartItem = {
-      product_id: product?.product_id,
-      sell_price: selectedPrice,
-      weight: product?.weight || selectedWeight || 1,
-      attribute_id: selectdAtribute_id,
-      attribute: selectedAttribute,
-      color_id: selectdColor_id,
-      color: selectedColor,
-      attribute_weight: selectedWeight || null,
-      attribute_price: selectedPrice,
-      qty: quantity,
-      image: product?.thumbnail_image,
-      category: categoryName,
-      title: product?.title,
-      payment: product?.delivery_status,
-      product_variant_id: selectedVariant?.product_variant_id , // Include the variant ID
-    };
-  
-    let cart = localStorage.getItem("cart");
-    cart = cart ? JSON.parse(cart) : { cart_items: [] };
-  
-    const isProductInCart = cart?.cart_items?.some(
-      (item) => item?.product_id === cartItem?.product_id && item?.product_variant_id === cartItem?.product_variant_id
-    );
-  
-    if (isProductInCart) {
-      Toastify.Warning("Already in Cart");
+
+    if (
+      selectedVariant &&
+      product?.low_stock_quantity_warning <= selectedVariant?.product_qty
+    ) {
+      const cartItem = {
+        product_id: product?.product_id,
+        sell_price: selectedPrice,
+        weight: product?.weight || selectedWeight || 1,
+        attribute_id: selectdAtribute_id,
+        attribute: selectedAttribute,
+        color_id: selectdColor_id,
+        color: selectedColor,
+        attribute_weight: selectedWeight || null,
+        attribute_price: selectedPrice,
+        qty: quantity,
+        image: product?.thumbnail_image,
+        category: categoryName,
+        title: product?.title,
+        payment: product?.delivery_status,
+        product_variant_id: selectedVariant?.product_variant_id,
+        attribute_discount_price:selectedDiscount || 0// Include the variant ID
+      };
+
+      let cart = localStorage.getItem("cart");
+      cart = cart ? JSON.parse(cart) : { cart_items: [] };
+
+      const isProductInCart = cart?.cart_items?.some(
+        (item) =>
+          item?.product_id === cartItem?.product_id &&
+          item?.product_variant_id === cartItem?.product_variant_id
+      );
+
+      if (isProductInCart) {
+        Toastify.Warning("Already in Cart");
+      } else {
+        cart.cart_items.push(cartItem);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
+        Toastify.Success("Product added successfully");
+      }
     } else {
-      cart.cart_items.push(cartItem);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      window.dispatchEvent(new Event("cartUpdated"));
-      Toastify.Success("Product added successfully");
+      Toastify.Warning(
+        "Selected size and color is not available.Please select another color or size"
+      );
     }
-   }
-   else{
-    Toastify.Warning('Selected size and color is not available.Please select another color or size')
-   }
   };
-  
 
   useEffect(() => {
     fetchProduct();
   }, [id]);
 
-console.log(product?.product_variants)
+  useEffect(() => {
+    if (product?.category_id) {
+      reletedProductCategory();
+    }
+  }, [product?.category_id]);
+
+  console.log(product?.product_variants);
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     // Ensure the gallery images are available and parse them if necessary
@@ -171,33 +210,35 @@ console.log(product?.product_variants)
   const handleColor = (colordata) => {
     setSelectedColor(colordata?.color_name);
     setSelectedColor_id(colordata.color_id);
-  
+
     const newColor = data?.find(
       (item) =>
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
     );
-  console.log(newColor)
+    console.log(newColor);
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
   };
-  
+
   const attributeHandle = (attributedata) => {
     setSelectedAttribute(attributedata?.attribute);
     setSelectedAttribute_id(attributedata?.attribute_id);
-  
+
     const newAttribute = data?.find(
       (item) =>
         item?.attribute === attributedata?.attribute &&
         item?.color_name === selectedColor
     );
-  
+
     setSelectedPrice(newAttribute?.price || product?.sell_price);
     setSelectedWeight(newAttribute?.weight || product?.weight);
-    setSelectedDiscount(newAttribute?.discount_price || product?.discount_price); // Updated line
+    setSelectedDiscount(
+      newAttribute?.discount_price || product?.discount_price
+    ); // Updated line
   };
-  
+
   //change thumbnile image base on galllery
   const handleThumb = (img) => {
     setThumb(img);
@@ -209,21 +250,21 @@ console.log(product?.product_variants)
     <div className="mx-auto container px-2 mt-36 pt-5">
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between">
         <div className="flex flex-col contents-between">
-        <div className="flex justify-center items-center">
-      <div className=" relative">
-        <InnerImageZoom
-          src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}  // Image source
-          zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`} // High-res image for zoom
-          alt="Product Thumbnail"
-          zoomType="hover"          // Enable zoom on hover
-          zoomPreload={true}        // Preload the zoomed image to avoid flickering
-             // Ensure the zoomed image is displayed only on hover
-          zoomPosition="right"      // Position of the zoom effect (you can change to 'left', 'top', 'bottom')
-          fillAvailableSpace={true}
-          className=" max-h-64 w-64" // Make the image fill the available space
-        />
-      </div>
-    </div>
+          <div className="flex justify-center items-center">
+            <div className=" relative">
+              <InnerImageZoom
+                src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`} // Image source
+                zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`} // High-res image for zoom
+                alt="Product Thumbnail"
+                zoomType="hover" // Enable zoom on hover
+                zoomPreload={true} // Preload the zoomed image to avoid flickering
+                // Ensure the zoomed image is displayed only on hover
+                zoomPosition="left" // Position of the zoom effect (you can change to 'left', 'top', 'bottom')
+                fillAvailableSpace={true}
+                className=" max-h-[550px] w-[550px] rounded" // Make the image fill the available space
+              />
+            </div>
+          </div>
 
           <div className="flex py-5 gap-4 w-1/2">
             {imageArray?.map((img, index) => (
@@ -240,13 +281,11 @@ console.log(product?.product_variants)
           </div>
         </div>
         <div className="flex flex-col content-between items- w-full lg:w-1/2">
-        
           <>
-            <h1 className="font-medium text-3xl text-start leading-10">
+            <h1 className="font-medium text-3xl text-start leading-10 text-gray-600">
               {product?.title}
-              
             </h1>
-           
+
             <p className="text-lg pt-4 pb-3 leading-4 font-bold text-secondary">
               {categoryName}
             </p>
@@ -302,9 +341,9 @@ console.log(product?.product_variants)
               </p>
             )}
             <div className="flex gap-3">
-            <p className="flex text-center w-24 border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
+              <p className="flex text-center w-24 border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
                 <IoMdCheckmarkCircleOutline /> in stock
-              </p> 
+              </p>
               {product?.delivery_status === "cash" ? (
                 <p className="flex text-center border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
                   <IoMdCheckmarkCircleOutline /> Cash on delivery Available
@@ -322,29 +361,29 @@ console.log(product?.product_variants)
                   tk
                 </span>
               </span>
-              {
-                selectedDiscount && <span className="text-secondary flex lg:text-2xl line-through">
-               {selectedDiscount}
-              </span>
-              }
-          
+              {selectedDiscount && (
+                <span className="text-secondary flex lg:text-2xl line-through">
+                  {selectedDiscount}
+                </span>
+              )}
             </p>
-            {   product?.rating &&      <span className="flex justify-start py-2">
-                  {product &&
-                    Array(Math.floor(product?.rating)-1)
-                      .fill(null)
-                      .map((_, index) => (
-                        <FaStar key={index} className="text-secondary" />
-                      ))}
-                  {product?.rating % 2 !== 0 ? (
-                    
-                    <FaStar className="text-secondary" />
-                  ) : (
-                    <FaStarHalfAlt className="text-secondary" />
-                  )}
-                </span>}
+            {product?.rating && (
+              <span className="flex justify-start py-2">
+                {product &&
+                  Array(Math.floor(product?.rating) - 1)
+                    .fill(null)
+                    .map((_, index) => (
+                      <FaStar key={index} className="text-secondary" />
+                    ))}
+                {product?.rating % 2 !== 0 ? (
+                  <FaStar className="text-secondary" />
+                ) : (
+                  <FaStarHalfAlt className="text-secondary" />
+                )}
+              </span>
+            )}
             <div className="">
-              <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl md:border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 border-[#D9D9D9] lg:p-3">
+              <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 lg:p-3">
                 <span className="flex items-center gap-2">
                   Qty:
                   <span className="border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]">
@@ -364,7 +403,6 @@ console.log(product?.product_variants)
                   Add To Cart
                 </button>
               </p>
-            
             </div>
           </>
 
@@ -376,11 +414,52 @@ console.log(product?.product_variants)
                     </div> */}
         </div>
       </div>
-      <TopFeature   key={id}
-          categoryid={id}
-          title='Related Products'
-          dataUrl={"home-page-category"}
-           ></TopFeature>
+      {/* <TopFeature
+        key={id}
+        categoryid={id}
+        title="Related Products"
+        dataUrl={"home-page-category"}
+      ></TopFeature> */}
+      <section>
+        <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
+          <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+            <HiClipboardDocumentList /> Releted Products
+          </h1>
+
+          <p className="flex items-center gap-2">
+            <PiDotsNineBold
+              onClick={() => setGridCount(5)}
+              className={`border border-primary text-2xl rounded-md ${
+                gridCount === 5 ? "bg-primary text-white" : ""
+              } cursor-pointer`}
+            />
+            <PiDotsSixVerticalBold
+              onClick={() => setGridCount(4)}
+              className={`border border-primary text-2xl ${
+                gridCount === 4 ? "bg-primary text-white" : ""
+              } rounded-md cursor-pointer`}
+            />
+            <PiDotsThreeVertical
+              onClick={() => setGridCount(3)}
+              className={`border border-primary text-2xl  ${
+                gridCount === 3 ? "bg-primary text-white" : ""
+              } rounded-md cursor-pointer`}
+            />
+          </p>
+        </div>
+
+        {reletedProductLoading ? (
+          <ProductSkeleton />
+        ) : (
+          <div
+            className={`bg-gray-50 p-5 w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+          >
+            {reletedProduct.map((product) => (
+              <SingleCart key={product?.product_id} item={product} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 };

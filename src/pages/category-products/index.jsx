@@ -1,311 +1,219 @@
-import React, {  useEffect, useState } from "react";
-import SingleCart from "@/components/singleCart";
-import dynamic from "next/dynamic";
+import React, { useCallback, useEffect, useState } from "react";
 import { publicRequest } from "@/config/axios.config";
-import { useProduct } from "@/hooks/useProducts";
 import { useRouter } from "next/router";
-import { FiFilter } from "react-icons/fi";
-import { MdClose } from "react-icons/md";
-import { PiRectangle } from "react-icons/pi";
-import style from "./style.module.css";
-import Image from "next/image";
+import { networkErrorHandeller } from "@/utils/helpers";
+import SingleCart from "@/components/singleCart";
+import { PiDotsNineBold } from "react-icons/pi";
+import { PiDotsSixVerticalBold } from "react-icons/pi";
+import { PiDotsThreeVertical } from "react-icons/pi";
+import { HiClipboardDocumentList } from "react-icons/hi2";
+import { BiCategoryAlt } from "react-icons/bi";
+import { FaAngleDown, FaChevronUp } from "react-icons/fa";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
-import PriceFilter from "@/components/priceFilter";
-import { Toastify } from "@/components/toastify";
-import UnitFilter from "./components/UnitFilter"; 
-import ColorFilter from "./components/ColorFilter";
-// const ColorFilter = dynamic(() => import("./components/ColorFilter"),  {
-//   loading: () => <p>Loading...</p>,
-// });
+
 const CategoryProducts = () => {
   const router = useRouter();
+  const { category_id } = router.query;
+
   const [loading, setLoading] = useState(false);
-  const { category_id, category_name } = router.query;
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [colors, setColors] = useState([]);
-  const [subCategory, setSubcategory] = useState([]);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [units, setUnits] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [expandedUnits, setExpandedUnits] = useState({});
   const [selectedAttributes, setSelectedAttributes] = useState({});
+  const [gridCount, setGridCount] = useState(4);
+  const [categoryLoading, setCategoryLoading] = useState(false)
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
-
-  const categoryFetch = async () => {
+  /** Fetch category */
+  const fetchCategory = useCallback(async () => {
+    if (!category_id) return;
+    setCategoryLoading(true);
     try {
-      setLoading(false);
-      const response = await publicRequest.get("categories");
-      const fetchedCategories = response?.data?.data || [];
-      const selectedCategory = fetchedCategories?.find(
-        (item) => item?.category_id === category_id
-      );
-      console.log(selectedCategory ,"selectedCategory ================>");
-      setSubcategory(selectedCategory?.childs || []);
-      setLoading(false);
+      const response = await publicRequest.get(`category/show/${category_id}`);
+      if (response?.status === 200) {
+        setCategory(response?.data?.data);
+      }
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      networkErrorHandeller(error);
+    } finally {
+      setCategoryLoading(false);
     }
-  };
-
-  const { products, setProducts, loading: productLoading } = useProduct();
-  console.log(products);
-
-  // Function to fetch colors
-  const fetchColors = async () => {
-    try {
-      setLoading(false);
-      const response = await publicRequest.get("color");
-      setColors(response?.data?.data || []);
-      // console.log('', response?.data?.data)
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching colors:", error);
-    }
-  };
-  useEffect(() => {
-    categoryFetch();
-  }, []);
-  useEffect(() => {
-    fetchColors();
-  }, [selectedSubCategory]); // Updated dependencies
-  useEffect(() => {
-     
-     if(category_id){
-      publicRequest
-      .get(`category/show/${category_id}`)
-      .then((res) => {
-        setUnits(res?.data?.data?.units);
-        setLoading(false);
-      })
-      .catch((error) => {
-        Toastify.Error("Error fetching sizes:");
-      });
-     }
   }, [category_id]);
-  console.log(category_id,"this is category id");
-  //Product unit and color Filter
-  const [variantData, setVariantData] = useState({
-    attributes: {
-      // Example: unit_key id 1,6,7
-      // Start with an empty array for color ids
-    },
-  });
-  const [selectedColors, setSelectedColors] = useState([]);
-  const handleColorChange = async (colorId) => {
-    // Determine the new selected colors based on the current selection
-    const newSelectedColors = selectedColors.includes(colorId)
-      ? selectedColors.filter((id) => id !== colorId) // Unselect
-      : [...selectedColors, colorId]; // Select
 
-    // Update selected colors state
-    setSelectedColors(newSelectedColors);
-    // Update variantData with the new selected colors
-    const updatedVariantData = {
-      ...variantData,
-      attributes: {
-        ...variantData.attributes,
-        color: newSelectedColors, // Update color attribute
-      },
-    };
-    setVariantData(updatedVariantData);
-
-    // Log the updated variantData directly
+  /** Fetch category products */
+  const fetchCategoryProduct = useCallback(async () => {
+    if (!category_id) return;
+    setLoading(true);
     try {
-      setLoading(false); 
-      const res = await publicRequest.post(
-        "product/variant-color-filter",
-        updatedVariantData
-      ); 
-      setProducts(res?.data?.data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleAttributeChange = async (unitId, attributeId) => {
-    // Manually calculate the new state
-    const newSelectedAttributes = selectedAttributes[unitId] || [];
-    const updatedAttributes = newSelectedAttributes.includes(attributeId)
-      ? newSelectedAttributes.filter((id) => id !== attributeId) // Unselect
-      : [...newSelectedAttributes, attributeId]; // Select
-
-    // Update the selectedAttributes state manually
-    const updatedSelectedAttributes = {
-      ...selectedAttributes,
-      [unitId]: updatedAttributes,
-    };
-
-    // Update variantData based on the manually updated attributes
-    const updatedVariantData = {
-      ...variantData,
-      attributes: {
-        ...variantData.attributes,
-        [`unit_${unitId}`]: updatedAttributes, // Update specific unit attribute
-      },
-    };
-
-    // Set the updated states
-    setSelectedAttributes(updatedSelectedAttributes); // Update selectedAttributes state
-    setVariantData(updatedVariantData); // Update variantData state
-
-    // Now call the API with the updated variantData
-    try {
-      setLoading(false);
-      const res = await publicRequest.post(
-        "product/variant-color-filter",
-        updatedVariantData
+      const payload = generatePayload();
+      const response = await publicRequest.post(
+        `category/product/with-filter`,
+        payload
       );
-      setProducts(res?.data?.data); // Update products based on API response
-      console.log("API Response:", res);
-      setLoading(false);
+      if (response?.status === 200) {
+        setProducts(response?.data?.data?.data);
+      }
     } catch (error) {
-      // console.error("Error calling API:", error);
-      Toastify.Error("Error fetching products");
+      networkErrorHandeller(error);
+    } finally {
+      setLoading(false);
     }
+  }, [category_id, selectedAttributes]);
 
-    // console.log("Updated variantData:", updatedVariantData);
+  // Generate payload for API
+  const generatePayload = () => ({
+    category_id: category_id,
+    attributes: selectedAttributes,
+  });
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchCategory();
+  }, [fetchCategory]);
+
+  useEffect(() => {
+    fetchCategoryProduct();
+  }, [fetchCategoryProduct]);
+
+  // Toggle expand/collapse for units
+  const toggleUnit = (unitId) => {
+    setExpandedUnits((prev) => ({
+      ...prev,
+      [unitId]: !prev[unitId],
+    }));
   };
 
-  if (loading || productLoading  ) {
-    return <ProductSkeleton />;
-  } 
+  // Handle checkbox selection
+  const handleCheckboxChange = (unitKey, attributeId) => {
+    setSelectedAttributes((prev) => {
+      const updatedUnit = prev[unitKey] || [];
+      const updatedAttributes = updatedUnit.includes(attributeId)
+        ? updatedUnit.filter((id) => id !== attributeId) // Remove attribute
+        : [...updatedUnit, attributeId]; // Add attribute
+
+      const updatedState = { ...prev, [unitKey]: updatedAttributes };
+      if (updatedAttributes.length === 0) delete updatedState[unitKey];
+      return updatedState;
+    });
+  };
+
+  // Initialize expanded units
+  useEffect(() => {
+    if (category?.units) {
+      const initialExpandedUnits = {};
+      category?.units.forEach((unit) => {
+        initialExpandedUnits[`unit_${unit.unit_id}`] = true;
+      });
+      setExpandedUnits(initialExpandedUnits);
+    }
+  }, [category]);
+
+  // if (loading) return <div>Loading...</div>;
+  // if (!category) return <div>No category data available.</div>;
 
   return (
-    <div className="mt-36 px-5">
-      {/* product banner--------------------------- */}
-      <div className="text-center py-10">
-        <h1 className="font-extrabold text-primary text-4xl py-2">
-          {category_name}
-        </h1>
-        <p className="font-normal text-xl leading-7">
-          Choose form the best collections
-        </p>
-        <p className="py-10 gap-10 flex justify-center">
-          {subCategory?.map((sub) => (
-            <button
-              key={sub.index}
-              className="shadow-lg font-normal rounded-sm py-2  text-xs px-10 "
-            >
-              {sub.category_name}
-            </button>
-          ))}
-        </p>
-      </div>
-
-      <div className="flex container container-custom mx-auto items-start gap-10 w-full">
-        {/* Filter options */}
-        <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
-          <PriceFilter api="products" setProducts={setProducts} />
-          {/* unit field map here  */}
-          {units?.map((unit, index) => (
-            <UnitFilter
-              unit={unit}
-              key={unit?.unit_id}
-              selectedAttributes={selectedAttributes}
-              handleAttributeChange={handleAttributeChange}
-            />
-          ))}
-
-          <ColorFilter colors={colors} selectedColors={selectedColors} handleColorChange={handleColorChange}/>
-          <Image
-            height={1000} 
-            width={300}
-            className="mt-10 w-full"
-            src="/images/filterbanner.svg"
-            alt=""
-          />
-        </div>
-
-        <div className="w-full">
-          <div className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2">
-            <button onClick={toggleDrawer} className="text-xl">
-              <FiFilter />
-            </button>
-          </div>
-          {/* All product show */}
-          <div className="w-full grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4 lg:gap-8 md:gap-8 justify-between">
-            {products && Array.isArray(products) ? (
-              products.map((product) => (
-                <SingleCart key={product?.product_id} item={product} />
-              ))
-            ) : (
-              <p>No products available</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Drawer for mobile filters */}
-      <div
-        className={`fixed top-36 right-0 h-[calc(100vh-144px)] z-20 bg-white transition-transform transform ${
-          isDrawerOpen ? "-translate-x-0" : "translate-x-full"
-        } w-2/3`}
-      >
-        <div className="p-4 h-full flex flex-col">
-          <button onClick={toggleDrawer} className="text-xl ">
-            <MdClose />
-          </button>
-
-          <div className="flex-grow mt-4 overflow-y-auto">
-            {" "}
-            {/* Ensures the content area has scrollable overflow */}
-            <div className="flex-col">
-              <PriceFilter api="products" setProducts={setProducts} />
-
-              {units?.map((unit) => (
-                <div key={unit?.unit_id} className="mt-10">
-                  <p className="text-base font-semibold leading-6">
-                    Filter by {unit?.unit_name}
-                  </p>
-                  {unit?.attributes?.map((attribute) => (
-                    <p
-                      key={attribute?.attribute_id}
-                      className="flex py-1 text-xs font-normal leading-4 items-center gap-2"
-                    >
-                      <input
-                        className="border-[#AAAAAA]"
-                        type="checkbox"
-                        onChange={() =>
-                          handleAttributeChange(
-                            unit?.unit_id,
-                            attribute?.attribute_id
-                          )
-                        }
-                        checked={selectedAttributes[unit?.unit_id]?.includes(
-                          attribute?.attribute_id
-                        )}
-                      />
-                      {attribute?.attribute_name}
-                    </p>
-                  ))}
+    <section className="mt-36 container-custom container">
+      <section className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-4">
+        {/* Left side */}
+        {categoryLoading === true ? (
+          "loading"
+        ) : (
+          <div className="col-span-2 my-2 bg-gray-50 px-2">
+            <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+              <BiCategoryAlt /> {category?.category_name}
+            </h1>
+            {category?.units.map((unit) => (
+              <div key={unit?.unit_id} className="border-b pb-4 mb-4">
+                <div
+                  onClick={() => toggleUnit(`unit_${unit?.unit_id}`)}
+                  className="cursor-pointer text-md font-semibold flex justify-between items-center text-primary"
+                >
+                  {unit?.unit_name}
+                  <span>
+                    {expandedUnits[`unit_${unit?.unit_id}`] ? (
+                      <FaChevronUp />
+                    ) : (
+                      <FaAngleDown />
+                    )}
+                  </span>
                 </div>
-              ))}
-
-              <div className="mt-10">
-                <p className="text-base font-semibold leading-6">
-                  Filter by color
-                </p>
-                {colors.map((color) => (
-                  <button
-                    key={color?.color_id}
-                    className="flex py-1 text-xs font-normal leading-4 items-center gap-2"
-                  >
-                    <span className="h-[13px] border overflow-hidden w-[13px]">
-                      <PiRectangle
-                        className={`${color.color} w-[30px] h-[50px]`}
-                      />
-                    </span>
-                    {color.name}
-                  </button>
-                ))}
+                {expandedUnits[`unit_${unit?.unit_id}`] && (
+                  <div className="mt-2 pl-4">
+                    {unit?.attributes.map((attribute) => (
+                      <label
+                        key={attribute?.attribute_id}
+                        className="block cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          value={attribute?.attribute_id}
+                          checked={
+                            selectedAttributes[
+                              `unit_${unit?.unit_id}`
+                            ]?.includes(attribute?.attribute_id) || false
+                          }
+                          onChange={() =>
+                            handleCheckboxChange(
+                              `unit_${unit?.unit_id}`,
+                              attribute?.attribute_id
+                            )
+                          }
+                        />
+                        {attribute?.attribute_name}
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </div>
-    </div>
+        )}
+
+        {/* Right side: Products */}
+        <section className="col-span-6">
+          <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
+            <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+              <HiClipboardDocumentList /> All Products
+            </h1>
+            <p className="flex items-center gap-2">
+              <PiDotsNineBold
+                onClick={() => setGridCount(4)}
+                className={`border border-primary text-2xl rounded-md ${
+                  gridCount === 4 ? "bg-primary text-white" : ""
+                } cursor-pointer`}
+              />
+              <PiDotsSixVerticalBold
+                onClick={() => setGridCount(3)}
+                className={`border border-primary text-2xl ${
+                  gridCount === 3 ? "bg-primary text-white" : ""
+                } rounded-md cursor-pointer`}
+              />
+              <PiDotsThreeVertical
+                onClick={() => setGridCount(2)}
+                className={`border border-primary text-2xl ${
+                  gridCount === 2 ? "bg-primary text-white" : ""
+                } rounded-md cursor-pointer`}
+              />
+            </p>
+          </div>
+
+          {loading ? (
+            <ProductSkeleton count={4} />
+          ) : products.length > 0 ? (
+            <div
+              className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+            >
+              {products.map((product) => (
+                <SingleCart key={product?.product_id} item={product} />
+              ))}
+            </div>
+          ) : (
+            <p>No products available</p>
+          )}
+        </section>
+      </section>
+    </section>
   );
 };
 
-export default  CategoryProducts;
+export default CategoryProducts;

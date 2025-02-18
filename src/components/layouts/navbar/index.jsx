@@ -20,6 +20,10 @@ import CategoriesList from "./components/CategoryRender";
 import style from "./components/style.module.css";
 import { CategoryItem } from "./components/LargCategory";
 import { getToken } from "@/utils/helpers";
+import { BiCategoryAlt } from "react-icons/bi";
+import { UserProvider } from "@/contex/UserContex";
+import { useUser } from "@/hooks/useUser";
+
 const navList = [
   { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
@@ -28,6 +32,8 @@ const navList = [
 ];
 
 export const Navbar = () => {
+  const userInfo = useProduct() 
+  const {token,setToken} = userInfo;
   const pathName = usePathname();
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState("");
@@ -111,12 +117,12 @@ export const Navbar = () => {
   /*   if (productLoading) {
     //return <ProductSkeleton/>
   } */
-  const [token, setToken] = useState(false);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setToken(getToken() ? true : false);
-    }
-  }, []);
+  // const [token, setToken] = useState(false);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     setToken(getToken() ? true : false);
+  //   }
+  // }, []);
   // my code
   const dropdownRef = useRef(null);
 
@@ -214,7 +220,9 @@ export const Navbar = () => {
                 onClick={handleCategory}
                 className="flex items-center text-white text-base"
               >
-                <span className="me-2">Categories</span>
+                <span className="me-2 flex items-center gap-1 font-medium">
+                  <BiCategoryAlt /> Categories
+                </span>
                 {openCategory ? (
                   <MdOutlineKeyboardArrowUp />
                 ) : (
@@ -242,7 +250,7 @@ export const Navbar = () => {
                             category?.category_id
                           )
                         }
-                        className={`flex items-center hover:bg-primary  mt-1 h-12 w-64 justify-between px-4 ${
+                        className={`flex items-center hover:bg-primary font-medium text-gray-600 hover:text-white  mt-1 h-12 w-64 justify-between px-4 ${
                           selected === category?.category_name
                             ? "bg-primary text-white font-extrabold"
                             : ""
@@ -266,7 +274,7 @@ export const Navbar = () => {
                                   child?.category_id
                                 )
                               }
-                              className="border-b  p-2 hover:bg-primary flex w-[155px] justify-between items-center"
+                              className="border-b  p-2 hover:bg-primary hover:text-white  text-gray-600 flex w-[155px] justify-between items-center"
                             >
                               {child?.category_name} <MdKeyboardArrowRight />
                             </Link>
@@ -283,7 +291,7 @@ export const Navbar = () => {
                                       subChild?.category_id
                                     )
                                   }
-                                  className="grandchild  hover:bg-primary border-b p-2 flex w-[155px] justify-between items-center"
+                                  className="grandchild  hover:bg-primary hover:text-white text-gray-600 border-b p-2 flex w-[155px] justify-between items-center"
                                 >
                                   {subChild?.category_name}{" "}
                                   <MdKeyboardArrowRight />
@@ -304,7 +312,7 @@ export const Navbar = () => {
                 className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full
                  h-12 outline-none"
                 type="text"
-                placeholder="search your product here"
+                placeholder="Search your product here"
               />
               <Link
                 href={`/search-products/?search=${searchQuery}`}
@@ -312,7 +320,7 @@ export const Navbar = () => {
                 className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white 
                 w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2"
               >
-                search <IoSearch className="h-4 w-4" />
+                Search <IoSearch className="h-4 w-4" />
               </Link>
             </div>
             <div>

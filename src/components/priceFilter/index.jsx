@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import style from "./style.module.css";
 import { publicRequest } from "@/config/axios.config";
 import { Toastify } from "../toastify";
+import { FaArrowsAltH } from "react-icons/fa";
+
 const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
   const [minValue, setMinValue] = useState(20);
   const [maxValue, setMaxValue] = useState(0);
@@ -66,10 +68,12 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
   useEffect(() => {
     setArea();
   }, [maxValue, minValue]);
+  
   // onmouse up to change price filter product
   const handleMouseUp = () => {
     PriceFilter();
   };
+
   // enter buttonn click for change price filter product 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -78,8 +82,8 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
   };
   return (
     <div className=" py-4 shadow-md rounded-lg space-y-6">
-      <p className="text-base font-semibold leading-6 border-b px-4 pb-4">
-        Price Range
+      <p className="text-base font-semibold leading-6 border-b px-4 pb-4 flex items-center gap-1 text-primary">
+        <FaArrowsAltH/> Price Range
       </p>
       {/* price range slider  */}
       <div className="flex justify-center ">
@@ -113,7 +117,7 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
           type="text"
           name="min"
           value={minValue}
-          onChange={handleMinChange} 
+          onChange={handleMinChange}
         />
         <hr className="w-5 border" />
         <input
@@ -121,9 +125,8 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
           type="text"
           name="max"
           value={maxValue}
-          onChange={handleMaxChange} 
-        
-          onKeyDown={handleKeyDown} 
+          onChange={handleMaxChange}
+          onKeyDown={handleKeyDown}
         />
       </div>
     </div>

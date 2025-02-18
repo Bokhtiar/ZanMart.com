@@ -3,6 +3,7 @@
 import Loader from "@/components/loader";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import { publicRequest } from "@/config/axios.config";
+import { getToken } from "@/utils/helpers";
 import React, { createContext, useEffect, useState } from "react";
 
 // Create the context
@@ -15,7 +16,13 @@ const MyProvider = ({ children }) => {
   const [forgotCode, setForgotCode] = useState();
   const [products, setProducts] = useState([]);
   const [originalProducts, setOriginalProducts] = useState([]); // New state for original products
-
+   
+     const [token, setToken] = useState(false);
+     useEffect(() => {
+       if (typeof window !== "undefined") {
+         setToken(getToken() ? true : false);
+       }
+     }, []);
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -43,6 +50,8 @@ const MyProvider = ({ children }) => {
         setUser,
         forgotCode,
         setForgotCode,
+        token,
+        setToken
       }}
     >
       {children}

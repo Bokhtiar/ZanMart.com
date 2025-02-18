@@ -6,10 +6,21 @@ import { MdClose } from "react-icons/md";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
 import Paginations from "@/components/pagination";
+import { PiDotsNineBold } from "react-icons/pi";
+import { PiDotsSixVerticalBold } from "react-icons/pi";
+import { PiDotsThreeVertical } from "react-icons/pi";
+import { RiFilterOffLine } from "react-icons/ri";
+import { HiClipboardDocumentList } from "react-icons/hi2";
+
+
+
+
 const Products = () => {
   const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [gridCount, setGridCount] = useState(4)
+
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -22,25 +33,29 @@ const Products = () => {
   ); 
   return (
     <div className="mt-36">
-      {/* product banner--------------------------- */}
-      <div className="text-center py-10">
+      {/* product banner --------------------------- */}
+      {/* <div className="text-center py-10">
         <h1 className="font-extrabold text-primary text-4xl py-2">
           All Products
         </h1>
         <p className="font-normal text-xl leading-7">
           Choose form the best collections
         </p>
-      </div>
+      </div> */}
 
-      <div className="flex container-custom mx-auto items-start gap-10 w-full">
+      <div className="flex container-custom mx-auto items-start gap-4 w-full">
         {/* Filter options */}
-        <div className="w-1/4 hidden lg:flex md:flex flex-col mt-24">
+        <div className="w-1/4 hidden lg:flex md:flex flex-col ">
+          <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded flex items-center gap-1">
+            <RiFilterOffLine /> Filter
+          </h1>
+
           <PriceFilter api="products" setProducts={setProducts} />
 
           <Image
             height={1000}
             width={300}
-            className="mt-10 w-full"
+            className="mt-4 w-full rounded"
             src="/images/filterbanner.svg"
             alt=""
           />
@@ -53,16 +68,47 @@ const Products = () => {
             </button>
           </div>
           {/* All product show */}
-          <div className="w-full grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4 lg:gap-8 md:gap-8 justify-between">
-            {products && Array.isArray(products) ? (
-              products.map((product) => (
-                <SingleCart key={product?.product_id} item={product} />
-              ))
-            ) : (
-              <p>No products available</p>
-            )}
-          </div>
-          <Paginations api="products" data={setProducts} />
+          <section>
+            <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
+              <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+                <HiClipboardDocumentList /> All Products
+              </h1>
+
+              <p className="flex items-center gap-2">
+                <PiDotsNineBold
+                  onClick={() => setGridCount(4)}
+                  className={`border border-primary text-2xl rounded-md ${
+                    gridCount === 4 ? "bg-primary text-white" : ""
+                  } cursor-pointer`}
+                />
+                <PiDotsSixVerticalBold
+                  onClick={() => setGridCount(3)}
+                  className={`border border-primary text-2xl ${
+                    gridCount === 3 ? "bg-primary text-white" : ""
+                  } rounded-md cursor-pointer`}
+                />
+                <PiDotsThreeVertical
+                  onClick={() => setGridCount(2)}
+                  className={`border border-primary text-2xl  ${
+                    gridCount === 2 ? "bg-primary text-white" : ""
+                  } rounded-md cursor-pointer`}
+                />
+              </p>
+            </div>
+
+            <div
+              className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+            >
+              {products && Array.isArray(products) ? (
+                products.map((product) => (
+                  <SingleCart key={product?.product_id} item={product} />
+                ))
+              ) : (
+                <p>No products available</p>
+              )}
+            </div>
+            <Paginations api="products" data={setProducts} />
+          </section>
         </div>
       </div>
 
@@ -80,7 +126,11 @@ const Products = () => {
           <div className="flex-grow mt-4 overflow-y-auto">
             {" "}
             {/* Ensures the content area has scrollable overflow */}
-            <PriceFilter api="products" setProducts={setProducts}  maxPrice={maxPrice}/>
+            <PriceFilter
+              api="products"
+              setProducts={setProducts}
+              maxPrice={maxPrice}
+            />
           </div>
         </div>
       </div>
