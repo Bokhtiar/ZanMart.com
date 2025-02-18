@@ -28,7 +28,7 @@ const navList = [
   { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
-  { name: "Track Order", href: "/track-order" },
+  { name: "Track Order", href: "/profile/track-order" },
 ];
 
 export const Navbar = () => {
@@ -325,7 +325,7 @@ export const Navbar = () => {
             </div>
             <div>
               <p className="flex items-center md:gap-4  lg:gap-5 gap-2">
-                <Link href="/profile/?section=My Cart" className="relative">
+                <Link href="/profile/cart" className="relative">
                   <span
                     className="absolute text-xs -top-1 -right-1 bg-yellow-500 leading-0 px-1 py-.5 text-center 
                   rounded-full"
@@ -334,7 +334,7 @@ export const Navbar = () => {
                   </span>
                   <TbShoppingBag className="h-5 w-5" />
                 </Link>
-                <Link href="/profile/?section=Profile">
+                <Link href="/profile">
                   <RxAvatar className="h-5 w-5" />
                 </Link>
               </p>

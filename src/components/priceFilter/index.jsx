@@ -4,32 +4,11 @@ import { publicRequest } from "@/config/axios.config";
 import { Toastify } from "../toastify";
 import { FaArrowsAltH } from "react-icons/fa";
 
-const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
-  const [minValue, setMinValue] = useState(20);
-  const [maxValue, setMaxValue] = useState(0);
-  useEffect(() => {
-    if (!isNaN(maxPrice)) {
-      setMaxValue(Number(maxPrice));
-    } else {
-      console.warn("Invalid maxPrice:", maxPrice);
-    }
-  }, [maxPrice]);
-  
-  const PriceFilter = async () => {
-    // console.log(maxValue, minValue,api);
-    try {
-      const response = await publicRequest.get(
-        `${api}?max_price=${maxValue}&min_price=${minValue}`
-      );
-      // console.log(response);
-      setProducts(response?.data?.data?.data || []);
-    } catch (error) {
-      // console.error("Error fetching price data:", error);
-      Toastify.Error("Failed to fetch price data.");
-    }
-  };
-  const minGap = 0;
-  const sliderminValue = 0; // set this to your desired minimum value
+const PriceFilter = ({  setMinPrice, setMaxPrice }) => {
+  const [minValue, setMinValue] = useState(10);
+  const [maxValue, setMaxValue] = useState(1000);
+  const minGap = 1000;
+  const sliderminValue = 10; // set this to your desired minimum value
   const sliderMaxValue = 5000;
   const handleMinChange = (e) => {
     const value = parseInt(e.target.value);
@@ -38,7 +17,6 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
       setMinValue(value);
     }
   };
-
   const handleMaxChange = (e) => {
     const value = parseInt(e.target.value);
     if (value >= minValue + minGap) {
@@ -70,14 +48,16 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
   }, [maxValue, minValue]);
   
   // onmouse up to change price filter product
-  const handleMouseUp = () => {
-    PriceFilter();
+  const handleMouseUp = () => { 
+    setMinPrice(minValue);
+    setMaxPrice(maxValue);
   };
 
   // enter buttonn click for change price filter product 
   const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      PriceFilter();
+    if (event.key === "Enter") { 
+      setMinPrice(minValue);
+     setMaxPrice(maxValue);
     }
   };
   return (
@@ -93,7 +73,7 @@ const PriceFilter = ({ api, setProducts,maxPrice=200 }) => {
             className={style.minvalue}
             min={sliderminValue}
             max={sliderMaxValue}
-            value={minValue}
+            value={minValue-1}
             onChange={handleMinChange}
             onMouseUp={handleMouseUp}
           />

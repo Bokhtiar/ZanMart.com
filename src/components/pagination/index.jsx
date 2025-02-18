@@ -3,44 +3,7 @@ import { publicRequest } from "@/config/axios.config";
 import { returnPagination } from "@/utils/pagination";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
-const Paginations = ({ api, data }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPages] = useState(1);
-
-  const fetchProducts = useCallback(async (page = 1) => {
-    try {
-      const res = await publicRequest.get(`${api}?page=${page}`);
-      const result = res?.data?.data?.data;
-      console.log(res);
-      data(result);
-      setCurrentPage(res?.data?.data?.current_page); // Set current page
-      setTotalPages(res?.data?.data?.last_page); // Set total pages
-    } catch (error) {
-      // No error handling needed
-    }
-  }, [ ]);
-
-  // const handleNextPage = () => {
-  //   if (currentPage < totalPages) {
-  //     fetchProducts(currentPage + 1);
-  //   }
-  // };
-
-  // const handlePreviousPage = () => {
-  //   if (currentPage > 1) {
-  //     fetchProducts(currentPage - 1);
-  //   }
-  // };
-  useEffect(() => {
-    fetchProducts();
-  }, []); 
-  const [limit, setLimit] = useState(5);
-  const [page, setPage] = useState(1);
-  // const totalPage = Math.ceil(500 / 7);
-  useEffect(() => {
-    fetchProducts(page);
-    console.log("page is-------------------------->" , page);
-  }, [data, page, limit]);
+const Paginations = ({ page, setPage, totalPage }) => {
   const handleChange = (e) => {
     if (e == "prev") {
       if (page > 1) {
@@ -51,14 +14,13 @@ const Paginations = ({ api, data }) => {
         setPage(page + 1);
       }
     } else {
-      if(e==' ...'){
+      if (e == " ...") {
         setPage(1);
-      }else if(e=='... '){
+      } else if (e == "... ") {
         setPage(totalPage);
-      }else{
+      } else {
         setPage(e);
       }
-     
     }
   };
 
@@ -67,32 +29,10 @@ const Paginations = ({ api, data }) => {
       <Pagination
         totalPage={totalPage}
         page={page}
-        limits={limit}
+        limits={10}
         siblings={1}
         handleChange={handleChange}
       />
-      {/* <button
-        onClick={handlePreviousPage}
-        className="px-4 py-2 text-sm bg-primary text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
-        disabled={currentPage === 1}
-      >
-        Previous
-      </button> */}
-
-      {/* Page Indicator */}
-      {/* <span className="text-sm ">
-       Pages: <span className="font-bold">{currentPage}</span> {"/"}
-        <span className="font-bold">{totalPages}</span>
-      </span> */}
-
-      {/* Next Button */}
-      {/* <button
-        onClick={handleNextPage}
-        className="px-4 py-2 text-sm bg-primary text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </button> */}
     </div>
   );
 };
@@ -101,7 +41,6 @@ export default Paginations;
 
 const Pagination = ({ totalPage, page, limits, siblings, handleChange }) => {
   const arr = returnPagination(totalPage, page, limits, siblings);
-
   return (
     <div className="flex justify-end  ">
       <div>

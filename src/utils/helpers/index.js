@@ -1,22 +1,21 @@
-
 import { Toastify } from "@/components/toastify";
-
+import Cookies from 'js-cookie';
 /* Set token */
 export const setToken = async (token) => {
-    localStorage.setItem("token", token);
+    Cookies.set('token', token, { expires: 7, path: '/' }); // Set token with expiration (7 days) and path
     return true;
 };
 
 /* Get token */
 export const getToken = () => {
     if (typeof window !== 'undefined') {
-        return localStorage.getItem("token");
+        return Cookies.get('token'); // Retrieve token from cookie
     }
 };
 
 /* Remove token */
 export const removeToken = () => {
-    localStorage.removeItem("token");
+    Cookies.remove('token');
     return true;
 };
 
@@ -51,3 +50,4 @@ export const networkErrorHandeller = (error) => {
         return Toastify.Error("Something going wrong, Try again.");
     }
 };
+ 

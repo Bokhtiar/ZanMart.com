@@ -36,7 +36,7 @@ const ProductDetails = () => {
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
-console.log(selectedDiscount)
+// console.log(selectedDiscount)
   /** product details */
   const fetchProduct = async () => {
     setLoading(true);
@@ -59,7 +59,7 @@ console.log(selectedDiscount)
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
       setvarient(productVariants);
-      console.log(productVariants);
+      // console.log(productVariants);
 
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
@@ -113,8 +113,8 @@ console.log(selectedDiscount)
     attribute_weight: item?.attribute?.attribute_weight,
     discount_price: item?.discount_price,
   }));
-  console.log(product);
-  console.log(data);
+  // console.log(product);
+  // console.log(data);
   const handelCart = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
@@ -180,7 +180,7 @@ console.log(selectedDiscount)
     }
   }, [product?.category_id]);
 
-  console.log(product?.product_variants);
+  // console.log(product?.product_variants);
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     // Ensure the gallery images are available and parse them if necessary
@@ -216,7 +216,7 @@ console.log(selectedDiscount)
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
     );
-    console.log(newColor);
+    // console.log(newColor);
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line

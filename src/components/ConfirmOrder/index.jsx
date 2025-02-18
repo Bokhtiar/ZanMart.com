@@ -10,12 +10,12 @@ import isAuth from "@/middleware/auth.middleware";
 
 const ConfirmOrder = () => {
   const router = useRouter();
-  const id = router.query?.id;
+  const id = router.query?.slug;
   const [payment, setPayment] = useState("");
   const [orders, setOrders] = useState([]);
   const { "order Details": orderDetails } = orders;
 
-  console.log(orderDetails);
+  // console.log(orderDetails);
   const data = [
     {
       name: "Pay Online",
@@ -65,7 +65,7 @@ const ConfirmOrder = () => {
     if (modalAction === "cancel") {
       try {
         const res = await privateRequest.get(`user/order/cancel/${id}`);
-        console.log(res.data.message);
+        // console.log(res.data.message);
         if (res.status == 200) {
           Toastify.Success(res?.data?.message);
           router.push("/products");
