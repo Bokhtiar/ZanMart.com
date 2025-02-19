@@ -12,17 +12,12 @@ import { TbShoppingBag, TbAlignLeft } from "react-icons/tb";
 import { RxAvatar } from "react-icons/rx";
 import { publicRequest } from "@/config/axios.config";
 import { useProduct } from "@/hooks/useProducts";
-import Loader from "@/components/loader";
 import Image from "next/image";
-import NavSkleton from "@/components/loader/navSkleton";
-import ProductSkeleton from "@/components/loader/ProductSkeleton";
+
 import CategoriesList from "./components/CategoryRender";
 import style from "./components/style.module.css";
-import { CategoryItem } from "./components/LargCategory";
-import { getToken } from "@/utils/helpers";
 import { BiCategoryAlt } from "react-icons/bi";
-import { UserProvider } from "@/contex/UserContex";
-import { useUser } from "@/hooks/useUser";
+import { LuShoppingCart } from "react-icons/lu";
 
 const navList = [
   { name: "Home", href: "/" },
@@ -325,17 +320,17 @@ export const Navbar = () => {
             </div>
             <div>
               <p className="flex items-center md:gap-4  lg:gap-5 gap-2">
-                <Link href="/profile/cart" className="relative">
+                <Link href="/my-cart" className="relative">
                   <span
-                    className="absolute text-xs -top-1 -right-1 bg-yellow-500 leading-0 px-1 py-.5 text-center 
+                    className="absolute text-xs -top-2 -right-1.5 bg-yellow-500 leading-0 px-1 py-.5 text-center 
                   rounded-full"
                   >
-                    {cart.cart_items.length}
+                    {cart?.cart_items?.length}
                   </span>
-                  <TbShoppingBag className="h-5 w-5" />
+                  <LuShoppingCart   className="h-7 w-7" />
                 </Link>
                 <Link href="/profile">
-                  <RxAvatar className="h-5 w-5" />
+                  <RxAvatar className="h-7 w-7" />
                 </Link>
               </p>
             </div>

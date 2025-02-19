@@ -56,7 +56,6 @@ export default function Home() {
 
   return (
     <section className={`${poppins.className} px-2 pt-36  `}>
-      deployment test
       <Banner></Banner>
       <ServiceQuality></ServiceQuality>
       {loading ? (

@@ -3,12 +3,12 @@ import Image from "next/image";
 import React, { useState, useEffect, useCallback } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiWarning } from "react-icons/ti";
-import { Toastify } from "../toastify";
+
 import { useRouter } from "next/router";
 import { FaCheckCircle, FaPlusCircle, FaShoppingCart } from "react-icons/fa";
-import AddressModal from "../AddressModal"; 
+
 import Link from "next/link";
-import CartSkeleton from "../loader/CartSkeleton";
+import CartSkeleton from "@/components/loader/CartSkeleton";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -123,36 +123,31 @@ const MyCart = () => {
     setIsModalOpen(false);
     setModalAction(null);
   };
- 
- const [address,setAddress] = useState({});
 
- useEffect(()=>{
-  if(typeof window !== 'undefined'){
-    setAddress(JSON.parse(localStorage.getItem("cart")));
-   }
-  
- },[])  
+  const [address, setAddress] = useState({});
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setAddress(JSON.parse(localStorage.getItem("cart")));
+    }
+  }, []);
   //  address = localStorage.getItem("cart")||{};
   const shipping_address = address;
   // console.log(shipping_address?.shipping_address_id);
   const handleCheckout = async () => {
-      setIsModalOpen(true);
-      setModalAction("confirm");
+    setIsModalOpen(true);
+    setModalAction("confirm");
   };
-   const [addressData,setAddressData] = useState({});
+  const [addressData, setAddressData] = useState({});
   const handleConfirm = async () => {
-   
     const newMyOrder = {
       ...cartForOrder,
-      billing_address_id: addressData?.address_id ,
-      shipping_address_id: addressData?.address_id  
-    }
+      billing_address_id: addressData?.address_id,
+      shipping_address_id: addressData?.address_id,
+    };
     // return;
     try {
-      if (
-        newMyOrder?.shipping_address_id &&
-        newMyOrder?.billing_address_id
-      ) {
+      if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
         const res = await privateRequest.post("user/orders", newMyOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
@@ -162,7 +157,9 @@ const MyCart = () => {
             JSON.stringify({ ...cart, cart_items: [] })
           );
           window.dispatchEvent(new Event("cartUpdated"));
-          router.push(`/profile/confirm-order/${res?.data?.order_id?.order_id}`)
+          router.push(
+            `/profile/confirm-order/${res?.data?.order_id?.order_id}`
+          );
         } else {
           Toastify.Error(res.error);
         }
@@ -175,11 +172,13 @@ const MyCart = () => {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 rounded-md">
-        {data?.length>0 && <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
-          <FaShoppingCart /> Add To Cart
-        </h1>}
+    <div className="container-custom">
+      <div className="flex items-center mt-40 justify-between bg-gray-100 px-2 mb-3 rounded-md">
+        {data?.length > 0 && (
+          <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+            <FaShoppingCart /> Add To Cart
+          </h1>
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 bg-gray-100 p-3">
@@ -251,7 +250,7 @@ const MyCart = () => {
               </div>
             </div>
           ) : (
-            <CartSkeleton/>
+            <CartSkeleton />
           )}
         </div>
 
@@ -307,7 +306,14 @@ const MyCart = () => {
 
 export default MyCart;
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title,setAddressData }) => {
+const ConfirmModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  message,
+  title,
+  setAddressData,
+}) => {
   const [address, setAddress] = useState([]);
   const fetchAddress = useCallback(async () => {
     try {
@@ -320,32 +326,50 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title,setAddressDat
   useEffect(() => {
     fetchAddress();
   }, []);
- 
+
   const [selected, setSelected] = useState(null);
-  const handleChange = (index,addressItem) => {
+  const handleChange = (index, addressItem) => {
     // console.log(addressItem);
-    setAddressData(addressItem)
+    setAddressData(addressItem);
     setSelected(index);
   };
-   
+
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg md:2/4 lg:w-3/4  w-full m">
-         <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
-         <span className="block text-xs p-2">Please select address</span>
-         <Link href={"/profile?section=Address Book"} className="flex items-center gap-1 bg-primary rounded-md px-2 py-1"> <FaPlusCircle /> Add New</Link>
-         </div>
+        <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
+          <span className="block text-xs p-2">Please select address</span>
+          <Link
+            href={"/profile?section=Address Book"}
+            className="flex items-center gap-1 bg-primary rounded-md px-2 py-1"
+          >
+            {" "}
+            <FaPlusCircle /> Add New
+          </Link>
+        </div>
         {address.length > 0 &&
           address.map((item, index) => {
             return (
-              <div htmlFor={`address-${address.address_id}`}  name="address" key={address.address_id} className={` ${selected === index + 1 ? 'bg-blue-100 ' : 'bg-gray-100 '} mb-4 gap-2   p-3 flex rounded-md cursor-pointer items-center`}
-               onClick={()=>handleChange(index+1,item)}
+              <div
+                htmlFor={`address-${address.address_id}`}
+                name="address"
+                key={address.address_id}
+                className={` ${
+                  selected === index + 1 ? "bg-blue-100 " : "bg-gray-100 "
+                } mb-4 gap-2   p-3 flex rounded-md cursor-pointer items-center`}
+                onClick={() => handleChange(index + 1, item)}
               >
-              <FaCheckCircle className={`  ${selected === index + 1 ? 'text-blue-500' : 'text-gray-400'} w-8 h-8 `} />
-                <div>{item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
-                {item?.upazila?.name}, {item?.district?.name},{" "}
-                {item?.division?.name}</div>
+                <FaCheckCircle
+                  className={`  ${
+                    selected === index + 1 ? "text-blue-500" : "text-gray-400"
+                  } w-8 h-8 `}
+                />
+                <div>
+                  {item?.address_line1} {item?.address_line2}{" "}
+                  {item?.union?.name} {item?.upazila?.name},{" "}
+                  {item?.district?.name}, {item?.division?.name}
+                </div>
               </div>
             );
           })}
@@ -363,7 +387,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message, title,setAddressDat
                 ? "opacity-50 cursor-not-allowed bg-gray-200 px-4 py-2"
                 : "bg-primary text-white"
             }`}
-            onClick={onConfirm} 
+            onClick={onConfirm}
           >
             Confirm
           </button>
