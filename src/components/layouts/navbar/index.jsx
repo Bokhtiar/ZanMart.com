@@ -140,7 +140,7 @@ export const Navbar = () => {
     };
   }, []);
   return (
-    <div ref={dropdownRef}>
+    <div ref={dropdownRef} className="z-50">
       <div className="fixed h w-full h z-10 bg-white  ">
         <nav className="py-3 flex container-custom mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
