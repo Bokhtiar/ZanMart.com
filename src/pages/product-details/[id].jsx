@@ -247,7 +247,7 @@ const ProductDetails = () => {
     return <ProductDetailsSkeleton />;
   }
   return (
-    <div className="mx-auto container px-2 mt-36 pt-5">
+    <div className="container-custom px-2 mt-36 pt-5">
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between">
         <div className="flex flex-col contents-between">
           <div className="flex justify-center items-center">
