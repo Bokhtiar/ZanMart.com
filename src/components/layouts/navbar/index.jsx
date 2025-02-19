@@ -330,8 +330,9 @@ export const Navbar = () => {
                     className="absolute text-xs -top-1 -right-1 bg-yellow-500 leading-0 px-1 py-.5 text-center 
                   rounded-full"
                   >
-                    {cart.cart_items.length}
+                    {cart?.cart_items?.length}
                   </span>
+                  🛒
                   <TbShoppingBag className="h-5 w-5" />
                 </Link>
                 <Link href="/profile">
