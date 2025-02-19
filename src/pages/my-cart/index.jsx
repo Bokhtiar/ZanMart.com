@@ -3,12 +3,14 @@ import Image from "next/image";
 import React, { useState, useEffect, useCallback } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TiWarning } from "react-icons/ti";
-
+import { BsCartXFill } from "react-icons/bs";
 import { useRouter } from "next/router";
 import { FaCheckCircle, FaPlusCircle, FaShoppingCart } from "react-icons/fa";
 
 import Link from "next/link";
 import CartSkeleton from "@/components/loader/CartSkeleton";
+import AddressModal from "@/components/AddressModal";
+import { Toastify } from "@/components/toastify";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -140,6 +142,7 @@ const MyCart = () => {
   };
   const [addressData, setAddressData] = useState({});
   const handleConfirm = async () => {
+    console.log('===========')
     const newMyOrder = {
       ...cartForOrder,
       billing_address_id: addressData?.address_id,
@@ -148,6 +151,7 @@ const MyCart = () => {
     // return;
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
+      
         const res = await privateRequest.post("user/orders", newMyOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
@@ -161,10 +165,12 @@ const MyCart = () => {
             `/profile/confirm-order/${res?.data?.order_id?.order_id}`
           );
         } else {
-          Toastify.Error(res.error);
+         
+          Toastify.Error(res.data?.message);
+          console.log(res);
         }
       } else {
-        Toastify.Warning("Please select your address.");
+        Toastify.Error(res?.data?.message)
       }
     } catch (error) {
       console.error("Error during checkout:", error);
@@ -174,11 +180,9 @@ const MyCart = () => {
   return (
     <div className="container-custom">
       <div className="flex items-center mt-40 justify-between bg-gray-100 px-2 mb-3 rounded-md">
-        {data?.length > 0 && (
-          <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
-            <FaShoppingCart /> Add To Cart
-          </h1>
-        )}
+        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+          <FaShoppingCart /> Your Cart
+        </h1>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-4 bg-gray-100 p-3">
@@ -250,7 +254,30 @@ const MyCart = () => {
               </div>
             </div>
           ) : (
-            <CartSkeleton />
+            <>
+              <div className="flex flex-col items-center justify-center  text-center">
+                {/* Image */}
+                <div className="w-64 h-64">
+                  <BsCartXFill className="w-64 h-64 text-primary" />
+                </div>
+
+                {/* Message */}
+                <h2 className="text-2xl font-bold text-orange-500 mt-5">
+                  Your cart is empty
+                </h2>
+                <p className="text-gray-600 mt-2">
+                  Looks like you haven’t added anything to your cart yet
+                </p>
+
+                {/* Button to go back */}
+                <button
+                  className="mt-5 px-6 py-2 bg-primary text-white rounded-lg"
+                  onClick={() => (window.location.href = "/products")} // Change URL to your shop page
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </>
           )}
         </div>
 
