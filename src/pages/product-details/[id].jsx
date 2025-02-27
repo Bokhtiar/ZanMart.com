@@ -246,21 +246,26 @@ const ProductDetails = () => {
     setThumb(img);
   };
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-  if (loading || reletedProductLoading ) {
+  if (loading || reletedProductLoading) {
     return <ProductDetailsSkeleton />;
-  } 
+  }
   return (
     <div className="mx-auto container px-2 mt-36 pt-5">
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
           <div className="flex justify-center items-center">
             <div className=" relative group">
-              <button onClick={() => setIsOpen(true)} className="absolute top-3 right-3 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"><MdOutlineFullscreen /></button>
+              <button
+                onClick={() => setIsOpen(true)}
+                className="absolute top-3 right-3 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"
+              >
+                <MdOutlineFullscreen />
+              </button>
               {isOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
                   <button
@@ -269,13 +274,11 @@ const ProductDetails = () => {
                   >
                     ✖
                   </button>
-                  <span
-                    className="absolute top-5 left-5 text-gray-50 text-sm"
-                    
-                  >
-                    {currentIndex+1}/{[product?.thumbnail_image,imageArray].flat().length}
+                  <span className="absolute top-5 left-5 text-gray-50 text-sm">
+                    {currentIndex + 1}/
+                    {[product?.thumbnail_image, imageArray].flat().length}
                   </span>
-             {/* image sliding show here  */}
+                  {/* image sliding show here  */}
                   <div className="h-full py-20 w-full flex items-center justify-center">
                     <Swiper
                       style={{
@@ -291,31 +294,38 @@ const ProductDetails = () => {
                       className={style.swiper}
                       onSlideChange={handleSlideChange}
                     >
-                   { [product?.thumbnail_image,imageArray].flat().map((item,idx)=> <SwiperSlide className={style["swiper-slide"]} key={idx}>
-                        <Image
-                          src={`${process.env.NEXT_PUBLIC_API_SERVER}${item}`}
-                          alt="loading..."
-                          loading="lazy"
-                          className={style["swiper-slide img"]}
-                          width={1000}
-                          height={1000}
-                        />
-                        <div className="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
-                      </SwiperSlide>)}
+                      {[product?.thumbnail_image, imageArray]
+                        .flat()
+                        .map((item, idx) => (
+                          <SwiperSlide
+                            className={style["swiper-slide"]}
+                            key={idx}
+                          >
+                            <Image
+                              src={`${process.env.NEXT_PUBLIC_API_SERVER}${item}`}
+                              alt="loading..."
+                              loading="lazy"
+                              className={style["swiper-slide img"]}
+                              width={1000}
+                              height={1000}
+                            />
+                            <div className="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                          </SwiperSlide>
+                        ))}
                     </Swiper>
                   </div>
                 </div>
               )}
 
               <InnerImageZoom
-                src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}  
-                zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}  
+                src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+                zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
                 alt="Product Thumbnail"
-                zoomType="hover"  
-                zoomPreload={true}  
-                zoomPosition="left" 
+                zoomType="hover"
+                zoomPreload={true}
+                zoomPosition="left"
                 fillAvailableSpace={true}
-                className=" max-h-[550px] w-[550px] rounded"  
+                className=" max-h-[550px] w-[550px] rounded"
               />
             </div>
           </div>
@@ -502,15 +512,13 @@ const ProductDetails = () => {
           </p>
         </div>
 
-        
-          <div
-            className={`bg-gray-50 p-5 w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
-          >
-            {reletedProduct.map((product) => (
-              <SingleCart key={product?.product_id} item={product} />
-            ))}
-          </div>
-        
+        <div
+          className={`bg-gray-50 p-5 w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+        >
+          {reletedProduct.map((product) => (
+            <SingleCart key={product?.product_id} item={product} />
+          ))}
+        </div>
       </section>
     </div>
   );
