@@ -20,7 +20,6 @@ const ProfileSidebar = ({ profile }) => {
       name: "Address List",
       path: "/profile/address",
     },
-    { logo: <TbShoppingBag />, name: "Cart", path: "/profile/cart" },
     { logo: <TiDocumentText />, name: "Orders", path: "/profile/orders" },
     {
       logo: <TbCircleKey />,
