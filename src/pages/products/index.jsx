@@ -19,7 +19,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [gridCount, setGridCount] = useState(4);
   const [page, setPage] = useState(1);
-  const [minPrice, setMinPrice] = useState(1);
+  const [minPrice, setMinPrice] = useState(10);
   const [maxPrices, setMaxPrice] = useState(0);
   const { fetchProducts, newProduct: product, loading } = useProduct();
   useEffect(() => {
@@ -34,16 +34,15 @@ const Products = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const maxPrice = products.reduce(
-    (max, product) => Math.max(max, product.sell_price),
-    0
-  );
-  if (loading) return <ProductSkeleton />;
+  // const maxPrice = products.reduce(
+  //   (max, product) => Math.max(max, product.sell_price),
+  //   0
+  // );
+  console.log("my idea my rules");
+  // if (loading) return <ProductSkeleton />;
   return (
     <>
-      {loading || !product?.data ? (
-        <ProductSkeleton />
-      ) : (
+       
         <div className="mt-36">
           {/* product banner --------------------------- */}
           {/* <div className="text-center py-10">
@@ -65,16 +64,18 @@ const Products = () => {
               <PriceFilter
                 setMinPrice={setMinPrice}
                 setMaxPrice={setMaxPrice}
+                maxPrice={maxPrices}
+                minPrice={minPrice}
               />
-              <Image
+              {/* <Image
                 height={1000}
                 width={300}
                 className="mt-4 w-full rounded"
                 src="/images/filterbanner.svg"
                 alt=""
-              />
+              /> */}
             </div>
-            <div className="w-full">
+            {(loading || !product?.data) ? <ProductSkeleton />: <div className="w-full">
               <div className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2">
                 <button onClick={toggleDrawer} className="text-xl">
                   <FiFilter />
@@ -131,7 +132,7 @@ const Products = () => {
                   />
                 )}
               </section>
-            </div>
+            </div>}
           </div>
 
           {/* Drawer for mobile filters */}
@@ -157,7 +158,7 @@ const Products = () => {
             </div>
           </div>
         </div>
-      )}
+      
     </>
   );
 };

@@ -48,7 +48,7 @@ export const Navbar = () => {
       const response = await publicRequest.get("categories");
       setCategories(response?.data?.data);
       setLoading(false);
-    } catch (error) {}
+    } catch (error) {} 
     // console.log(response)
   };
   // console.log(categories);

@@ -56,10 +56,10 @@ const MyProvider = ({ children }) => {
       }
       if (filters.page) queryParams.append("page", filters.page);
       // if (filters.title) queryParams.append("title", filters.title);
-
+       queryParams.append("per_page", 20);
       let res;
       if (filters?.title) {
-        res = await publicRequest.get(`products?title=${filters?.title}`);
+        res = await publicRequest.get(`products?title=${filters?.title}&per_page=20`);
       } else {
         res = await publicRequest.get(
           `products${

@@ -167,7 +167,7 @@ const MyCart = () => {
         } else {
          
           Toastify.Error(res.data?.message);
-          console.log(res);
+          // console.log(res);
         }
       } else {
         Toastify.Error(res?.data?.message)
