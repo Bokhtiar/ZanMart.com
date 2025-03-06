@@ -10,16 +10,12 @@ import { PiDivide } from "react-icons/pi";
 const TopFeature = ({ title, dataUrl, itemLimit, categoryid }) => {
   const [data, setData] = useState([]);
   const router = useRouter();
-  const { setProducts } = useProduct();
-  // console.log(categoryid);
+  const { setProducts } = useProduct(); 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // console.log("Fetching data for category ID:", categoryid);
+      try { 
         const res = await publicRequest.get(dataUrl);
-        const result = res?.data?.data || []; // Default to an empty array to avoid issues
-        // console.log("Fetched result:", result);
-
+        const result = res?.data?.data || [];   
         const categoryProduct = result.find(
           (category) => category?.category_id === Number(categoryid)
         );
@@ -36,8 +32,7 @@ const TopFeature = ({ title, dataUrl, itemLimit, categoryid }) => {
     fetchData();
   }, [dataUrl, categoryid]);
 
-  const viewAll = async (id) => {
-    // console.log(id);
+  const viewAll = async (id) => { 
     try {
       const categoryFilterd = await publicRequest.get(`category/product/${id}`);
       setProducts(categoryFilterd?.data?.data?.data);

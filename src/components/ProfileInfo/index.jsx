@@ -71,15 +71,13 @@ const ProfileInfo = () => {
       setAddressLoading(true);
       const res = await privateRequest.get("user/address");
       setAddress(res.data?.data);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
+    } catch (error) { 
     }
     setAddressLoading(false);
   };
   useEffect(() => {
     userAddresses();
-  }, []);
-  console.log(address);
+  }, []); 
   return (
     <div className="space-y-4">
       <h1 className="text-xl text-gray-700 font-medium">My Profile</h1>

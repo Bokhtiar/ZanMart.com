@@ -13,9 +13,7 @@ const ConfirmOrder = () => {
   const id = router.query?.slug;
   const [payment, setPayment] = useState("");
   const [orders, setOrders] = useState([]);
-  const { "order Details": orderDetails } = orders;
-
-  // console.log(orderDetails);
+  const { "order Details": orderDetails } = orders; 
   const data = [
     {
       name: "Pay Online",
@@ -64,8 +62,7 @@ const ConfirmOrder = () => {
   const handleModalConfirm = async () => {
     if (modalAction === "cancel") {
       try {
-        const res = await privateRequest.get(`user/order/cancel/${id}`);
-        // console.log(res.data.message);
+        const res = await privateRequest.get(`user/order/cancel/${id}`); 
         if (res.status == 200) {
           Toastify.Success(res?.data?.message);
           router.push("/products");
@@ -81,8 +78,7 @@ const ConfirmOrder = () => {
           const gatewayUrl = res?.data?.data?.gateway_url;
           if (gatewayUrl) {
             window.location.href = gatewayUrl;
-          } else {
-            console.error("Gateway URL not found in response.");
+          } else { 
           }
         }
 

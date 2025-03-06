@@ -48,10 +48,8 @@ export const Navbar = () => {
       const response = await publicRequest.get("categories");
       setCategories(response?.data?.data);
       setLoading(false);
-    } catch (error) {} 
-    // console.log(response)
-  };
-  // console.log(categories);
+    } catch (error) {}  
+  }; 
   const handleSearchQuery = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -65,8 +63,7 @@ export const Navbar = () => {
       );
       setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
       updateLoading(false);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+    } catch (error) { 
     }
   };
 

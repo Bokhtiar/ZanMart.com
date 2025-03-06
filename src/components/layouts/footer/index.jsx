@@ -24,8 +24,7 @@ const Footer = () => {  // Initialize as an empty object
         ...prevState,
         [val]: fetchedData,
       })); 
-    } catch (error) {
-      console.error("Error fetching web setting:", error);
+    } catch (error) { 
     }
   };
 

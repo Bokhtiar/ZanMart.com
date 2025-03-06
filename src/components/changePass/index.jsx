@@ -36,14 +36,9 @@ const ChangePass = () => {
         removeToken(); // Ensure token removal on successful password reset
         router.push("/auth/log-in");
       } else {
-        Toastify.Error(response?.data?.message);
-        // console.log(response?.data?.message);
+        Toastify.Error(response?.data?.message); 
       }
-    } catch (error) {
-      console.error(
-        "Error resetting password:",
-        error?.response?.data?.errors[0]
-      );
+    } catch (error) { 
       Toastify.Error(error?.response?.data?.errors[0]);
     }
   };

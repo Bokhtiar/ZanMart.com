@@ -23,23 +23,12 @@ const Products = () => {
   const [maxPrices, setMaxPrice] = useState(0);
   const { fetchProducts, newProduct: product, loading } = useProduct();
   useEffect(() => {
-    fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice });
-    // console.log(prd ,"-----------------------");
-  }, [page, minPrice, maxPrices]);
-  // console.log(product, "-----------------------");
-
-  //  console.log(value,"value------------------>");
-  //  console.log(products,"my products ------------------------->");
+    fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice }); 
+  }, [page, minPrice, maxPrices]); 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
-  // const maxPrice = products.reduce(
-  //   (max, product) => Math.max(max, product.sell_price),
-  //   0
-  // );
-  console.log("my idea my rules");
-  // if (loading) return <ProductSkeleton />;
+ 
   return (
     <>
        

@@ -37,8 +37,7 @@ const ProductDetails = () => {
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
-  const [reletedProductLoading, setReletedProductLoading] = useState(false);
-  // console.log(selectedDiscount)
+  const [reletedProductLoading, setReletedProductLoading] = useState(false); 
   /** product details */
   const fetchProduct = async () => {
     setLoading(true);
@@ -60,8 +59,7 @@ const ProductDetails = () => {
 
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
-      setvarient(productVariants);
-      // console.log(productVariants);
+      setvarient(productVariants); 
 
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
@@ -115,8 +113,7 @@ const ProductDetails = () => {
     attribute_weight: item?.attribute?.attribute_weight,
     discount_price: item?.discount_price,
   }));
-  // console.log(product);
-  // console.log(data);
+  
   const handelCart = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
@@ -180,9 +177,7 @@ const ProductDetails = () => {
     if (product?.category_id) {
       reletedProductCategory();
     }
-  }, [product?.category_id]);
-
-  // console.log(product?.product_variants);
+  }, [product?.category_id]); 
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     // Ensure the gallery images are available and parse them if necessary
@@ -217,8 +212,7 @@ const ProductDetails = () => {
       (item) =>
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
-    );
-    // console.log(newColor);
+    ); 
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line

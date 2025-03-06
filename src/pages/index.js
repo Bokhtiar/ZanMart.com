@@ -35,19 +35,8 @@ export default function Home() {
   useEffect(() => {
     categoryFetch();
   }, []);
-
-  // console.log("categoryies", categories);
-  // const dataLimit = (item) => {
-  //   switch (item?.category_name) {
-  //     case "stationary":
-  //       return 5;
-  //     default:
-  //       return 10;
-  //   }
-  // };
-
-  const viewAll = async (id) => {
-    // console.log(id);
+ 
+  const viewAll = async (id) => { 
     try {
       const categoryFilterd = await publicRequest.get(`category/product/${id}`);
       setProducts(categoryFilterd?.data?.data?.data);
