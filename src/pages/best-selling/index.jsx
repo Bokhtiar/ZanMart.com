@@ -23,7 +23,29 @@ const BesSelling = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
  const [products,setProducts]=useState([])
   const [gridCount, setGridCount] = useState(4);
-
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1); // total pages
+  
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await publicRequest.get(`best-selling-product?page=${page}`);
+        if (response.status === 200) {
+          console.log(response.data.data);
+          setProducts(response.data?.data?.data);
+          setLastPage(response.data.data?.last_page); // Update total page count
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchProducts();
+  }, [page]);
+  
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
@@ -103,7 +125,8 @@ const BesSelling = () => {
             </div>
           </section>
 
-          <Paginations api="best-selling-product" data={setProducts} />
+          <Paginations page={page} setPage={setPage} totalPage={lastPage} />
+
         </div>
       </div>
 

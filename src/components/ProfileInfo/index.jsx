@@ -90,7 +90,7 @@ const ProfileInfo = () => {
           <section className="border rounded-lg p-4 flex justify-between">
             <div className="flex gap-2 items-center">
               <Image
-                src={`${process?.env.NEXT_PUBLIC_API_SERVER}${profile?.profile_pic}`}
+                src={profile?.profile_pic? `${process?.env.NEXT_PUBLIC_API_SERVER}${profile?.profile_pic}`: '/profile_avatar/profile_avater.png'}
                 height={70}
                 width={70}
                 alt=""
