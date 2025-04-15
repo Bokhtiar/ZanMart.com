@@ -8,11 +8,11 @@ const ProfileLayout = ({ children }) => {
   return (
     <div className="flex flex-col">
       {/* <Navbar /> */}
-      <main className=" flex mt-40 container-custom gap-20">
+      <main className=" md:flex  mt-40 container-custom gap-20">
         <div>
           <ProfileSidebar />
         </div>
-        <div className="w-3/4">{children}</div>
+        <div className="md:w-3/4 w-full">{children}</div>
       </main>
       {/* <Footer /> */}
     </div>

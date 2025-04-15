@@ -60,7 +60,7 @@ const Footer = () => {  // Initialize as an empty object
     <footer className="bg-[#F5F5F5] pt-10 mt-5  ">
     
      <div className="container-custom grid  lg:grid-cols-2 gap-4  ">
-     <div className="grid gap-4 grid-cols-2  md:grid-cols-2 px-5  lg:grid-cols-2  pb-5">
+     <div className="grid gap-4 grid-cols-1 md:grid-cols-2 px-5  lg:grid-cols-2  pb-5 ">
         <div className="flex lg:justify-center  justify-start  ">
           <div className="text-start">
             <div className="flex justify-start">
@@ -92,7 +92,7 @@ const Footer = () => {  // Initialize as an empty object
             </p>
           </div>
         </div>
-        <div className="flex justify-end lg:justify-center sm:justify-start  ">
+        <div className="flex  lg:justify-center sm:justify-start  ">
           <div className="flex justify-start">
             <div className="text-start">
               <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">

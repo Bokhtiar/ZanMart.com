@@ -7,11 +7,11 @@ const PaymentOptions = () => {
       <h1 className="font-medium mt-12 mb-6 text-base  text-center ">
         Secure payment by
       </h1>
-      <div className="flex justify-center  w-full">
+      <div className="flex justify-center  w-full ">
         <Image
           height={200}
           width={1000}
-          className=" w-3/4 mr-16"
+          className=" w-3/4 "
           src="/images/payment.png"
           alt="payment"
         />
