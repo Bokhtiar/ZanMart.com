@@ -48,10 +48,8 @@ export const Navbar = () => {
       const response = await publicRequest.get("categories");
       setCategories(response?.data?.data);
       setLoading(false);
-    } catch (error) {}
-    // console.log(response)
-  };
-  // console.log(categories);
+    } catch (error) {}  
+  }; 
   const handleSearchQuery = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -65,8 +63,7 @@ export const Navbar = () => {
       );
       setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
       updateLoading(false);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+    } catch (error) { 
     }
   };
 
@@ -135,7 +132,7 @@ export const Navbar = () => {
     };
   }, []);
   return (
-    <div ref={dropdownRef}>
+    <div  className="z-50">
       <div className="fixed h w-full h z-10 bg-white  ">
         <nav className="py-3 flex container-custom mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
@@ -202,15 +199,15 @@ export const Navbar = () => {
               />
             </div>
             <div className="text-sm font-normal leading-5">
-              <p>+880969654312</p>
-              <p className="text-primary">info@zanmart.com</p>
+              <p>+8801771104908</p>
+              <a className="text-primary" href="mailto:zanvisionlabs@gmail.com">zaninfo@gmail.com</a>
             </div>
           </div>
         </nav>
         {/* bottom navbar start  */}
         <section className="bg-primary ">
           <div className="flex gap-3 justify-between items-center container-custom container mx-auto py-2">
-            <div className="relative lg:flex md:flex hidden">
+            <div ref={dropdownRef} className="relative lg:flex md:flex hidden  ">
               <button
                 onClick={handleCategory}
                 className="flex items-center text-white text-base"

@@ -10,11 +10,9 @@ const AddressModal = ({setAddressModal}) => {
     try {
       const res = await privateRequest.get("user/address");
       setAddress(res.data?.data);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
+    } catch (error) { 
     }
-  };
-  // console.log(address)
+  }; 
   const [cart, setCart] = useState({
     cart_items: [],
     shipping_address_id: 1,

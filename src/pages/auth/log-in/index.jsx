@@ -13,8 +13,7 @@ import { UserContext } from "@/contex/UserContex";
 import { useProduct } from "@/hooks/useProducts";
 
 const Login = () => {
-  const userInfo = useProduct()
-  // console.log(userInfo);
+  const userInfo = useProduct() 
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -22,8 +21,7 @@ const Login = () => {
     trigger,
   } = useForm();
   const router = useRouter();
-  const { redirect } = router.query; 
-  // console.log(router.query);
+  const { redirect } = router.query;  
   const onSubmit = async (data) => {
     const newData = {
       email: data.contactInfo,
@@ -38,8 +36,7 @@ const Login = () => {
         // router.push("/");
         router.replace(redirect ? String(redirect) : "/");
       }
-    } catch (error) {
-      // console.log(error);
+    } catch (error) { 
       networkErrorHandeller(error);
     }
   };

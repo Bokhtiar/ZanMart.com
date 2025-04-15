@@ -10,8 +10,7 @@ function LargCategoriesList({ categories, setDropdown }) {
             {/* Main Category */}
             <Link
               href={`/category-products/?category_id=${category.category_id}&category_name=${category.category_name}`}
-              onClick={() => {
-                // console.log(`Selected: ${category.category_name}`);
+              onClick={() => { 
                 setDropdown(false);
               }}
               className={`flex items-center shadow-md mt-2 h-16 w-64 justify-between px-4 ${

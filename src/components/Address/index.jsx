@@ -36,8 +36,7 @@ const Address = () => {
 
   const onClose = () => {
     setModal(false);
-  };
-  // console.log(address);
+  }; 
   const handleEditModal = (address) => {
     setIsEdit(true);
     setModal(true);
@@ -60,7 +59,7 @@ const Address = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(formData);
+    // log(formData);
 
     try {
       const updatedFormData = {
@@ -79,8 +78,7 @@ const Address = () => {
         _method: "PUT",
       };
 
-      if (isEdit) {
-        // console.log(updatedFormData);
+      if (isEdit) { 
         const res = await privateRequest.post(
           `user/address/${editAddressId}`,
           updatedFormData
@@ -107,10 +105,7 @@ const Address = () => {
         }
       }
     } catch (error) {
-      console.error(
-        "Error submitting address:",
-        error.response?.data || error.message
-      );
+    
       Toastify.Error("Failed to submit address.");
     }
 
@@ -123,8 +118,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get("division");
       setDivision(res.data?.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error) { 
     }
   };
 
@@ -133,8 +127,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get(`district/${divisionId}`);
       setDistrict(res.data?.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error) { 
     }
   };
 
@@ -143,8 +136,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get(`upazila/${districtId}`);
       setUpazila(res.data?.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error) { 
     }
   };
 
@@ -153,8 +145,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get(`union/${upazilaId}`);
       setUnion(res.data?.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error) { 
     }
   };
 
@@ -192,8 +183,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get("user/address");
       setAddress(res.data?.data);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
+    } catch (error) { 
     }
   };
 
@@ -211,8 +201,7 @@ const Address = () => {
       Toastify.Error(error.message || "Failed to delete address.");
     }
   };
-   
-  // console.log(cart);
+    
   useEffect(() => {
     handleDivision();
     userAddresses();

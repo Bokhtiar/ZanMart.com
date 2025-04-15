@@ -1,6 +1,5 @@
- 
-import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton"; 
-import { Toastify } from "@/components/toastify"; 
+import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
+import { Toastify } from "@/components/toastify";
 import { publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -16,7 +15,10 @@ import { PiDotsNineBold } from "react-icons/pi";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import style from "./style.module.css";
+import { MdOutlineFullscreen } from "react-icons/md";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -35,8 +37,7 @@ const ProductDetails = () => {
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
-  const [reletedProductLoading, setReletedProductLoading] = useState(false);
-// console.log(selectedDiscount)
+  const [reletedProductLoading, setReletedProductLoading] = useState(false); 
   /** product details */
   const fetchProduct = async () => {
     setLoading(true);
@@ -58,8 +59,7 @@ const ProductDetails = () => {
 
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
-      setvarient(productVariants);
-      // console.log(productVariants);
+      setvarient(productVariants); 
 
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
@@ -113,8 +113,7 @@ const ProductDetails = () => {
     attribute_weight: item?.attribute?.attribute_weight,
     discount_price: item?.discount_price,
   }));
-  // console.log(product);
-  // console.log(data);
+  
   const handelCart = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
@@ -143,7 +142,7 @@ const ProductDetails = () => {
         title: product?.title,
         payment: product?.delivery_status,
         product_variant_id: selectedVariant?.product_variant_id,
-        attribute_discount_price:selectedDiscount || 0// Include the variant ID
+        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
 
       let cart = localStorage.getItem("cart");
@@ -178,9 +177,7 @@ const ProductDetails = () => {
     if (product?.category_id) {
       reletedProductCategory();
     }
-  }, [product?.category_id]);
-
-  // console.log(product?.product_variants);
+  }, [product?.category_id]); 
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     // Ensure the gallery images are available and parse them if necessary
@@ -215,8 +212,7 @@ const ProductDetails = () => {
       (item) =>
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
-    );
-    // console.log(newColor);
+    ); 
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
@@ -243,25 +239,87 @@ const ProductDetails = () => {
   const handleThumb = (img) => {
     setThumb(img);
   };
-  if (loading) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const handleSlideChange = (swiper) => {
+    setCurrentIndex(swiper.realIndex); // Update current index when slide changes
+  };
+  if (loading || reletedProductLoading) {
     return <ProductDetailsSkeleton />;
   }
   return (
-    <div className="container-custom px-2 mt-36 pt-5">
-      <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between">
-        <div className="flex flex-col contents-between">
+    <div className="mx-auto container px-2 mt-36 pt-5">
+      <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
+        <div className="flex flex-col contents-between ">
           <div className="flex justify-center items-center">
-            <div className=" relative">
+            <div className=" relative group">
+              <button
+                onClick={() => setIsOpen(true)}
+                className="absolute top-3 right-3 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"
+              >
+                <MdOutlineFullscreen />
+              </button>
+              {isOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                  <button
+                    className="absolute top-5 right-5 text-white text-2xl"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    ✖
+                  </button>
+                  <span className="absolute top-5 left-5 text-gray-50 text-sm">
+                    {currentIndex + 1}/
+                    {[product?.thumbnail_image, imageArray].flat().length}
+                  </span>
+                  {/* image sliding show here  */}
+                  <div className="h-full py-20 w-full flex items-center justify-center">
+                    <Swiper
+                      style={{
+                        "--swiper-navigation-color": "#fff",
+                        "--swiper-pagination-color": "#fff",
+                      }}
+                      lazy={true}
+                      pagination={{
+                        clickable: true,
+                      }}
+                      navigation={true}
+                      modules={[Navigation]}
+                      className={style.swiper}
+                      onSlideChange={handleSlideChange}
+                    >
+                      {[product?.thumbnail_image, imageArray]
+                        .flat()
+                        .map((item, idx) => (
+                          <SwiperSlide
+                            className={style["swiper-slide"]}
+                            key={idx}
+                          >
+                            <Image
+                              src={`${process.env.NEXT_PUBLIC_API_SERVER}${item}`}
+                              alt="loading..."
+                              loading="lazy"
+                              className={style["swiper-slide img"]}
+                              width={1000}
+                              height={1000}
+                            />
+                            <div className="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                          </SwiperSlide>
+                        ))}
+                    </Swiper>
+                  </div>
+                </div>
+              )}
+
               <InnerImageZoom
-                src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`} // Image source
-                zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`} // High-res image for zoom
+                src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+                zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
                 alt="Product Thumbnail"
-                zoomType="hover" // Enable zoom on hover
-                zoomPreload={true} // Preload the zoomed image to avoid flickering
-                // Ensure the zoomed image is displayed only on hover
-                zoomPosition="left" // Position of the zoom effect (you can change to 'left', 'top', 'bottom')
+                zoomType="hover"
+                zoomPreload={true}
+                zoomPosition="left"
                 fillAvailableSpace={true}
-                className=" max-h-[550px] w-[550px] rounded" // Make the image fill the available space
+                className=" max-h-[550px] w-[550px] rounded"
               />
             </div>
           </div>
@@ -448,17 +506,13 @@ const ProductDetails = () => {
           </p>
         </div>
 
-        {reletedProductLoading ? (
-          <ProductSkeleton />
-        ) : (
-          <div
-            className={`bg-gray-50 p-5 w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
-          >
-            {reletedProduct.map((product) => (
-              <SingleCart key={product?.product_id} item={product} />
-            ))}
-          </div>
-        )}
+        <div
+          className={`bg-gray-50 p-5 w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+        >
+          {reletedProduct.map((product) => (
+            <SingleCart key={product?.product_id} item={product} />
+          ))}
+        </div>
       </section>
     </div>
   );

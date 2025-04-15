@@ -23,8 +23,7 @@ const ForgotPass = () => {
     trigger,
   } = useForm();
 
-  const onSubmit = async (data) => {
-    // console.log(data?.contact);
+  const onSubmit = async (data) => { 
     try {
       setLoading(true);
       const response = await publicRequest.post("forgot/password/mail-send", {
@@ -32,13 +31,10 @@ const ForgotPass = () => {
       });
       if (response.status == 200) {
         router.push("/auth/verify-number");
-        Toastify.Success(response?.data?.message);
-        // console.log(response.data?.data?.email);
+        Toastify.Success(response?.data?.message); 
         setUser(response.data?.data?.email);
         setLoading(false);
-      }
-      // console.log(response.status);
-      // console.log(data.contact);
+      } 
     } catch (error) {
       Toastify.Error(error?.message);
     }

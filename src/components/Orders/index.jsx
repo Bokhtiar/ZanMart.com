@@ -21,8 +21,7 @@ const Orders = () => {
         `user/orders?order_status=${status}`
       );
       setData(res?.data?.data || []);
-    } catch (error) {
-      console.error("Failed to fetch orders:", error);
+    } catch (error) { 
     } finally {
       setLoading(false);
     }

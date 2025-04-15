@@ -34,17 +34,11 @@ const MyCart = () => {
             try {
               const response = await privateRequest.get(
                 `/current/product/price?product_id=${item.product_id}&product_variant_id=${item.product_variant_id}`
-              );
-              // console.log(response.data?.data.price);
-
+              ); 
               if (response.data?.data.price) {
                 updatedCartItems[index].sell_price = response.data?.data.price;
               }
-            } catch (error) {
-              console.error(
-                `Error fetching price for product ID ${item.product_id} and variant ID ${item.product_variant_id}:`,
-                error
-              );
+            } catch (error) { 
             }
           })
         );
@@ -134,15 +128,13 @@ const MyCart = () => {
     }
   }, []);
   //  address = localStorage.getItem("cart")||{};
-  const shipping_address = address;
-  // console.log(shipping_address?.shipping_address_id);
+  const shipping_address = address; 
   const handleCheckout = async () => {
     setIsModalOpen(true);
     setModalAction("confirm");
   };
   const [addressData, setAddressData] = useState({});
-  const handleConfirm = async () => {
-    console.log('===========')
+  const handleConfirm = async () => { 
     const newMyOrder = {
       ...cartForOrder,
       billing_address_id: addressData?.address_id,
@@ -166,14 +158,12 @@ const MyCart = () => {
           );
         } else {
          
-          Toastify.Error(res.data?.message);
-          console.log(res);
+          Toastify.Error(res.data?.message); 
         }
       } else {
         Toastify.Error(res?.data?.message)
       }
-    } catch (error) {
-      console.error("Error during checkout:", error);
+    } catch (error) { 
     }
   };
 
@@ -346,8 +336,7 @@ const ConfirmModal = ({
     try {
       const res = await privateRequest.get("user/address");
       setAddress(res.data?.data);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
+    } catch (error) { 
     }
   }, []);
   useEffect(() => {
@@ -355,8 +344,7 @@ const ConfirmModal = ({
   }, []);
 
   const [selected, setSelected] = useState(null);
-  const handleChange = (index, addressItem) => {
-    // console.log(addressItem);
+  const handleChange = (index, addressItem) => { 
     setAddressData(addressItem);
     setSelected(index);
   };

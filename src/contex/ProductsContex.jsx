@@ -27,8 +27,7 @@ const MyProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await publicRequest.get("products");
-      const fetchedProducts = res?.data?.data?.data || [];
-      // console.log(fetchedProducts,"-------------------");
+      const fetchedProducts = res?.data?.data?.data || []; 
       setProducts(fetchedProducts);
       setOriginalProducts(fetchedProducts);
       setLoading(false); // Store the original products
@@ -46,8 +45,7 @@ const MyProvider = ({ children }) => {
       const isEmpty = Object.keys(filters).length === 0;
       // if (isEmpty) {
       //   return;
-      // }
-      console.log("---------------------", filters);
+      // } 
       setLoading(true);
       const queryParams = new URLSearchParams();
       if (filters.max_price && filters.min_price) {
@@ -56,10 +54,10 @@ const MyProvider = ({ children }) => {
       }
       if (filters.page) queryParams.append("page", filters.page);
       // if (filters.title) queryParams.append("title", filters.title);
-
+       queryParams.append("per_page", 20);
       let res;
       if (filters?.title) {
-        res = await publicRequest.get(`products?title=${filters?.title}`);
+        res = await publicRequest.get(`products?title=${filters?.title}&per_page=20`);
       } else {
         res = await publicRequest.get(
           `products${
@@ -67,8 +65,7 @@ const MyProvider = ({ children }) => {
           }`
         );
       }
-      const fetchedProducts = res?.data?.data || {};
-      // console.log(fetchedProducts,"-------------------");
+      const fetchedProducts = res?.data?.data || {}; 
       setNewProduct(fetchedProducts);
       // setOriginalProducts(fetchedProducts);
       setLoading(false); // Store the original products
@@ -91,8 +88,7 @@ const MyProvider = ({ children }) => {
       if (res?.status === 200) {
         setUser(res?.data?.data);
       }
-    } catch (error) {
-      console.error("Error fetching profile:", error);
+    } catch (error) { 
       setUser(null);
     } finally {
       setLoading(false);
