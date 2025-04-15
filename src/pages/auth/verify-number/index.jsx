@@ -1,48 +1,91 @@
+import Spinner from "@/components/spinner";
 import { Toastify } from "@/components/toastify";
 import { publicRequest } from "@/config/axios.config";
 import { useProduct } from "@/hooks/useProducts";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { networkErrorHandeller } from "@/utils/helpers";
+import { useRouter } from "next/router";
+// import { useRouter } from "next/navigation";
+import React, { useState, useRef } from "react";
 import { RxAvatar } from "react-icons/rx";
 
 const VerifyNumber = () => {
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const router=useRouter()
-  const { user,setForgotCode } = useProduct();
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const inputRefs = useRef([]);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const { user, setForgotCode } = useProduct();
+  const { email } = router.query;
   const handleChange = (e, index) => {
     const value = e.target.value;
-    if (value.length <= 1) {
+    if (/^[0-9]?$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
+
+      // Move focus to the next input
+      if (value && index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handleSubmit = async () => {
-    const otpValue = otp.join(""); 
-    setForgotCode(otpValue)
+    const otpValue = otp.join("");
+    setForgotCode(otpValue);
     try {
+      setLoading(true);
       const res = await publicRequest.post("forgot-code-check", {
-        email: user,
+        email: email,
         forgot_code: otpValue,
       });
-      if(res.status==200){
-        Toastify.Success(res.data?.message)
-        router.push("/auth/set-pass");
+      if (res.status === 200) {
+        Toastify.Success(res.data?.message);
+        router.push(`/auth/set-pass?email=${email}&code=${otpValue}`);
+
+        setLoading(false);
       }
-    } catch (error) {}
+    } catch (error) {
+      networkErrorHandeller(error);
+      setLoading(false);
+    }
+  };
+
+  const Resend = async () => {
+    try {
+      setResendLoading(true);
+      const response = await publicRequest.post("forgot/password/mail-send", {
+        email: email,
+      });
+      if (response.status == 200 || response.status == 201) {
+        // router.push(`/auth/verify-number?email=${data?.contact}`);
+        Toastify.Success(response?.data?.message);
+        setResendLoading(false);
+        // console.log(resendLoading)
+      } else {
+        setResendLoading(false);
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+      setResendLoading(false);
+    }
   };
 
   return (
     <div className="container mt-20 sm:mt-36 mx-auto py-6 sm:py-10 flex justify-center">
       <div className="flex flex-col items-center w-full px-4 sm:px-0">
         <h1 className="font-semibold text-lg sm:text-2xl text-center pb-4 sm:pb-10">
-          Verify your phone number
+          Verify your Email
         </h1>
         <div className="bg-primary w-full sm:w-[550px] p-6 sm:p-10 rounded-xl flex flex-col items-center">
           <h1 className="font-medium text-sm sm:text-base text-white text-center py-6 sm:py-10">
-            We have sent an OTP to your phone number <br />
-            <strong>+8801811017801</strong>
+            We have sent an OTP to your Email <br />
           </h1>
           <p className="font-semibold text-sm sm:text-base text-white pb-4 text-center">
             Enter OTP number*
@@ -51,11 +94,13 @@ const VerifyNumber = () => {
             {otp.map((digit, index) => (
               <input
                 key={index}
-                className="outline-none w-16 sm:w-24 h-16 sm:h-24 text-primary text-center font-bold text-2xl sm:text-3xl rounded-lg"
+                ref={(el) => (inputRefs.current[index] = el)}
+                className="outline-none w-8 h-8 md:h-12 md:w-12 text-primary text-center font-bold text-xl sm:text-2xl rounded-lg"
                 type="text"
                 maxLength="1"
                 value={digit}
                 onChange={(e) => handleChange(e, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
               />
             ))}
           </div>
@@ -65,7 +110,7 @@ const VerifyNumber = () => {
               onClick={handleSubmit}
               className="mt-6 sm:mt-10 text-primary bg-white rounded-lg text-xs sm:text-sm font-bold py-3 sm:py-5 px-12 sm:px-20"
             >
-              Verify
+              {loading ? <Spinner /> : "Verify"}
             </button>
           </div>
 
@@ -74,8 +119,16 @@ const VerifyNumber = () => {
               Didn’t get the OTP?
             </p>
             <p className="text-white font-light text-xs sm:text-sm">
-              <button>
-                <strong className="font-semibold"> Resend Now</strong>
+              <button
+                onClick={Resend}
+                disabled={resendLoading}
+                className={`${
+                  resendLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                <strong className="font-semibold">
+                  {resendLoading ? "Sending..." : "Resend"}
+                </strong>
               </button>
             </p>
           </div>

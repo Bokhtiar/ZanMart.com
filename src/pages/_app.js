@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }) {
       <LayoutPageWrapper>
         {getLayout(<Component {...pageProps} />)}
         </LayoutPageWrapper>
-        <ToastContainer    
+        <ToastContainer bodyClassName={"bg-primary"} 
           />
       </MyProvider>
     </div>

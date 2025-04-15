@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
 import { FiPhone } from "react-icons/fi";
 import Link from "next/link";
@@ -11,9 +11,11 @@ import Image from "next/image";
 import { PasswordInput, TextInput } from "@/components/input";
 import { UserContext } from "@/contex/UserContex";
 import { useProduct } from "@/hooks/useProducts";
+import Spinner from "@/components/spinner";
 
 const Login = () => {
   const userInfo = useProduct() 
+  const [loading,setLoading]=useState(false)
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -28,6 +30,7 @@ const Login = () => {
       password: data.password,
     };
     try {
+      setLoading(true)
       const response = await publicRequest.post("login", newData);
       if (response.data.data.token) {
         userInfo.setToken(response.data.data.token)
@@ -35,9 +38,11 @@ const Login = () => {
         Toastify.Success("Successfully Login");
         // router.push("/");
         router.replace(redirect ? String(redirect) : "/");
+        setLoading(false)
       }
     } catch (error) { 
       networkErrorHandeller(error);
+      setLoading(false)
     }
   };
   useEffect(() => {
@@ -117,11 +122,11 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-8 sm:mt-10 gap-2 text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                Login
+                {loading ?  <Spinner/>: "Login"}
               </button>
             </div>
             <div className="mt-5 text-center">
@@ -133,7 +138,7 @@ const Login = () => {
               </Link>
               <p className="text-white font-light text-sm leading-6 pt-2">
                 Don&lsquo;t have an account?{" "}
-                <Link href="/auth/register" className="hover:underline">
+                <Link href={redirect?`/auth/register?redirect=${redirect}`:'/auth/register'} className="hover:underline">
                   <strong className="text-sm font-semibold">Sign Up Now</strong>
                 </Link>
               </p>
