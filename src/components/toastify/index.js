@@ -12,6 +12,7 @@ const Success = (message) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
+        bodyClassName: "text-primary", 
     })
 };
 
@@ -38,6 +39,7 @@ const Warning = (message) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
+       
     })
 };
 
@@ -51,6 +53,7 @@ const Error = (message) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
+         
     })
 };
 

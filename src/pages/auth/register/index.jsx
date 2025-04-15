@@ -1,4 +1,5 @@
 import { PasswordInput, TextInput } from "@/components/input";
+import Spinner from "@/components/spinner";
 import TermsAndConditions from "@/components/termAndConiton";
 import PrivacyPolicy from "@/components/termAndConiton/PrivacyPolicy";
 import { Toastify } from "@/components/toastify";
@@ -6,7 +7,8 @@ import { publicRequest } from "@/config/axios.config";
 import { networkErrorHandeller } from "@/utils/helpers";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
+// import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaRegUserCircle } from "react-icons/fa";
@@ -14,14 +16,16 @@ import { FiPhone } from "react-icons/fi";
 import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
 
 const Register = () => {
+  // const [loading,setLoading]=useState(true)
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors,isValid },
+    formState: { errors, isValid },
     trigger,
   } = useForm();
   const router = useRouter();
+  const { redirect } = router.query;
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
     const newData = {
@@ -34,19 +38,21 @@ const Register = () => {
     setLoading(true);
     try {
       const response = await publicRequest.post("register", newData); // Use the endpoint 'register' (modify if necessary)
- 
+
       if (response?.status == 201) {
-        router.push("/auth/log-in");
+        router.push(redirect?`/auth/log-in?redirect=${redirect}`:'/auth/log-in' );
+        // router.replace(redirect ? String(redirect) : "/");
         Toastify.Success("Registered successfully");
       }
     } catch (error) {
       networkErrorHandeller(error);
+      setLoading(false)
     } finally {
       setLoading(false); // Set loading back to false after API call
     }
   };
   const [showTerms, setShowTerms] = useState(false);
-  const [showPolicy, setShowPolicy] = useState(false); 
+  const [showPolicy, setShowPolicy] = useState(false);
   return (
     <div className="container mt-36  mx-auto py-10 justify-center flex">
       <div className="items-center flex flex-col">
@@ -220,20 +226,23 @@ const Register = () => {
               </span>
             </p>
             <div className="flex justify-center">
-            <button
+              <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-8 sm:mt-10 flex justify-center items-center gap-2 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-             Sign Up
+               {loading ?  <Spinner/>: "Sign Up"}
               </button>
             </div>
             <div className="mt-5">
               <p className="text-white font-light text-sm leading-6 text-center">
                 Already have an account?{" "}
-                <Link href="/auth/log-in" className="text-sm font-semibold hover:underline">
+                <Link
+                  href="/auth/log-in"
+                  className="text-sm font-semibold hover:underline"
+                >
                   Sign In Now
                 </Link>
               </p>

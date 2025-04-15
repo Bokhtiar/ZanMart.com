@@ -27,10 +27,10 @@ const navList = [
 ];
 
 export const Navbar = () => {
-  const userInfo = useProduct() 
-  const {token,setToken} = userInfo;
+  const userInfo = useProduct();
+  const { token, setToken } = userInfo;
   const pathName = usePathname();
-  const [openCategory, setOpenCategory] = useState(false);
+  const [openCategory, setOpenCategory] = useState(true);
   const [selected, setSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,8 +48,8 @@ export const Navbar = () => {
       const response = await publicRequest.get("categories");
       setCategories(response?.data?.data);
       setLoading(false);
-    } catch (error) {}  
-  }; 
+    } catch (error) {}
+  };
   const handleSearchQuery = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -63,8 +63,7 @@ export const Navbar = () => {
       );
       setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
       updateLoading(false);
-    } catch (error) { 
-    }
+    } catch (error) {}
   };
 
   const handleSelect = async (data, id) => {
@@ -132,7 +131,7 @@ export const Navbar = () => {
     };
   }, []);
   return (
-    <div  className="z-50">
+    <div className="z-50">
       <div className="fixed h w-full h z-10 bg-white  ">
         <nav className="py-3 flex container-custom mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
@@ -200,14 +199,19 @@ export const Navbar = () => {
             </div>
             <div className="text-sm font-normal leading-5">
               <p>+8801771104908</p>
-              <a className="text-primary" href="mailto:zanvisionlabs@gmail.com">zaninfo@gmail.com</a>
+              <a className="text-primary" href="mailto:zanvisionlabs@gmail.com">
+                zaninfo@gmail.com
+              </a>
             </div>
           </div>
         </nav>
         {/* bottom navbar start  */}
         <section className="bg-primary ">
           <div className="flex gap-3 justify-between items-center container-custom container mx-auto py-2">
-            <div ref={dropdownRef} className="relative lg:flex md:flex hidden  ">
+            <div
+              ref={dropdownRef}
+              className="relative lg:flex md:flex hidden  "
+            >
               <button
                 onClick={handleCategory}
                 className="flex items-center text-white text-base"
@@ -248,7 +252,9 @@ export const Navbar = () => {
                             : ""
                         }`}
                       >
-                        {category.category_name} <MdKeyboardArrowRight />
+                        {category.category_name?.charAt(0).toUpperCase() +
+                          category.category_name?.slice(1).toLowerCase()}{" "}
+                        <MdKeyboardArrowRight />
                       </Link>
 
                       {/* Child Menu - Will appear when hovering over Parent */}
@@ -268,7 +274,11 @@ export const Navbar = () => {
                               }
                               className="border-b  p-2 hover:bg-primary hover:text-white  text-gray-600 flex w-[155px] justify-between items-center"
                             >
-                              {child?.category_name} <MdKeyboardArrowRight />
+                              {child?.category_name?.charAt(0).toUpperCase() +
+                                child?.category_name
+                                  ?.slice(1)
+                                  .toLowerCase()}{" "}
+                              <MdKeyboardArrowRight />
                             </Link>
 
                             {/* Grandchild Menu - Will appear when hovering over Child */}
@@ -285,7 +295,12 @@ export const Navbar = () => {
                                   }
                                   className="grandchild  hover:bg-primary hover:text-white text-gray-600 border-b p-2 flex w-[155px] justify-between items-center"
                                 >
-                                  {subChild?.category_name}{" "}
+                                  {subChild.category_name
+                                    ?.charAt(0)
+                                    .toUpperCase() +
+                                    subChild.category_name
+                                      ?.slice(1)
+                                      .toLowerCase()}
                                   <MdKeyboardArrowRight />
                                 </Link>
                               ))}
@@ -324,7 +339,7 @@ export const Navbar = () => {
                   >
                     {cart?.cart_items?.length}
                   </span>
-                  <LuShoppingCart   className="h-7 w-7" />
+                  <LuShoppingCart className="h-7 w-7" />
                 </Link>
                 <Link href="/profile">
                   <RxAvatar className="h-7 w-7" />
