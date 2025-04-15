@@ -9,5 +9,5 @@ const ConfirmOderPage = () => {
     </div>
   );
 };
-ConfirmOderPage.getLayout = (page) => <ProfileLayout>{page}</ProfileLayout>;
+// ConfirmOderPage.getLayout = (page) => <ProfileLayout>{page}</ProfileLayout>;
 export default ConfirmOderPage;
