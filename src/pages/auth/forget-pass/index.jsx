@@ -1,42 +1,47 @@
+"use client";
+
 import Link from "next/link";
 import React, { useState } from "react";
-import { FiPhone } from "react-icons/fi";
-import { RxAvatar } from "react-icons/rx";
+import { MdOutlineMailOutline } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { publicRequest } from "@/config/axios.config";
 import { useRouter } from "next/navigation";
 import { Toastify } from "@/components/toastify";
 import { useProduct } from "@/hooks/useProducts";
 import Image from "next/image";
-import { MdOutlineMailOutline } from "react-icons/md";
 import { TextInput } from "@/components/input";
+import Spinner from "@/components/spinner";
 
 const ForgotPass = () => {
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useProduct();
+  const { setUser } = useProduct();
   const router = useRouter();
+
   const {
-    register,
     handleSubmit,
     control,
-    formState: { errors,isValid },
+    formState: { errors, isValid },
     trigger,
-  } = useForm();
+  } = useForm({
+    mode: "onChange",
+  });
 
-  const onSubmit = async (data) => { 
+  const onSubmit = async (data) => {
     try {
       setLoading(true);
       const response = await publicRequest.post("forgot/password/mail-send", {
         email: data?.contact,
       });
-      if (response.status == 200) {
-        router.push("/auth/verify-number");
-        Toastify.Success(response?.data?.message); 
+
+      if (response.status === 200) {
+        Toastify.Success(response?.data?.message);
         setUser(response.data?.data?.email);
-        setLoading(false);
-      } 
+        router.push(`/auth/verify-number?email=${data?.contact}`);
+      }
     } catch (error) {
       Toastify.Error(error?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,10 +57,11 @@ const ForgotPass = () => {
               src={"/logo.png"}
               height={200}
               width={2000}
-              alt=""
+              alt="Logo"
               className="bg-white rounded-full p-2"
             />
           </div>
+
           <form
             className="w-full flex flex-col justify-center"
             onSubmit={handleSubmit(onSubmit)}
@@ -66,36 +72,36 @@ const ForgotPass = () => {
                 type="email"
                 control={control}
                 label={
-                  <div className="flex gap-2 pb-2 pl-3.5 text-white">
+                  <span className="flex gap-2 pb-2 pl-3.5 text-white items-center">
                     <MdOutlineMailOutline className="h-5 w-5" />
                     E-mail
-                  </div>
+                  </span>
                 }
                 rules={{
-                  required: "Email  is required",
+                  required: "Email is required",
                   pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$|^\d{10}$/,
-                    message: "Invalid  email",
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email format",
                   },
                 }}
                 error={errors?.contact?.message}
-                placeholder="Enter your  email"
+                placeholder="Enter your email"
                 trigger={trigger}
               />
-              
             </div>
 
             <div className="flex justify-center">
-            <button
+              <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-8 sm:mt-10 text-primary bg-white rounded-lg flex gap-2 justify-center items-center text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                Send OTP
+                {loading ?  <Spinner/>: "Send OTP"}
               </button>
             </div>
+
             <div className="mt-5 text-center">
               <p className="text-white font-light text-sm leading-6">
                 Don’t have an account?{" "}

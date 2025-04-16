@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
 import { FiPhone } from "react-icons/fi";
 import Link from "next/link";
@@ -11,10 +11,11 @@ import Image from "next/image";
 import { PasswordInput, TextInput } from "@/components/input";
 import { UserContext } from "@/contex/UserContex";
 import { useProduct } from "@/hooks/useProducts";
-import axios from "axios";
+import Spinner from "@/components/spinner";
 
 const Login = () => {
   const userInfo = useProduct();
+  const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -29,6 +30,7 @@ const Login = () => {
       password: data.password,
     };
     try {
+      setLoading(true);
       const response = await publicRequest.post("login", newData);
       if (response.data.data.token) {
         userInfo.setToken(response.data.data.token);
@@ -36,9 +38,11 @@ const Login = () => {
         Toastify.Success("Successfully Login");
         // router.push("/");
         router.replace(redirect ? String(redirect) : "/");
+        setLoading(false);
       }
     } catch (error) {
       networkErrorHandeller(error);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -117,16 +121,38 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-2 w-full sm:mt-2 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-2 sm:mt-4 gap-2 w-full text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                Login
+                {loading ? <Spinner /> : "Login"}
               </button>
             </div>
           </form>
-          
+          <div className="flex mt-4 items-center gap-4 w-full ">
+            <hr className="block w-full" />
+            <span className="text-white">or</span>
+            <hr className="w-full block" />
+          </div>
 
+          <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
+            <button
+              onClick={() => {
+                window.location.href = `http://127.0.0.1:8000/api/auth/google?route=${
+                  redirect ? String(redirect) : "/"
+                }`;
+              }}
+              class="w-full   flex items-center justify-center gap-3 "
+            >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                class="w-7 h-7"
+                alt="Google logo"
+              />
+              <span>Continue with Google</span>
+            </button>
+                      
+          </div>
           <div className="mt-5 text-center">
             <Link
               href={"/auth/forget-pass"}
@@ -136,7 +162,14 @@ const Login = () => {
             </Link>
             <p className="text-white font-light text-sm leading-6 pt-2">
               Don&lsquo;t have an account?{" "}
-              <Link href="/auth/register" className="hover:underline">
+              <Link
+                href={
+                  redirect
+                    ? `/auth/register?redirect=${redirect}`
+                    : "/auth/register"
+                }
+                className="hover:underline"
+              >
                 <strong className="text-sm font-semibold">Sign Up Now</strong>
               </Link>
             </p>

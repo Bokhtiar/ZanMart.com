@@ -87,12 +87,12 @@ const ProfileInfo = () => {
       ) : (
         <>
           {" "}
-          <section className="border rounded-lg p-4 flex justify-between">
-            <div className="flex gap-2 items-center">
+          <section className="border rounded-lg p-4 flex justify-between ">
+            <div className="flex flex-col md:flex-row gap-3 ">
               <Image
-                src={`${process?.env.NEXT_PUBLIC_API_SERVER}${profile?.profile_pic}`}
-                height={70}
-                width={70}
+                src={profile?.profile_pic? `${process?.env.NEXT_PUBLIC_API_SERVER}${profile?.profile_pic}`: '/profile_avatar/profile_avater.png'}
+                height={60}
+                width={60}
                 alt=""
                 className="rounded-full"
               />
@@ -105,7 +105,7 @@ const ProfileInfo = () => {
             <div>
               <button
                 onClick={handleOpenModal}
-                className="text-sm bg-gray-50 px-3 py-1  gap-2 flex items-center text-gray-700 rounded-lg border"
+                className="text-sm bg-gray-50 px-3 py-1  gap-2 flex items-center text-gray-700 rounded-lg border -ml-3"
               >
                 <AiFillEdit className="cursor-pointer" /> Edit
               </button>

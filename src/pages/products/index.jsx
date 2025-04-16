@@ -16,7 +16,7 @@ import PaginationSkeleton from "@/components/loader/PaginationSkeleton";
 const Products = () => {
   // const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [gridCount, setGridCount] = useState(4);
   const [page, setPage] = useState(1);
   const [minPrice, setMinPrice] = useState(10);
@@ -28,7 +28,7 @@ const Products = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
- 
+ console.log(product)
   return (
     <>
        
@@ -65,8 +65,8 @@ const Products = () => {
               /> */}
             </div>
             {(loading || !product?.data) ? <ProductSkeleton />: <div className="w-full">
-              <div className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2">
-                <button onClick={toggleDrawer} className="text-xl">
+              <div onClick={toggleDrawer}  className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2 mt-2">
+                <button className="text-xl">
                   <FiFilter />
                 </button>
               </div>

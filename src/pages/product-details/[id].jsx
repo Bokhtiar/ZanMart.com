@@ -16,9 +16,10 @@ import { HiClipboardDocumentList } from "react-icons/hi2";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import style from "./style.module.css";
 import { MdOutlineFullscreen } from "react-icons/md";
+import Paginations from "@/components/pagination";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -37,7 +38,10 @@ const ProductDetails = () => {
   const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
-  const [reletedProductLoading, setReletedProductLoading] = useState(false); 
+  const [reletedProductLoading, setReletedProductLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  // console.log(selectedDiscount);
   /** product details */
   const fetchProduct = async () => {
     setLoading(true);
@@ -59,7 +63,7 @@ const ProductDetails = () => {
 
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
-      setvarient(productVariants); 
+      setvarient(productVariants);
 
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
@@ -80,20 +84,27 @@ const ProductDetails = () => {
   };
 
   /** category releted product */
-  const reletedProductCategory = useCallback(async () => {
-    try {
-      setReletedProductLoading(true);
-      const response = await publicRequest.get(
-        `category/product/${product?.category_id}`
-      );
-      if (response && response.status === 200) {
-        setReletedProduct(response?.data?.data?.data);
+  const reletedProductCategory = useCallback(
+    async (page = 1) => {
+      try {
+        setReletedProductLoading(true);
+        const response = await publicRequest.get(
+          `category/product/${product?.category_id}?page=${page}`
+        );
+
+        if (response && response.status === 200) {
+          setReletedProduct(response?.data?.data?.data);
+          setCurrentPage(response?.data?.data?.current_page);
+          setLastPage(response?.data?.data?.last_page);
+          setReletedProductLoading(false);
+        }
+      } catch (error) {
+        networkErrorHandeller(error);
         setReletedProductLoading(false);
       }
-    } catch (error) {
-      networkErrorHandeller(error);
-    }
-  }, [product?.category_id]);
+    },
+    [product?.category_id]
+  );
 
   const handelIncriment = () => setQuantity(quantity + 1);
   const handelDiccriment = () => {
@@ -113,7 +124,7 @@ const ProductDetails = () => {
     attribute_weight: item?.attribute?.attribute_weight,
     discount_price: item?.discount_price,
   }));
-  
+
   const handelCart = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
@@ -175,9 +186,9 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (product?.category_id) {
-      reletedProductCategory();
+      reletedProductCategory(1);
     }
-  }, [product?.category_id]); 
+  }, [product?.category_id]);
   const [imageArray, setImageArray] = useState([]);
   useEffect(() => {
     // Ensure the gallery images are available and parse them if necessary
@@ -212,7 +223,7 @@ const ProductDetails = () => {
       (item) =>
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
-    ); 
+    );
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
@@ -513,6 +524,7 @@ const ProductDetails = () => {
             <SingleCart key={product?.product_id} item={product} />
           ))}
         </div>
+        <Paginations page={1} setPage={currentPage} totalPage={lastPage} />
       </section>
     </div>
   );
