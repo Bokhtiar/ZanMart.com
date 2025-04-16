@@ -23,18 +23,17 @@ const Products = () => {
   const [maxPrices, setMaxPrice] = useState(0);
   const { fetchProducts, newProduct: product, loading } = useProduct();
   useEffect(() => {
-    fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice }); 
-  }, [page, minPrice, maxPrices]); 
+    fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice });
+  }, [page, minPrice, maxPrices]);
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
- console.log(product)
+  console.log(product);
   return (
     <>
-       
-        <div className="mt-36">
-          {/* product banner --------------------------- */}
-          {/* <div className="text-center py-10">
+      <div className="mt-36">
+        {/* product banner --------------------------- */}
+        {/* <div className="text-center py-10">
           <h1 className="font-extrabold text-primary text-4xl py-2">
             All Products
           </h1>
@@ -43,29 +42,35 @@ const Products = () => {
           </p>
         </div> */}
 
-          <div className="flex container-custom mx-auto items-start gap-4 w-full">
-            {/* Filter options */}
-            <div className="w-1/4 hidden lg:flex md:flex flex-col ">
-              <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded flex items-center gap-1">
-                <RiFilterOffLine /> Filter
-              </h1>
-              {/* filter using price  */}
-              <PriceFilter
-                setMinPrice={setMinPrice}
-                setMaxPrice={setMaxPrice}
-                maxPrice={maxPrices}
-                minPrice={minPrice}
-              />
-              {/* <Image
+        <div className="flex container-custom mx-auto items-start gap-4 w-full">
+          {/* Filter options */}
+          <div className="w-1/4 hidden lg:flex md:flex flex-col ">
+            <h1 className="font-extrabold text-primary text-xl py-2 bg-gray-50 my-2 px-2 rounded flex items-center gap-1">
+              <RiFilterOffLine /> Filter
+            </h1>
+            {/* filter using price  */}
+            <PriceFilter
+              setMinPrice={setMinPrice}
+              setMaxPrice={setMaxPrice}
+              maxPrice={maxPrices}
+              minPrice={minPrice}
+            />
+            {/* <Image
                 height={1000}
                 width={300}
                 className="mt-4 w-full rounded"
                 src="/images/filterbanner.svg"
                 alt=""
               /> */}
-            </div>
-            {(loading || !product?.data) ? <ProductSkeleton />: <div className="w-full">
-              <div onClick={toggleDrawer}  className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2 mt-2">
+          </div>
+          {loading || !product?.data ? (
+            <ProductSkeleton />
+          ) : (
+            <div className="w-full">
+              <div
+                onClick={toggleDrawer}
+                className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2 mt-2"
+              >
                 <button className="text-xl">
                   <FiFilter />
                 </button>
@@ -121,33 +126,35 @@ const Products = () => {
                   />
                 )}
               </section>
-            </div>}
-          </div>
+            </div>
+          )}
+        </div>
 
-          {/* Drawer for mobile filters */}
-          <div
-            className={`fixed top-36 right-0 h-[calc(100vh-144px)] z-20 bg-white transition-transform transform ${
-              isDrawerOpen ? "-translate-x-0" : "translate-x-full"
-            } w-2/3`}
-          >
-            <div className="p-4 h-full flex flex-col">
-              <button onClick={toggleDrawer} className="text-xl">
-                <MdClose />
-              </button>
+        {/* Drawer for mobile filters */}
+        <div
+          className={`fixed top-36 right-0 h-[calc(100vh-144px)] z-20 bg-white transition-transform transform ${
+            isDrawerOpen ? "-translate-x-0" : "translate-x-full"
+          } w-2/3`}
+        >
+          <div className="p-4 h-full flex flex-col">
+            <button onClick={toggleDrawer} className="text-xl">
+              <MdClose />
+            </button>
 
-              <div className="flex-grow mt-4 overflow-y-auto">
-                {" "}
-                {/* Ensures the content area has scrollable overflow */}
-                {/* small device price filter  */}
-                <PriceFilter
-                  setMinPrice={setMinPrice}
-                  setMaxPrice={setMaxPrice}
-                />
-              </div>
+            <div className="flex-grow mt-4 overflow-y-auto">
+              {" "}
+              {/* Ensures the content area has scrollable overflow */}
+              {/* small device price filter  */}
+              <PriceFilter
+                setMinPrice={setMinPrice}
+                setMaxPrice={setMaxPrice}
+                maxPrice={maxPrices}
+                minPrice={minPrice}
+              />
             </div>
           </div>
         </div>
-      
+      </div>
     </>
   );
 };
