@@ -211,12 +211,12 @@ const Address = () => {
   return (
     <div>
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
-        <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+        <h1 className="text-xl md:text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
           <FaAddressBook /> Address List
         </h1>
         <button
           onClick={handleAddressModal}
-          className="flex  items-center gap-2 text-lg bg-primary px-9 py-1 text-white rounded-3xl"
+          className="flex  items-center gap-2 md:text-xl bg-primary px-2 md:px-9 py-1 text-white rounded-3xl"
         >
           <FaPlusCircle /> Add New
         </button>
