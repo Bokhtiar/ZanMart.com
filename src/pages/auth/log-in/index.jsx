@@ -138,7 +138,7 @@ const Login = () => {
           <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
             <button
               onClick={() => {
-                window.location.href = `http://127.0.0.1:8000/api/auth/google?route=${
+                window.location.href = `${process.env.NEXT_PUBLIC_API_SERVER}api/auth/google?route=${
                   redirect ? String(redirect) : "/"
                 }`;
               }}
