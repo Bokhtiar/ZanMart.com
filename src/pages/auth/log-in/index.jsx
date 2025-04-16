@@ -14,8 +14,8 @@ import { useProduct } from "@/hooks/useProducts";
 import Spinner from "@/components/spinner";
 
 const Login = () => {
-  const userInfo = useProduct() 
-  const [loading,setLoading]=useState(false)
+  const userInfo = useProduct();
+  const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -23,26 +23,26 @@ const Login = () => {
     trigger,
   } = useForm();
   const router = useRouter();
-  const { redirect } = router.query;  
+  const { redirect } = router.query;
   const onSubmit = async (data) => {
     const newData = {
       email: data.contactInfo,
       password: data.password,
     };
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await publicRequest.post("login", newData);
       if (response.data.data.token) {
-        userInfo.setToken(response.data.data.token)
+        userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);
         Toastify.Success("Successfully Login");
         // router.push("/");
         router.replace(redirect ? String(redirect) : "/");
-        setLoading(false)
+        setLoading(false);
       }
-    } catch (error) { 
+    } catch (error) {
       networkErrorHandeller(error);
-      setLoading(false)
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -79,8 +79,8 @@ const Login = () => {
                 control={control}
                 label={
                   <div className="flex gap-2 pb-2 pl-3.5 text-white">
-                 <MdOutlineMailOutline className="h-5 w-5" />
-                   E-mail
+                    <MdOutlineMailOutline className="h-5 w-5" />
+                    E-mail
                   </div>
                 }
                 rules={{
@@ -117,33 +117,63 @@ const Login = () => {
                 trigger={trigger}
               />
             </div>
-
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
               <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 gap-2 text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-2 sm:mt-4 gap-2 w-full text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {loading ?  <Spinner/>: "Login"}
+                {loading ? <Spinner /> : "Login"}
               </button>
             </div>
-            <div className="mt-5 text-center">
-              <Link
-                href={"/auth/forget-pass"}
-                className=" text-white font-semibold text-sm sm:p-4 leading-6 hover:underline"
-              >
-                Forgot password?
-              </Link>
-              <p className="text-white font-light text-sm leading-6 pt-2">
-                Don&lsquo;t have an account?{" "}
-                <Link href={redirect?`/auth/register?redirect=${redirect}`:'/auth/register'} className="hover:underline">
-                  <strong className="text-sm font-semibold">Sign Up Now</strong>
-                </Link>
-              </p>
-            </div>
           </form>
+          <div className="flex mt-4 items-center gap-4 w-full ">
+            <hr className="block w-full" />
+            <span className="text-white">or</span>
+            <hr className="w-full block" />
+          </div>
+
+          <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
+            <button
+              onClick={() => {
+                window.location.href = `${process.env.NEXT_PUBLIC_API_SERVER}api/auth/google?route=${
+                  redirect ? String(redirect) : "/"
+                }`;
+              }}
+              class="w-full   flex items-center justify-center gap-3 "
+            >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                class="w-7 h-7"
+                alt="Google logo"
+              />
+              <span>Continue with Google</span>
+            </button>
+                      
+          </div>
+          <div className="mt-5 text-center">
+            <Link
+              href={"/auth/forget-pass"}
+              className=" text-white font-semibold text-sm sm:p-4 leading-6 hover:underline"
+            >
+              Forgot password?
+            </Link>
+            <p className="text-white font-light text-sm leading-6 pt-2">
+              Don&lsquo;t have an account?{" "}
+              <Link
+                href={
+                  redirect
+                    ? `/auth/register?redirect=${redirect}`
+                    : "/auth/register"
+                }
+                className="hover:underline"
+              >
+                <strong className="text-sm font-semibold">Sign Up Now</strong>
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
