@@ -30,10 +30,10 @@ const SearchProdut = () => {
   }, [searchText]);
   if (loading)
     return (
-      <div className="grid grid-cols-3 lg:grid-cols-6 gap-4 mt-44">
-        {Array.from({ length: 10 }, (_, index) => (
-          <ProductSkeleton key={index} />
-        ))}
+      <div className="container-custom mt-36">
+        
+          <ProductSkeleton />
+       
       </div>
     );
   return (
