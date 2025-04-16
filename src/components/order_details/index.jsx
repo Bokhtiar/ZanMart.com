@@ -4,11 +4,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
 const OrderDetails = () => {
+    const [loading, setLoading] = useState(false);
   const router = useRouter();
   const  id  = router?.query?.slug;
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderItems, setOrderitems] = useState([]);
   const fetchOrderDetails = useCallback(async () => {
+    setLoading(true);
     try {
       if(!id) return ;
       const res = await privateRequest.get(`user/order/${id}`);
@@ -17,6 +19,9 @@ const OrderDetails = () => {
         setOrderitems(res?.data?.data["order item"]);
       }
     } catch (error) {}
+    finally {
+      setLoading(false);
+    }
   }, [id]);
   useEffect(() => {
     fetchOrderDetails();
@@ -67,10 +72,10 @@ const OrderDetails = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
         <div className="bg-white shadow p-4 rounded">
           <h3 className="font-bold mb-2">Customer & Order</h3>
-          <p>Name: {orderDetails.shipping_address?.name}</p>
-          <p>Email: {orderDetails.shipping_address?.email}</p>
-          <p>Phone: {orderDetails.shipping_address?.phone}</p>
-          <p>PO: {orderDetails.shipping_address?.postal_code}</p>
+          <p>Name : {orderDetails.shipping_address?.name}</p>
+          <p>Email : {orderDetails.shipping_address?.email}</p>
+          <p>Phone : {orderDetails.shipping_address?.phone}</p>
+          <p>PO : {orderDetails.shipping_address?.postal_code}</p>
         </div>
 
         <div className="bg-white shadow p-4 rounded">
