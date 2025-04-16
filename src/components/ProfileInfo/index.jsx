@@ -59,6 +59,7 @@ const ProfileInfo = () => {
       if (res?.status == 200) {
         Toastify.Success(res.data?.message);
         handleCloseModal();
+        userAddresses();
       }
     } catch (error) {
       Toastify.Error(error.response?.data[0]);
@@ -274,11 +275,11 @@ const ProfileInfo = () => {
             <div className="flex justify-end gap-4 mt-6">
               <button
                 onClick={handleCloseModal}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded"
+                className="bg-gray-300 text-gray-700  hover:opacity-80 px-4 py-2 rounded"
               >
                 Cancel
               </button>
-              <button className="bg-primary text-white px-4 py-2 rounded">
+              <button className="bg-primary text-white hover:bg-secondary px-4 py-2 rounded">
                 Save
               </button>
             </div>

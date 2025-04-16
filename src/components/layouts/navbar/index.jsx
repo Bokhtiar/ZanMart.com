@@ -18,6 +18,7 @@ import CategoriesList from "./components/CategoryRender";
 import style from "./components/style.module.css";
 import { BiCategoryAlt } from "react-icons/bi";
 import { LuShoppingCart } from "react-icons/lu";
+import { useRouter } from "next/router";
 
 const navList = [
   { name: "Home", href: "/" },
@@ -35,6 +36,7 @@ export const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const router=useRouter()
   const [cart, setCart] = useState({
     cart_items: [],
     shipping_address_id: 1,
@@ -56,13 +58,18 @@ export const Navbar = () => {
   };
   const { setLoading: updateLoading, setProducts } = useProduct();
   const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
     try {
       updateLoading(true);
-      const SearchFilter = await publicRequest.get(
+      const response = await publicRequest.get(
         `products-search?search=${searchQuery}`
       );
-      setProducts(SearchFilter?.data?.data || []); // Default to an empty array if no data
-      updateLoading(false);
+      if(response.status==200){
+        setProducts(response?.data?.data || []); 
+        router.replace(`/search-products/?search=${searchQuery}`)
+        updateLoading(false);
+      }
+   
     } catch (error) {}
   };
 
@@ -233,7 +240,7 @@ export const Navbar = () => {
                 }`}
               >
                 <ul className=" bg-white shadow-lg  ">
-                  {categories.map((category) => (
+                  {categories?.map((category) => (
                     <div
                       key={category?.category_id}
                       className="relative parent"
@@ -321,14 +328,15 @@ export const Navbar = () => {
                 type="text"
                 placeholder="Search product here"
               />
-              <Link
-                href={`/search-products/?search=${searchQuery}`}
-                onClick={handleSearch}
-                className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-9 md:h-10 lg:h-12 text-white 
+              <button 
+                
+                onClick={()=>handleSearch()}
+                
+                className="flex absolute right-0 hover:text-secondary rounded-full bg-black md:text-sm lg:text-sm text-xs h-9 md:h-10 lg:h-12 text-white 
                 w-[70px] lg:w-40 md:w-32 items-center justify-center sm:px-2 gap-1 md:gap-2"
               >
                 Search <IoSearch className="h-4 w-4" />
-              </Link>
+              </button>
             </div>
             <div>
               <p className="flex items-center md:gap-4  lg:gap-5 gap-2">

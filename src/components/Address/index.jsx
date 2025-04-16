@@ -6,6 +6,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { Toastify } from "../toastify";
 import { FaAddressBook } from "react-icons/fa";
 import AddressSkeleton from "../loader/AddressSkeleton";
+import { networkErrorHandeller } from "@/utils/helpers";
+import { MdLocationOff } from "react-icons/md";
 
 const Address = () => {
   const [modal, setModal] = useState(false);
@@ -20,7 +22,7 @@ const Address = () => {
   const [union, setUnion] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [editAddressId, setEditAddressId] = useState(null); // To store the ID of the address being edited
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -36,7 +38,7 @@ const Address = () => {
 
   const onClose = () => {
     setModal(false);
-  }; 
+  };
   const handleEditModal = (address) => {
     setIsEdit(true);
     setModal(true);
@@ -78,7 +80,7 @@ const Address = () => {
         _method: "PUT",
       };
 
-      if (isEdit) { 
+      if (isEdit) {
         const res = await privateRequest.post(
           `user/address/${editAddressId}`,
           updatedFormData
@@ -105,7 +107,6 @@ const Address = () => {
         }
       }
     } catch (error) {
-    
       Toastify.Error("Failed to submit address.");
     }
 
@@ -118,8 +119,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get("division");
       setDivision(res.data?.data);
-    } catch (error) { 
-    }
+    } catch (error) {}
   };
 
   // Fetch districts based on selected division
@@ -127,8 +127,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get(`district/${divisionId}`);
       setDistrict(res.data?.data);
-    } catch (error) { 
-    }
+    } catch (error) {}
   };
 
   // Fetch upazilas based on selected district
@@ -136,8 +135,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get(`upazila/${districtId}`);
       setUpazila(res.data?.data);
-    } catch (error) { 
-    }
+    } catch (error) {}
   };
 
   // Fetch unions based on selected upazila
@@ -145,8 +143,7 @@ const Address = () => {
     try {
       const res = await privateRequest.get(`union/${upazilaId}`);
       setUnion(res.data?.data);
-    } catch (error) { 
-    }
+    } catch (error) {}
   };
 
   const handleDivisionChange = (e) => {
@@ -181,9 +178,13 @@ const Address = () => {
   // Get all addresses
   const userAddresses = async () => {
     try {
+      setLoading(true);
       const res = await privateRequest.get("user/address");
       setAddress(res.data?.data);
-    } catch (error) { 
+      setLoading(false);
+    } catch (error) {
+      networkErrorHandeller(error);
+      setLoading(false);
     }
   };
 
@@ -201,11 +202,10 @@ const Address = () => {
       Toastify.Error(error.message || "Failed to delete address.");
     }
   };
-    
+
   useEffect(() => {
     handleDivision();
     userAddresses();
-     
   }, []);
 
   return (
@@ -216,7 +216,7 @@ const Address = () => {
         </h1>
         <button
           onClick={handleAddressModal}
-          className="flex  items-center gap-2 md:text-xl bg-primary px-2 md:px-9 py-1 text-white rounded-3xl"
+          className="flex  items-center gap-2 md:text-xl bg-primary hover:bg-secondary px-2 md:px-9 py-1 text-white rounded-3xl"
         >
           <FaPlusCircle /> Add New
         </button>
@@ -224,6 +224,9 @@ const Address = () => {
 
       {/* Existing Addresses */}
       <div>
+        {loading &&
+          Array.from({ length: 20 }).map((_, i) => <AddressSkeleton key={i} />)}
+
         {address.length > 0 ? (
           <>
             {address?.map((item, index) => (
@@ -245,14 +248,14 @@ const Address = () => {
                 <div className="flex justify-start md:justify-center gap-2">
                   <button
                     onClick={() => handleEditModal(item)}
-                    className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
+                    className="self-start mt-2 md:mt-0 bg-primary hover:opacity-75 text-white px-2 rounded-md py-1 "
                   >
                     <AiFillEdit className=" h-5 w-5" />
                   </button>
 
                   <button
                     onClick={() => handleDelete(item.address_id)}
-                    className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
+                    className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 hover:opacity-75 px-2 rounded-md py-1  text-white"
                   >
                     <RiDeleteBin6Line className="font-semibold" />
                   </button>
@@ -261,11 +264,16 @@ const Address = () => {
             ))}
           </>
         ) : (
-          <>
-            {Array.from({ length: 20 }).map((_, i) => (
-              <AddressSkeleton key={i} />
-            ))}
-          </>
+          <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+          <div className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+            <MdLocationOff className="text-red-500 text-6xl mx-auto mb-4" />
+            <h1 className="text-2xl font-semibold text-gray-800 mb-2">Address Not Found</h1>
+            <p className="text-gray-600">
+              No address is currently saved. Please add an address to continue.
+            </p>
+          </div>
+        </div>
+
         )}
       </div>
 

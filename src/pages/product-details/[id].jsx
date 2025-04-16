@@ -260,7 +260,7 @@ const ProductDetails = () => {
     return <ProductDetailsSkeleton />;
   }
   return (
-    <div className="mx-auto container px-2 mt-36 pt-5">
+    <div className="container-custom px-2 mt-36 pt-5">
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
           <div className="flex justify-center items-center">
@@ -423,8 +423,8 @@ const ProductDetails = () => {
                 </p>
               )}
             </div>
-            <p className="flex py-3 flex-row items-center w-1/2 lg:w-3/5 justify-between">
-              <span className="text-primary md:text-3xl text-2xl lg:text-5xl font-bold">
+            <p className="flex py-3 flex-row items-center w-full lg:w-3/5 justify-between">
+              <span className="text-primary text-nowrap md:text-3xl text-xl lg:text-5xl font-bold">
                 {selectedPrice}{" "}
                 <span className="md:text-2xl text-lg lg:text-2xl font-normal text-black">
                   tk
@@ -432,46 +432,52 @@ const ProductDetails = () => {
               </span>
               {selectedDiscount && (
                 <span className="text-secondary flex lg:text-2xl line-through">
-                  {selectedDiscount}
+                  {selectedDiscount} tk
                 </span>
               )}
             </p>
-            {product?.rating && (
-              <span className="flex justify-start py-2">
-                {product &&
-                  Array(Math.floor(product?.rating) - 1)
-                    .fill(null)
-                    .map((_, index) => (
-                      <FaStar key={index} className="text-secondary" />
-                    ))}
-                {product?.rating % 2 !== 0 ? (
-                  <FaStar className="text-secondary" />
-                ) : (
-                  <FaStarHalfAlt className="text-secondary" />
-                )}
-              </span>
-            )}
-            <div className="">
-              <p className="rounded-xl font-medium lg:items-center text-lg lg:text-xl border flex-col gap-2 lg:flex-row lg:justify-between flex w-3/5 lg:p-3">
-                <span className="flex items-center gap-2">
-                  Qty:
-                  <span className="border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]">
-                    <button onClick={handelDiccriment} className="p-1">
-                      -
-                    </button>{" "}
-                    {quantity}
-                    <button onClick={handelIncriment} className="p-1">
-                      +
-                    </button>
-                  </span>
+            <div className="flex gap-8">
+              <div className="flex items-center gap-2">
+                Qty:
+                <span className="border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]">
+                  <button onClick={handelDiccriment} className="p-1">
+                    -
+                  </button>{" "}
+                  {quantity}
+                  <button onClick={handelIncriment} className="p-1">
+                    +
+                  </button>
                 </span>
-                <button
-                  onClick={handelCart}
-                  className="p-1 lg:py-2 text-base lg:px-3 text-white bg-primary rounded-xl"
-                >
-                  Add To Cart
-                </button>
-              </p>
+              </div>
+              {product?.rating && (
+                <span className="flex justify-start py-2">
+                  {product &&
+                    Array(Math.floor(product?.rating) - 1)
+                      .fill(null)
+                      .map((_, index) => (
+                        <FaStar key={index} className="text-secondary" />
+                      ))}
+                  {product?.rating % 2 !== 0 ? (
+                    <FaStar className="text-secondary" />
+                  ) : (
+                    <FaStarHalfAlt className="text-secondary" />
+                  )}
+                </span>
+              )}
+            </div>
+            <div className=" flex gap-2 md:gap-6 my-5 ">
+              <button
+                onClick={handelCart}
+                className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-primary rounded-xl"
+              >
+                Add To Cart
+              </button>
+              <button
+                onClick={handelCart}
+                className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-secondary rounded-xl"
+              >
+                Buy Now
+              </button>
             </div>
           </>
 
@@ -491,7 +497,7 @@ const ProductDetails = () => {
       ></TopFeature> */}
       <section>
         <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
-          <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+          <h1 className="font-extrabold text-primary md:text-xl py-2 flex items-center gap-1">
             <HiClipboardDocumentList /> Releted Products
           </h1>
 
