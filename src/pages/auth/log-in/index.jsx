@@ -11,9 +11,10 @@ import Image from "next/image";
 import { PasswordInput, TextInput } from "@/components/input";
 import { UserContext } from "@/contex/UserContex";
 import { useProduct } from "@/hooks/useProducts";
+import axios from "axios";
 
 const Login = () => {
-  const userInfo = useProduct() 
+  const userInfo = useProduct();
   const {
     handleSubmit,
     formState: { errors, isValid },
@@ -21,7 +22,7 @@ const Login = () => {
     trigger,
   } = useForm();
   const router = useRouter();
-  const { redirect } = router.query;  
+  const { redirect } = router.query;
   const onSubmit = async (data) => {
     const newData = {
       email: data.contactInfo,
@@ -30,13 +31,13 @@ const Login = () => {
     try {
       const response = await publicRequest.post("login", newData);
       if (response.data.data.token) {
-        userInfo.setToken(response.data.data.token)
+        userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);
         Toastify.Success("Successfully Login");
         // router.push("/");
         router.replace(redirect ? String(redirect) : "/");
       }
-    } catch (error) { 
+    } catch (error) {
       networkErrorHandeller(error);
     }
   };
@@ -74,8 +75,8 @@ const Login = () => {
                 control={control}
                 label={
                   <div className="flex gap-2 pb-2 pl-3.5 text-white">
-                 <MdOutlineMailOutline className="h-5 w-5" />
-                   E-mail
+                    <MdOutlineMailOutline className="h-5 w-5" />
+                    E-mail
                   </div>
                 }
                 rules={{
@@ -112,33 +113,34 @@ const Login = () => {
                 trigger={trigger}
               />
             </div>
-
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
               <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-2 w-full sm:mt-2 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
                 Login
               </button>
             </div>
-            <div className="mt-5 text-center">
-              <Link
-                href={"/auth/forget-pass"}
-                className=" text-white font-semibold text-sm sm:p-4 leading-6 hover:underline"
-              >
-                Forgot password?
-              </Link>
-              <p className="text-white font-light text-sm leading-6 pt-2">
-                Don&lsquo;t have an account?{" "}
-                <Link href="/auth/register" className="hover:underline">
-                  <strong className="text-sm font-semibold">Sign Up Now</strong>
-                </Link>
-              </p>
-            </div>
           </form>
+          
+
+          <div className="mt-5 text-center">
+            <Link
+              href={"/auth/forget-pass"}
+              className=" text-white font-semibold text-sm sm:p-4 leading-6 hover:underline"
+            >
+              Forgot password?
+            </Link>
+            <p className="text-white font-light text-sm leading-6 pt-2">
+              Don&lsquo;t have an account?{" "}
+              <Link href="/auth/register" className="hover:underline">
+                <strong className="text-sm font-semibold">Sign Up Now</strong>
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
