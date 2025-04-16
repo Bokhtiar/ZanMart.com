@@ -16,7 +16,7 @@ import PaginationSkeleton from "@/components/loader/PaginationSkeleton";
 const Products = () => {
   // const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [gridCount, setGridCount] = useState(4);
   const [page, setPage] = useState(1);
   const [minPrice, setMinPrice] = useState(10);
@@ -28,7 +28,7 @@ const Products = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
- 
+ console.log(product)
   return (
     <>
        
