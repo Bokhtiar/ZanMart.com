@@ -133,7 +133,7 @@ export const Navbar = () => {
   return (
     <div className="z-50">
       <div className="fixed h w-full h z-10 bg-white  ">
-        <nav className="py-3 flex container-custom mx-auto justify-between items-center">
+        <nav className="py-3  flex container-custom mx-auto justify-between items-center">
           <div className="flex items-center gap-2">
             {/* Drawer Toggle Button for Small Devices */}
             <button
@@ -152,7 +152,7 @@ export const Navbar = () => {
               />
             </Link>
           </div>
-          <div className="hidden md:flex gap-10">
+          <div className="hidden md:flex gap-5 lg:gap-10 ">
             {navList.map((item, index) => (
               <Link
                 href={item?.href}
@@ -313,19 +313,19 @@ export const Navbar = () => {
                 </ul>
               </div>
             </div>
-            <div className="flex rounded-full md:w-[658px] w-80 relative items-center">
+            <div className="flex rounded-full md:w-[658px] w-80 h-14 relative items-center">
               <input
                 onChange={handleSearchQuery}
-                className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2  w-full
-                 h-12 outline-none"
+                className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2 w-full
+                 h-9 md:h-10 lg:h-12 outline-none"
                 type="text"
-                placeholder="Search your product here"
+                placeholder="Search product here"
               />
               <Link
                 href={`/search-products/?search=${searchQuery}`}
                 onClick={handleSearch}
-                className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-12 text-white 
-                w-[75px] lg:w-40 md:w-40 items-center justify-center sm:px-2 gap-1 md:gap-2"
+                className="flex absolute right-0 rounded-full bg-black md:text-sm lg:text-sm text-xs h-9 md:h-10 lg:h-12 text-white 
+                w-[70px] lg:w-40 md:w-32 items-center justify-center sm:px-2 gap-1 md:gap-2"
               >
                 Search <IoSearch className="h-4 w-4" />
               </Link>
