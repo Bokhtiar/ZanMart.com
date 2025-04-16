@@ -37,7 +37,7 @@ const ProfileSidebar = ({ profile }) => {
     removeToken();
   };
   return (
-    <div className="">
+    <div className="shadow-sm">
       <div className="p-4  ">
         <div className="   ">
           <div className="flex justify-center md:pb-4">

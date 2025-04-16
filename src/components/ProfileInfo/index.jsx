@@ -34,6 +34,8 @@ const ProfileInfo = () => {
     }
   }, [profile]);
 
+  console.log("user",)
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   //  edit profile
@@ -65,11 +67,13 @@ const ProfileInfo = () => {
     }
   };
   const [address, setAddress] = useState([]);
+
   // address fetch api here
   const userAddresses = async () => {
     try {
       setAddressLoading(true);
       const res = await privateRequest.get("user/address");
+     
       setAddress(res.data?.data);
     } catch (error) { 
     }
@@ -117,15 +121,15 @@ const ProfileInfo = () => {
               Personal Information
             </h1>
             <div className="flex flex-col md:flex md:flex-row  ">
-              <p className="w-1/2 text-gray-600 font-medium  ">Name</p>
+              <p className="w-1/2 text-gray-600 font-medium  ">Name:</p>
               <p className="w-1/2 text-gray-500  ">{profile?.name}</p>
             </div>
             <div className="flex flex-col md:flex md:flex-row  ">
-              <p className="w-1/2 text-gray-600 font-medium  ">Phone</p>
+              <p className="w-1/2 text-gray-600 font-medium  ">Phone:</p>
               <p className="w-1/2 text-gray-500  ">{profile?.phone}</p>
             </div>
             <div className="flex flex-col md:flex md:flex-row   ">
-              <p className="w-1/2 text-gray-600 font-medium  ">Email</p>
+              <p className="w-1/2 text-gray-600 font-medium  ">Email:</p>
               <p className="w-1/2 text-gray-500 mt-0 ">{profile?.email}</p>
             </div>
           </section>
