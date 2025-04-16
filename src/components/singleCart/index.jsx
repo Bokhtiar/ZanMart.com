@@ -47,24 +47,28 @@ const SingleCart = ({ item }) => {
             <span className="text-xs font-normal text-gray-500 mt-[5px]">
               Tk
             </span>
-          </span>:<span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+          </span>:
+          <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
             {item?.sell_price}
             <span className="text-xs font-normal text-gray-500 mt-[5px]">
               Tk
             </span>
           </span>
           }
-          {item?.variants? <span className="flex text-secondary text-xs line-through items-center  ">
-              {item?.variants[0]?.flat_discount}{" "}
+          {item?.variants[0].discount_price?
+           <span className="flex text-secondary text-xs line-through items-center  ">
+              {item?.variants[0]?.discount_price}{" "}
               <span className="text-xs font-normal text-gray-500 mt-[0px]">
                 Tk
               </span>
-            </span>:<span className="flex text-secondary text-xs line-through items-center  ">
-              {item?.flat_discount}{" "}
-              <span className="text-xs font-normal text-gray-500 mt-[0px]">
-                Tk
-              </span>
-            </span>}
+            </span>:''
+            // <span className="flex text-secondary text-xs line-through items-center  ">
+            //   {item?.flat_discount}{" "}
+            //   <span className="text-xs font-normal text-gray-500 mt-[0px]">
+            //     Tk
+            //   </span>
+            // </span>
+            }
         </p>
       </div>
     </Link>
