@@ -123,7 +123,7 @@ const Footer = () => {
               </h1>
               <p
                 onClick={() => setShowTerms(true)}
-                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer"
+                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer  hover:underline"
               >
                 Terms & Condition
               </p>
@@ -133,7 +133,7 @@ const Footer = () => {
               />
               <p
                 onClick={() => setShowPrivacy(true)}
-                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer"
+                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer  hover:underline"
               >
                 Privacy Policy
               </p>
