@@ -9,6 +9,7 @@ import AddressSkeleton from "../loader/AddressSkeleton";
 import { networkErrorHandeller } from "@/utils/helpers";
 import { MdLocationOff } from "react-icons/md";
 import Link from "next/link";
+import Spinner from "../spinner";
 
 
 const Address = () => {
@@ -34,13 +35,17 @@ const Address = () => {
  
   // Delete an address
   const handleDelete = async (id) => {
+    
     try {
+      setLoading(true)
       const res = await privateRequest.delete(`user/address/${id}`);
       if (res.status === 200) {
         setAddress((prevAddresses) =>
           prevAddresses.filter((item) => item.address_id !== id)
+        
         );
         Toastify.Success(res.data.message);
+        setLoading(false);
       }
     } catch (error) {
       Toastify.Error(error.message || "Failed to delete address.");
@@ -100,7 +105,9 @@ const Address = () => {
                     onClick={() => handleDelete(item.address_id)}
                     className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
                   >
-                    <RiDeleteBin6Line className="font-semibold" />
+                     {
+                      loading ?<Spinner/>:<RiDeleteBin6Line className="font-semibold" />
+                    }
                   </button>
                 </div>
               </div>
