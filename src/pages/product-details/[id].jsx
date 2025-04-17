@@ -180,6 +180,50 @@ const ProductDetails = () => {
     }
   };
 
+const handleBuyNow=()=>{
+  const selectedVariant = product?.product_variants.find(
+    (item) =>
+      item?.color_id === selectdColor_id &&
+      item?.attribute_id === selectdAtribute_id
+  );
+
+  if (
+    selectedVariant &&
+    product?.low_stock_quantity_warning <= selectedVariant?.product_qty
+  ) {
+    const cartItem = {
+      product_id: product?.product_id,
+      sell_price: selectedPrice,
+      weight: product?.weight || selectedWeight || 1,
+      attribute_id: selectdAtribute_id,
+      attribute: selectedAttribute,
+      color_id: selectdColor_id,
+      color: selectedColor,
+      attribute_weight: selectedWeight || null,
+      attribute_price: selectedPrice,
+      qty: quantity,
+      image: product?.thumbnail_image,
+      category: categoryName,
+      title: product?.title,
+      payment: product?.delivery_status,
+      product_variant_id: selectedVariant?.product_variant_id,
+      attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+    };
+
+  
+
+    
+
+    
+  } else {
+    Toastify.Warning(
+      "Selected size and color is not available.Please select another color or size"
+    );
+  }
+}
+
+
+
   useEffect(() => {
     fetchProduct();
   }, [id]);
@@ -472,8 +516,7 @@ const ProductDetails = () => {
               >
                 Add To Cart
               </button>
-              <button
-                onClick={handelCart}
+              <button onClick={handleBuyNow}
                 className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-secondary rounded-xl"
               >
                 Buy Now
