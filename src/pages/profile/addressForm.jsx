@@ -4,7 +4,8 @@ import { Toastify } from "../../components/toastify";
 import { networkErrorHandeller } from "@/utils/helpers";
 import ProfileLayout from "@/components/layouts/ProfileLayout/ProfileLayout";
 import { useRouter } from "next/router";
-const AddressForm = ({ onClose, isEdit, setModal, userAddresses }) => {
+import Spinner from "@/components/spinner";
+const AddressForm = () => {
   const [division, setDivision] = useState([]);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
@@ -13,17 +14,18 @@ const AddressForm = ({ onClose, isEdit, setModal, userAddresses }) => {
     country: "Bangladesh", // Default value
     type: "home", // Default value
   });
-
-  const router=useRouter()
-  const {modal,id}=router.query
-  console.log(id)
+const [loading,setLoading]=useState(false)
+  const router = useRouter();
+  const { modal } = router.query;
+  const id = router.query.id;
+  console.log(id);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     // log(formData);
-
+    setLoading(true)
     try {
       const updatedFormData = {
         ...formData,
@@ -41,31 +43,30 @@ const AddressForm = ({ onClose, isEdit, setModal, userAddresses }) => {
         _method: "PUT",
       };
 
-      if (isEdit) {
+      if (id) {
+        
         const res = await privateRequest.post(
-          `user/address/${editAddressId}`,
+          `user/address/${id}`,
           updatedFormData
         );
 
         if (res.status === 200) {
-          setAddress((prevAddresses) =>
-            prevAddresses.map((item) =>
-              item.address_id === editAddressId ? res.data.data : item
-            )
-          );
-          Toastify.Success("Address updated successfully!");
+          Toastify.Success(res?.data?.message);
+          router.replace('/profile/address')
+          setLoading(false)
         }
       } else {
         const response = await privateRequest.post("user/address", formData);
         console.log(response.status);
         if (response.status == 201) {
           Toastify.Success(response.data.message);
-          router.replace(modal? `/my-cart?modal=${true}`:'/profile/address')
-          
+          router.replace(modal ? `/my-cart?modal=${true}` : "/profile/address");
+          setLoading(false)
         }
       }
     } catch (error) {
       networkErrorHandeller(error);
+      setLoading(false)
     }
 
     // Close the modal
@@ -135,24 +136,41 @@ const AddressForm = ({ onClose, isEdit, setModal, userAddresses }) => {
     handleDivision();
   }, []);
 
+  // const [detailAddress, setDetailAddress] = useState({});
+  const fatchDetailAddress = async () => {
+    if (!id) return;
+    try {
+      const res = await privateRequest.get(`user/address/${id}`);
+      console.log(res.data.data);
+      if (res.status == 200) {
+        const address = res.data.data;
 
-   const handleEditModal = (address) => {
-  
-      setFormData({
-        name: address?.name || "",
-        email: address?.email || "",
-        phone: address?.phone || "",
-        address_line1: address?.address_line1 || "",
-        address_line2: address?.address_line2 || "",
-        division_id: address?.division?.id || "",
-        district_id: address?.district?.id || "",
-        upazila_id: address?.upazila?.id || "",
-        union_id: address?.union?.id || "",
-        postal_code: address?.postal_code || "",
-        country: address?.country || "Bangladesh",
-        type: address?.type || "home",
-      });
-    };
+        // Set dependent dropdowns
+        await handleDistrict(address.division_id);
+        await handleUpazila(address.district_id);
+        await handleUnion(address.upazila_id);
+        setFormData({
+          name: address?.name || "",
+          email: address?.email || "",
+          phone: address?.phone || "",
+          address_line1: address?.address_line1 || "",
+          address_line2: address?.address_line2 || "",
+          division_id: address?.division?.id || "",
+          district_id: address?.district?.id || "",
+          upazila_id: address?.upazila?.id || "",
+          union_id: address?.union?.id || "",
+          postal_code: address?.postal_code || "",
+          country: address?.country || "Bangladesh",
+          type: address?.type || "home",
+        });
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    if (id) {
+      fatchDetailAddress();
+    }
+  }, [id]);
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
       <div className="bg-white p-6 rounded-lgg w-full max-w-2xl">
@@ -325,16 +343,18 @@ const AddressForm = ({ onClose, isEdit, setModal, userAddresses }) => {
           <div className="flex justify-end gap-4">
             <button
               type="button"
-              onClick={onClose}
               className="bg-gray-500 text-white px-4 py-2 rounded"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-primary text-white px-4 py-2 rounded"
+              className="bg-secondary text-white px-4 py-2 rounded"
             >
-              {isEdit ? "Update" : "Add"}
+              {
+  loading ? <Spinner /> : (id ? "Update" : "Add")
+}
+
             </button>
           </div>
         </form>
