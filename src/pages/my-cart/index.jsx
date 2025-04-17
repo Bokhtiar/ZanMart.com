@@ -10,6 +10,8 @@ import Link from "next/link";
 import CartSkeleton from "@/components/loader/CartSkeleton";
 import AddressModal from "@/components/AddressModal";
 import { Toastify } from "@/components/toastify";
+import AddressForm from "@/pages/profile/addressForm";
+import { networkErrorHandeller } from "@/utils/helpers";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +21,13 @@ const MyCart = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [addressModal, setAddressModal] = useState(false);
-
+  const { modal } = router.query;
+  useEffect(() => {
+    if (modal) {
+      setIsModalOpen(true);
+    }
+  }, [modal]);
+  
   useEffect(() => {
     const fetchCartData = async () => {
       const cartData = localStorage.getItem("cart");
@@ -136,13 +144,13 @@ const MyCart = () => {
           router.push(
             `/profile/confirm-order/${res?.data?.order_id?.order_id}`
           );
-        } else {
-          Toastify.Error(res.data?.message);
-        }
+        } 
       } else {
         Toastify.Error("Please select an address");
       }
-    } catch (error) {}
+    } catch (error) {
+      networkErrorHandeller(error)
+    }
   };
 
   return (
@@ -178,24 +186,24 @@ const MyCart = () => {
                       Color: {item?.color} | Size: {item?.attribute}
                     </p>
                   </div>
-                 <div className="flex flex-row  gap-4 ">
-                 <div className="text-center">
-                    <p className="text-xs font-bold">Price</p>
-                    <p className="text-sm font-bold text-primary">
-                      {item?.sell_price} Tk
-                    </p>
+                  <div className="flex flex-row  gap-4 ">
+                    <div className="text-center">
+                      <p className="text-xs font-bold">Price</p>
+                      <p className="text-sm font-bold text-primary">
+                        {item?.sell_price} Tk
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-bold">Subtotal</p>
+                      <p className="text-sm font-bold text-primary">
+                        {(
+                          item?.sell_price *
+                          (quantities[item.product_id] || item.qty)
+                        ).toFixed(2)}{" "}
+                        Tk
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold">Subtotal</p>
-                    <p className="text-sm font-bold text-primary">
-                      {(
-                        item?.sell_price *
-                        (quantities[item.product_id] || item.qty)
-                      ).toFixed(2)}{" "}
-                      Tk
-                    </p>
-                  </div>
-                 </div>
                   <div className="flex flex-col items-center gap-2">
                     <p className="text-xs font-bold">Quantity</p>
                     <div className="flex items-center gap-2">
@@ -304,6 +312,7 @@ const ConfirmModal = ({
   setAddressData,
 }) => {
   const [address, setAddress] = useState([]);
+  const [addressFormModal, setAddresFormModal] = useState(false);
   const fetchAddress = useCallback(async () => {
     try {
       const res = await privateRequest.get("user/address");
@@ -328,7 +337,7 @@ const ConfirmModal = ({
         <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
           <span className="block text-xs p-2">Please select address</span>
           <Link
-            href="/profile?section=Address Book"
+            href={`/profile/addressForm?modal=${true}`}
             className="flex items-center gap-1 bg-primary rounded-md px-2 py-1"
           >
             <FaPlusCircle /> Add New
@@ -374,6 +383,7 @@ const ConfirmModal = ({
           </button>
         </div>
       </div>
+      {addressFormModal && <AddressForm />}
     </div>
   );
 };

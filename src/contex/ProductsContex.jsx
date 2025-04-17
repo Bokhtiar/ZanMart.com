@@ -95,6 +95,10 @@ const MyProvider = ({ children }) => {
     }
   }, [token]);
 
+
+
+
+
   // Fetch user profile when token updates
   useEffect(() => {
     fetchUserProfile();
