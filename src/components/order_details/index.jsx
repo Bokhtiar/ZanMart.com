@@ -3,12 +3,14 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
+import OrderDetailsSkeleton from "../loader/OrderDetailsSkeleton";
 const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const id = router?.query?.slug;
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderItems, setOrderitems] = useState([]);
+  console.log(orderDetails)
   const fetchOrderDetails = useCallback(async () => {
     setLoading(true);
     try {
@@ -24,12 +26,14 @@ const OrderDetails = () => {
     }
   }, [id]);
   useEffect(() => {
-    fetchOrderDetails();
-  }, []);
+    if(id){
+      fetchOrderDetails();
+    }
+  }, [id]);
   return (
     <>
       {loading ? (
-        <OrderDetailsSkeleton />
+        <OrderDetailsSkeleton/>
       ) : (
         <div>
           <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">

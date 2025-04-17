@@ -1,6 +1,6 @@
 import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
 import { Toastify } from "@/components/toastify";
-import { publicRequest } from "@/config/axios.config";
+import { privateRequest, publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -20,6 +20,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import style from "./style.module.css";
 import { MdOutlineFullscreen } from "react-icons/md";
 import Paginations from "@/components/pagination";
+import ConfirmModal from "@/components/confirmModal";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -41,8 +42,14 @@ const ProductDetails = () => {
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
-  // console.log(selectedDiscount);
-  /** product details */
+    const handleModalClose = () => {
+      setIsModalOpen(false);
+      // setModalAction(null);
+    };
+  const [addressData,setAddressData]=useState({})
+  console.log(addressData.address_id)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -179,8 +186,10 @@ const ProductDetails = () => {
       );
     }
   };
-
+const [orderData,setorderData]=useState([])
+console.log(orderData)
 const handleBuyNow=()=>{
+  setIsModalOpen(true)
   const selectedVariant = product?.product_variants.find(
     (item) =>
       item?.color_id === selectdColor_id &&
@@ -196,32 +205,55 @@ const handleBuyNow=()=>{
       sell_price: selectedPrice,
       weight: product?.weight || selectedWeight || 1,
       attribute_id: selectdAtribute_id,
-      attribute: selectedAttribute,
+      // attribute: selectedAttribute,
       color_id: selectdColor_id,
-      color: selectedColor,
+      // color: selectedColor,
       attribute_weight: selectedWeight || null,
       attribute_price: selectedPrice,
       qty: quantity,
-      image: product?.thumbnail_image,
-      category: categoryName,
-      title: product?.title,
-      payment: product?.delivery_status,
+      // image: product?.thumbnail_image,
+      // category: categoryName,
+      // title: product?.title,
+      // payment: product?.delivery_status,
       product_variant_id: selectedVariant?.product_variant_id,
-      attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+     attribute_discount_price: selectedDiscount || 0, // Include the variant ID
     };
-
-  
-
-    
-
-    
+    setorderData(cartItem)
   } else {
     Toastify.Warning(
       "Selected size and color is not available.Please select another color or size"
     );
   }
 }
-
+const handleConfirm = async () => {
+  const newMyOrder = {
+    cart_items:[orderData],
+    billing_address_id: addressData?.address_id,
+    shipping_address_id: addressData?.address_id,
+  };
+  console.log("================>>>>>>>>>",newMyOrder)
+  try {
+    if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
+      const res = await privateRequest.post("user/orders", newMyOrder);
+      if (res?.status === 200 || res?.status === 201) {
+        Toastify.Success(res.data?.message);
+        // const emptyCart = { ...cart, cart_items: [] };
+        // setCart(emptyCart);
+        // localStorage.setItem("cart", JSON.stringify(emptyCart));
+        // window.dispatchEvent(new Event("cartUpdated"));
+        router.push(
+          `/profile/confirm-order/${res?.data?.order_id?.order_id}`
+        );
+      } 
+     
+    } else {
+      // Toastify.Error("Please select an address");
+    }
+  } catch (error) {
+    
+    Toastify.Error(error.response.data.message)
+  }
+};
 
 
   useEffect(() => {
@@ -575,6 +607,14 @@ const handleBuyNow=()=>{
         </div>
         <Paginations page={1} setPage={currentPage} totalPage={lastPage} />
       </section>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onConfirm={handleConfirm}
+        message="Are you sure you want to confirm the order?"
+        title="Confirm Order"
+        setAddressData={setAddressData}
+      />
     </div>
   );
 };
