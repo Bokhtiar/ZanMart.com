@@ -1,11 +1,13 @@
 import { privateRequest } from "@/config/axios.config";
 import { useCallback, useEffect, useState } from "react";
+import Spinner from "../spinner";
 
 const { default: AddressForm } = require("@/pages/profile/addressForm");
 const { default: Link } = require("next/link");
 const { FaCheckCircle, FaPlusCircle } = require("react-icons/fa");
 
 const  ConfirmModal = ({
+  loading,
     isOpen,
     onClose,
     onConfirm,
@@ -80,7 +82,8 @@ const  ConfirmModal = ({
               }`}
               onClick={onConfirm}
             >
-              Confirm
+              {loading? <Spinner color='secondary'/>:'Confirm'}
+             
             </button>
           </div>
         </div>

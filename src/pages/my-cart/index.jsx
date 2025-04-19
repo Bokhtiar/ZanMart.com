@@ -20,6 +20,7 @@ const MyCart = () => {
   const [cart, setCart] = useState({ cart_items: [] });
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
+  const [modalLoading,setModalLoading]=useState(false)
   const router = useRouter();
   const { modal } = router.query;
   useEffect(() => {
@@ -134,6 +135,7 @@ const MyCart = () => {
     };
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
+        setModalLoading(false)
         const res = await privateRequest.post("user/orders", newMyOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
@@ -144,12 +146,14 @@ const MyCart = () => {
           router.push(
             `/profile/confirm-order/${res?.data?.order_id?.order_id}`
           );
+          setModalLoading(false)
         } 
       } else {
         Toastify.Error("Please select an address");
       }
     } catch (error) {
       Toastify.Error(error.response.data.message)
+      setModalLoading(false)
     }
   };
 
@@ -289,6 +293,7 @@ const MyCart = () => {
       </div>
 
       <ConfirmModal
+      loading={modalLoading}
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onConfirm={handleConfirm}

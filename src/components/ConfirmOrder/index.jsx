@@ -7,6 +7,7 @@ import { Toastify } from "../toastify";
 import Modal from "../modal";
 import isAuth from "@/middleware/auth.middleware";
 import { networkErrorHandeller } from "@/utils/helpers";
+import Spinner from "../spinner";
 
 
 const ConfirmOrder = () => {
@@ -67,7 +68,7 @@ const ConfirmOrder = () => {
   const handleModalConfirm = async () => {
     if (modalAction === "cancel") {
       try {
-        const res = await privateRequest.get(`user/order/cancel/${id}`); 
+        const res = await privateRequest.get(`user/order/cancel/${id}`);
         if (res.status == 200) {
           Toastify.Success(res?.data?.message);
           router.replace('/profile/orders')
@@ -101,7 +102,9 @@ const ConfirmOrder = () => {
     }
     setIsModalOpen(false); // Close modal after confirmation
   };
-
+if(loading){
+  return <Spinner/>
+}
   return (
     <div className=" container-custom mt-40">
       <h1 className="text-2xl font-bold my-10">Payment Method </h1>
@@ -122,15 +125,15 @@ const ConfirmOrder = () => {
             ))}
           </div>
           <div className="flex gap-4 mt-10 justify-center">
-            <button onClick={handleOrderCancel} className=" px-4 text-[#D9D9D9] rounded text-nowrap my-10 border  py-1 ">
+            <button onClick={handleOrderCancel} className=" px-4 text-[#D9D9D9] rounded text-nowrap my-10 border-2  py-1 hover:text-gray-600">
               Cancel Order{" "}
             </button>
             {payment == "ssl_commerz" ? (
-              <button onClick={handleConfirmOrder} className=" px-4 text-white rounded  text-nowrap disabled:opacity-50  my-10 bg-primary py-1 ">
+              <button onClick={handleConfirmOrder} className=" px-4 text-white rounded  text-nowrap disabled:opacity-50  my-10 hover:bg-secondary bg-primary py-1 ">
                 Pay Now{" "}
               </button>
             ) : (
-              <button onClick={handleConfirmOrder} disabled={payment !== "cod"} className=" px-4 text-nowrap text-white rounded  disabled:opacity-50 my-10 bg-primary py-1 ">
+              <button onClick={handleConfirmOrder} disabled={payment !== "cod"} className=" px-4 text-nowrap text-white rounded hover:bg-secondary disabled:opacity-50 my-10 bg-primary py-1 ">
                 Confirm Order{" "}
               </button>
             )}

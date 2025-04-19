@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { ImageUpload, TextInput } from "../input";
 import { useProduct } from "@/hooks/useProducts";
 import ProfileSkeleton from "../loader/ProfileSkeleton";
+import Spinner from "../spinner";
 
 const ProfileInfo = () => {
   const { user: profile, loading } = useProduct();
@@ -24,6 +25,7 @@ const ProfileInfo = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
+  const [updateLoading,setUpdateLoading]=useState(false)
   // Set form data when profile prop changes
   useEffect(() => {
     if (profile) {
@@ -45,6 +47,7 @@ const ProfileInfo = () => {
       return;
     }
     try {
+      setUpdateLoading(true)
       const formDataObj = new FormData();
       // Make sure role is included
       if (data.profile_pic) {
@@ -62,9 +65,11 @@ const ProfileInfo = () => {
         Toastify.Success(res.data?.message);
         handleCloseModal();
         userAddresses();
+        setUpdateLoading(false)
       }
     } catch (error) {
       Toastify.Error(error.response?.data[0]);
+      setUpdateLoading(false)
     }
   };
   const [address, setAddress] = useState([]);
@@ -284,7 +289,7 @@ const ProfileInfo = () => {
                 Cancel
               </button>
               <button className="bg-primary text-white hover:bg-secondary px-4 py-2 rounded">
-                Save
+              {updateLoading ? <Spinner color='secondary'/>:'Update'} 
               </button>
             </div>
           </form>
