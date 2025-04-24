@@ -3,7 +3,7 @@ import React from "react";
 const ProductSkeleton = () => {
   const gridCount = 4;
   return (
-    <div className="  animate-pulse w-full">
+    <div className=" container-custom animate-pulse w-full">
     <div className="w-full ">
         <div  >
         <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded animate-pulse">
