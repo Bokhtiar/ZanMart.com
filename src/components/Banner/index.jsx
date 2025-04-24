@@ -74,14 +74,16 @@ const Banner = () => {
                 <h1 className="text-primary text-2xl md:text-3xl lg:text-[45px] font-extrabold capitalize">
                   {item?.name}
                 </h1>
-                <p className="text-xl font-thin mb-4 ">On the selected items</p>
+                <p className="text-xl font-thin mb-4 text-primary">
+                  On the selected items
+                </p>
                 <Link
                   href={`banner-products?sale=${item?.name}`}
                   onClick={() => bannerProduct(item?.banner_id)}
                   className=" hover:bg-secondary rounded-full font-bold btn text-sm bg-primary text-white w-36 py-2 flex items-center justify-center gap-2"
                 >
-                  <CiShoppingBasket className="text-xl animate-bounce text-white font-bold" /> Shop
-                  Now
+                  <CiShoppingBasket className="text-xl animate-bounce text-white font-bold" />{" "}
+                  Shop Now
                 </Link>
               </div>
             </div>

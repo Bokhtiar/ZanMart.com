@@ -13,6 +13,8 @@ import { RiFilterOffLine } from "react-icons/ri";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { useProduct } from "@/hooks/useProducts";
 import PaginationSkeleton from "@/components/loader/PaginationSkeleton";
+import { FaFilter } from "react-icons/fa";
+
 const Products = () => {
   // const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -28,10 +30,10 @@ const Products = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-  console.log(product);
+
   return (
     <>
-      <div className="mt-36">
+      <div className="mt-40">
         {/* product banner --------------------------- */}
         {/* <div className="text-center py-10">
           <h1 className="font-extrabold text-primary text-4xl py-2">
@@ -64,17 +66,11 @@ const Products = () => {
               /> */}
           </div>
           {loading || !product?.data ? (
-            <ProductSkeleton />
+            <div className="w-3/4">
+              <ProductSkeleton />
+            </div>
           ) : (
             <div className="w-full">
-              <div
-                onClick={toggleDrawer}
-                className="flex lg:hidden md:hidden shadow-custom rounded-lg justify-between p-2 mb-2 mt-2"
-              >
-                <button className="text-xl">
-                  <FiFilter />
-                </button>
-              </div>
               {/* All product show */}
               <section>
                 <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
@@ -101,6 +97,14 @@ const Products = () => {
                         gridCount === 2 ? "bg-primary text-white" : ""
                       } rounded-md cursor-pointer`}
                     />
+                    <div
+                      onClick={toggleDrawer}
+                      className="flex lg:hidden md:hidden border border-primary text-2xl rounded-md"
+                    >
+                      <button className="text-2xl">
+                        <FaFilter className="p-1"/>
+                      </button>
+                    </div>
                   </p>
                 </div>
 

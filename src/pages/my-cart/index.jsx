@@ -237,7 +237,7 @@ const MyCart = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center">
-              <div className="w-64 h-64">
+              {/* <div className="w-64 h-64">
                 <BsCartXFill className="w-64 h-64 text-primary" />
               </div>
               <h2 className="text-2xl font-bold text-orange-500 mt-5">
@@ -245,7 +245,14 @@ const MyCart = () => {
               </h2>
               <p className="text-gray-600 mt-2">
                 Looks like you haven’t added anything to your cart yet
-              </p>
+              </p> */}
+              <Image
+                height={400}
+                width={400}
+                className="mx-auto "
+                src="/empty_cart.png"
+                alt="Logo"
+              />
               <button
                 className="mt-5 px-6 py-2 bg-primary text-white rounded-lg"
                 onClick={() => (window.location.href = "/products")}
@@ -293,7 +300,7 @@ const MyCart = () => {
       </div>
 
       <ConfirmModal
-      loading={modalLoading}
+        loading={modalLoading}
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onConfirm={handleConfirm}
@@ -301,7 +308,6 @@ const MyCart = () => {
         title="Confirm Order"
         setAddressData={setAddressData}
       />
-     
     </div>
   );
 };

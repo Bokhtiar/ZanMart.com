@@ -86,7 +86,7 @@ export default function Home() {
           ))}
         </section>
       )}
-      <PaymentOptions></PaymentOptions>
+      {/* <PaymentOptions></PaymentOptions> */}
 
       {/* <CookieConsent /> */}
     </section>

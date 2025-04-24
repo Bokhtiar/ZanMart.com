@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { publicRequest } from "@/config/axios.config";
 import { useRouter } from "next/router";
 import { networkErrorHandeller } from "@/utils/helpers";
@@ -107,15 +108,25 @@ const CategoryProducts = () => {
     }
   }, [category]);
 
-  // if (loading) return <div>Loading...</div>;
-  // if (!category) return <div>No category data available.</div>;
-
   return (
-    <section className="mt-36 container-custom container">
+    <section className="mt-40 container-custom container">
       <section className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-4">
         {/* Left side */}
         {categoryLoading === true ? (
-          "loading"
+          <div className="col-span-2 my-2 bg-gray-50 px-2 animate-pulse">
+            <div className="h-6 bg-gray-300 rounded w-2/3 my-4"></div>
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="mb-6">
+                <div className="h-4 bg-gray-300 w-1/2 rounded mb-2"></div>
+                {[...Array(3)].map((__, subIndex) => (
+                  <div
+                    key={subIndex}
+                    className="h-3 bg-gray-200 w-3/4 rounded mb-1"
+                  ></div>
+                ))}
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="col-span-2 my-2 bg-gray-50 px-2">
             <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
@@ -208,7 +219,13 @@ const CategoryProducts = () => {
               ))}
             </div>
           ) : (
-            <p>No products available</p>
+            <Image
+              height={400}
+              width={600}
+              className="mx-auto "
+              src="/empty_product.png"
+              alt="Logo"
+            />
           )}
         </section>
       </section>

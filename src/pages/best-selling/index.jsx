@@ -52,10 +52,10 @@ const BesSelling = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  if (loading) return <ProductSkeleton />;
+  // if (loading) return <ProductSkeleton />;
 
   return (
-    <div className="mt-36">
+    <div className="mt-40">
       <div className="flex container-custom mx-auto items-start gap-4 w-full">
         {/* Filter Sidebar (Desktop) */}
         <div className="w-1/4 hidden lg:flex md:flex flex-col">
@@ -114,13 +114,37 @@ const BesSelling = () => {
           </div>
 
           {/* Product Grid */}
-          <div
-            className={`w-full grid gap-2 md:gap-4 lg:gap-4 grid-cols-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount}`}
-          >
-            {products?.map((product) => (
-              <SingleCart key={product?.product_id} item={product} />
-            ))}
-          </div>
+          {/* {loading ? (
+            <ProductSkeleton />
+          ) : (
+            <div
+              className={`w-full grid gap-2 md:gap-4 lg:gap-4 grid-cols-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount}`}
+            >
+              {products?.map((product) => (
+                <SingleCart key={product?.product_id} item={product} />
+              ))}
+            </div>
+          )} */}
+
+          {loading ? (
+            <ProductSkeleton count={4} />
+          ) : products.length > 0 ? (
+            <div
+              className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
+            >
+              {products?.map((product) => (
+                <SingleCart key={product?.product_id} item={product} />
+              ))}
+            </div>
+          ) : (
+            <Image
+              height={400}
+              width={600}
+              className="mx-auto "
+              src="/empty_product.png"
+              alt="Logo"
+            />
+          )}
 
           {/* Pagination */}
           <Paginations page={page} setPage={setPage} totalPage={lastPage} />

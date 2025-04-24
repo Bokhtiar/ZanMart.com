@@ -24,7 +24,7 @@ const navList = [
   { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
-  { name: "Track Order", href: "/profile/track-order" },
+  { name: "Track Order", href: "/track-order" },
 ];
 
 export const Navbar = () => {
