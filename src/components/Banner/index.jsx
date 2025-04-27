@@ -1,9 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 import { CiShoppingBasket } from "react-icons/ci";
-
-
 
 // Import Swiper styles
 // import 'swiper/css';
@@ -11,44 +9,37 @@ import { CiShoppingBasket } from "react-icons/ci";
 // import 'swiper/css/navigation';
 
 // import required modules
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import { privateRequest, publicRequest } from '@/config/axios.config';
-import Link from 'next/link';
-import { useProduct } from '@/hooks/useProducts';
-import Image from 'next/image';
-import BannerSkeleton from '../loader/bannerSkaleton';
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { privateRequest, publicRequest } from "@/config/axios.config";
+import Link from "next/link";
+import { useProduct } from "@/hooks/useProducts";
+import Image from "next/image";
+import BannerSkeleton from "../loader/bannerSkaleton";
 
 const Banner = () => {
-  const [banner, setBanner] = useState([])
-  const [loading,setLoading]=useState(false)
+  const [banner, setBanner] = useState([]);
+  const [loading, setLoading] = useState(false);
   const fetchBanner = async () => {
     try {
-      setLoading(true)
-      const response = await publicRequest.get('banner')
-      setBanner(response.data.data)
-      setLoading(false)
+      setLoading(true);
+      const response = await publicRequest.get("banner");
+      setBanner(response.data.data);
+      setLoading(false);
+    } catch (error) {}
+  };
 
-    }
-    catch (error) { 
-    }
-  }
- 
-  const { setProducts } = useProduct()
+  const { setProducts } = useProduct();
   const bannerProduct = async (id) => {
     try {
-      const response = await publicRequest.get(`banner-product/${id}`)
-      setProducts(response?.data?.data?.products)
-
-
-    } catch (error) {
-
-    }
-  }
+      const response = await publicRequest.get(`banner-product/${id}`);
+      setProducts(response?.data?.data?.products);
+    } catch (error) {}
+  };
   useEffect(() => {
-    fetchBanner()
-  }, [])
-  if(loading){
-    return <BannerSkeleton></BannerSkeleton>
+    fetchBanner();
+  }, []);
+  if (loading) {
+    return <BannerSkeleton></BannerSkeleton>;
   }
   return (
     <Swiper
@@ -89,10 +80,10 @@ const Banner = () => {
             </div>
             {/* Sliding Image */}
             <Image
-              height={1000}
+              height={400}
               width={1000}
               priority
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain object-center"
               src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
               alt={item?.name}
             />
