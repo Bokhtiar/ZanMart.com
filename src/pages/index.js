@@ -27,6 +27,7 @@ export default function Home() {
       setLoading(true);
       const response = await publicRequest.get("home-page-category");
       setCategories(response?.data);
+      console.log(response?.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -78,9 +79,10 @@ export default function Home() {
                 </Link>
               </h1>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-4 lg:gap-4">
-                {category?.products.map((item) => (
-                  <SingleCart item={item} key={item?.product_id}></SingleCart>
-                ))}
+              {category?.products?.slice(0, 10).map((item) => (
+  <SingleCart item={item} key={item?.product_id}></SingleCart>
+))}
+
               </div>
             </div>
           ))}

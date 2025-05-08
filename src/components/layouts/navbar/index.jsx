@@ -207,7 +207,7 @@ export const Navbar = () => {
             <div className="text-sm font-normal leading-5">
               <p>+8801771104908</p>
               <a className="text-primary" href="mailto:zanvisionlabs@gmail.com">
-                zaninfo@gmail.com
+                support@zanmart.com.bd
               </a>
             </div>
           </div>
