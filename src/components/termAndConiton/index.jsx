@@ -11,10 +11,10 @@ const TermsAndConditions = ({ showTerms, setShowTerms }) => {
             <p className="text-sm leading-4">
               <strong>1. INTRODUCTION</strong>
               <br />
-              Welcome to zanmart.com, also hereby known as &quote;we&quot;,
-              &quot;us&quot; or &quot;zanmart&quot;. We are an online
+              Welcome to ZANmart.com, also hereby known as &quote;we&quot;,
+              &quot;us&quot; or &quot;ZANmart&quot;. We are an online
               marketplace, and these are the terms and conditions governing your
-              access and use of zanmart along with its related sub-domains,
+              access and use of ZANmart along with its related sub-domains,
               sites, mobile app, services, and tools (the &quot;Site&quot;). By
               using the Site, you hereby accept these terms and conditions
               (including the linked information herein) and represent that you
@@ -25,7 +25,7 @@ const TermsAndConditions = ({ showTerms, setShowTerms }) => {
               please do not access, register with, or use this Site.
               <br />
               <br />
-              This Site is owned and operated by zanmart Bangladesh Limited, a
+              This Site is owned and operated by ZANmart Bangladesh Limited, a
               company incorporated under the Companies Act, 1994, (Registration
               Number: 117773/14).
               <br />

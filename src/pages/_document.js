@@ -27,7 +27,7 @@ export default function Document() {
         />
         <meta
           property="og:description"
-          content="Discover a wide range of Zan products at ZanMart.com. Shop online for the best deals and premium quality."
+          content="Discover a wide range of ZAN products at ZANMart.com. Shop online for the best deals and premium quality."
         />
         <meta
           property="og:image"
