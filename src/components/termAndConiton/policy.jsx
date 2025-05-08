@@ -11,8 +11,8 @@ const Policy = ({ showTerms, setShowTerms }) => {
             <div className="text-sm font-normal leading-4">
                 <p>
                   {" "}
-                  Welcome to the zanmart.com.bd website (the &quot;Site&quot; ) operated by
-                  zanmart Bangladesh Ltd. We respect your privacy and want to
+                  Welcome to the ZANmart.com.bd website (the &quot;Site&quot; ) operated by
+                  ZANmart Bangladesh Ltd. We respect your privacy and want to
                   protect your personal information. To learn more, please read
                   this Privacy Policy. This Privacy Policy explains how we
                   collect, use and (under certain conditions) disclose your
@@ -53,7 +53,7 @@ const Policy = ({ showTerms, setShowTerms }) => {
                   of birth, email address, postal address, delivery address (if
                   different), telephone number, mobile number, fax number,
                   payment details, payment card details or bank account details.
-                  zanmart shall collect the following information where you are
+                  ZANmart shall collect the following information where you are
                   a buyer: Identity data, such as your name, gender, profile
                   picture, and date of birth; Contact data, such as billing
                   address, delivery address/location, email address and phone

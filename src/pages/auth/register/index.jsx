@@ -57,7 +57,7 @@ const Register = () => {
     <div className="container mt-36  mx-auto py-10 justify-center flex">
       <div className="items-center flex flex-col">
         <h1 className="font-semibold text-2xl text-center pb-10 leading-4">
-          Create your Zanmart Account
+          Create your ZANmart Account
         </h1>
         <div className="bg-primary w-full max-w-md md:max-w-lg lg:max-w-xl p-6 md:p-8 lg:p-10 rounded-xl flex flex-col items-center justify-center">
           <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] rounded-full bg-white">
