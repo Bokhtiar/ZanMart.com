@@ -29,13 +29,13 @@ const navList = [
 
 export const Navbar = () => {
   const userInfo = useProduct();
-  const { token, setToken } = userInfo;
+  const { token } = userInfo;
   const pathName = usePathname();
   const [openCategory, setOpenCategory] = useState(true);
   const [selected, setSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading,setLoading] = useState(false);
   const router=useRouter()
   const [cart, setCart] = useState({
     cart_items: [],
@@ -83,6 +83,19 @@ export const Navbar = () => {
       updateLoading(false);
     } catch (error) {} // Close the drawer after selecting a category
   };
+
+    const [data, setData] = useState({
+    webSetting: {},
+ 
+  });
+   const fetchWebSetting = async () => {
+    try {
+      const response = await publicRequest.get('web-setting');
+      const fetchedData = response?.data?.data || {};
+
+      setData(fetchedData);
+    } catch (error) {}
+  };
   useEffect(() => {
     const updateCart = () => {
       const cartData = localStorage.getItem("cart");
@@ -90,7 +103,7 @@ export const Navbar = () => {
         setCart(JSON.parse(cartData));
       }
     };
-
+fetchWebSetting()
     updateCart();
     categoryFetch();
     handleSearch();
@@ -109,19 +122,7 @@ export const Navbar = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-  // if (loading) {
-  //   return <NavSkleton></NavSkleton>;
-  // }
-  /*   if (productLoading) {
-    //return <ProductSkeleton/>
-  } */
-  // const [token, setToken] = useState(false);
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     setToken(getToken() ? true : false);
-  //   }
-  // }, []);
-  // my code
+
   const dropdownRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -205,9 +206,9 @@ export const Navbar = () => {
               />
             </div>
             <div className="text-sm font-normal leading-5">
-              <p>+880 1615645843</p>
+              <p>{data?.phone}</p>
               <a className="text-primary" href="mailto:zanvisionlabs@gmail.com">
-                support@zanmart.com.bd
+                {data?.email}
               </a>
             </div>
           </div>
