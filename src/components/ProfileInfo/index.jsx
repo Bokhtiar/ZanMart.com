@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { ImageUpload, TextInput } from "../input";
 import { useProduct } from "@/hooks/useProducts";
 import ProfileSkeleton from "../loader/ProfileSkeleton";
+import Spinner from "../spinner";
 
 const ProfileInfo = () => {
   const { user: profile, loading } = useProduct();
@@ -24,6 +25,7 @@ const ProfileInfo = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
+  const [updateLoading,setUpdateLoading]=useState(false)
   // Set form data when profile prop changes
   useEffect(() => {
     if (profile) {
@@ -34,6 +36,8 @@ const ProfileInfo = () => {
     }
   }, [profile]);
 
+  console.log("user",)
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
   //  edit profile
@@ -43,6 +47,7 @@ const ProfileInfo = () => {
       return;
     }
     try {
+      setUpdateLoading(true)
       const formDataObj = new FormData();
       // Make sure role is included
       if (data.profile_pic) {
@@ -60,17 +65,21 @@ const ProfileInfo = () => {
         Toastify.Success(res.data?.message);
         handleCloseModal();
         userAddresses();
+        setUpdateLoading(false)
       }
     } catch (error) {
       Toastify.Error(error.response?.data[0]);
+      setUpdateLoading(false)
     }
   };
   const [address, setAddress] = useState([]);
+
   // address fetch api here
   const userAddresses = async () => {
     try {
       setAddressLoading(true);
       const res = await privateRequest.get("user/address");
+     
       setAddress(res.data?.data);
     } catch (error) { 
     }
@@ -118,15 +127,15 @@ const ProfileInfo = () => {
               Personal Information
             </h1>
             <div className="flex flex-col md:flex md:flex-row  ">
-              <p className="w-1/2 text-gray-600 font-medium  ">Name</p>
+              <p className="w-1/2 text-gray-600 font-medium  ">Name:</p>
               <p className="w-1/2 text-gray-500  ">{profile?.name}</p>
             </div>
             <div className="flex flex-col md:flex md:flex-row  ">
-              <p className="w-1/2 text-gray-600 font-medium  ">Phone</p>
+              <p className="w-1/2 text-gray-600 font-medium  ">Phone:</p>
               <p className="w-1/2 text-gray-500  ">{profile?.phone}</p>
             </div>
             <div className="flex flex-col md:flex md:flex-row   ">
-              <p className="w-1/2 text-gray-600 font-medium  ">Email</p>
+              <p className="w-1/2 text-gray-600 font-medium  ">Email:</p>
               <p className="w-1/2 text-gray-500 mt-0 ">{profile?.email}</p>
             </div>
           </section>
@@ -280,7 +289,7 @@ const ProfileInfo = () => {
                 Cancel
               </button>
               <button className="bg-primary text-white hover:bg-secondary px-4 py-2 rounded">
-                Save
+              {updateLoading ? <Spinner color='secondary'/>:'Update'} 
               </button>
             </div>
           </form>

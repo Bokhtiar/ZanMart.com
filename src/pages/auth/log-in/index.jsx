@@ -52,7 +52,7 @@ const Login = () => {
     <div className="container mt-36 mx-auto py-10 flex justify-center">
       <div className="flex flex-col items-center text-gray-700">
         <span className="font-semibold text-xl sm:text-2xl text-center  leading-4">
-          Welcome to Zanmart
+          Welcome to ZANmart
         </span>
         <span className="font-semibold text-xl sm:text-2xl text-center pb-6 sm:pb-10 leading-4">
           Sign into your account

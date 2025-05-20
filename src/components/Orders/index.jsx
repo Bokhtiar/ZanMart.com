@@ -51,7 +51,7 @@ const Orders = () => {
         return "bg-yellow-100 text-yellow-600";
       case "delivered":
         return "bg-green-100 text-green-600";
-      case "canceled":
+      case "cancelled":
         return "bg-red-100 text-red-600";
       default:
         return "bg-gray-100 text-gray-600";
@@ -60,18 +60,21 @@ const Orders = () => {
 
   const renderStatus = (status) => {
     switch (status) {
+      case " ":
+        return "All Orders";
       case "processing":
         return "Processing";
       case "shipped":
         return "Shipped";
       case "delivered":
         return "Delivered";
-      case "cenceled":
-        return "Canceled";
+      case "Cancelled":
+        return "Cancelled";
       default:
-        return "All Orders";
+        return status;
     }
   };
+  
 
   return (
     <div className="">
@@ -82,7 +85,7 @@ const Orders = () => {
       </div>
 
       <div className="flex flex-wrap justify-start gap-2 sm:gap-4 mt-2 pb-4 ">
-        {["", "processing", "shipped", "delivered", "canceled"].map(
+        {[" ", "processing", "shipped", "delivered", "Cancelled"].map(
           (status) => (
             <button
               key={status}
@@ -218,12 +221,14 @@ const Orders = () => {
                             )}
                           </span>
                         </p>
-                        <p className="text-sm">
+                        <div className="flex gap-8 font-medium">
+                        <p className="text-sm ">
                           Price:{" "}
                           {product?.sell_price || product?.product?.sell_price}{" "}
                           Tk
                         </p>
                         <p className="text-sm">Quantity: {product?.qty}</p>
+                        </div>
                       </div>
                     ))}
                   </div>

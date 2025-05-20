@@ -4,7 +4,7 @@ import React from 'react';
 const ServiceQuality = () => {
     const data=[
         {logo:'Authentic.svg', title:"100% Authentic",comment:"Brand and products"},
-        {logo:'map.svg', title:"All Bangladesh",comment:"Delivery to your door"},
+        {logo:'Map.svg', title:"All Bangladesh",comment:"Delivery to your door"},
         {logo:'money-back.svg', title:"45 Day Return",comment:"Easy Return policy"},
         {logo:'Returns.svg', title:"Cash Back policy",comment:"Guaranteed Cover Up"},
     ]

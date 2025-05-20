@@ -123,7 +123,7 @@ const Footer = () => {
               </h1>
               <p
                 onClick={() => setShowTerms(true)}
-                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer"
+                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer  hover:underline"
               >
                 Terms & Condition
               </p>
@@ -133,7 +133,7 @@ const Footer = () => {
               />
               <p
                 onClick={() => setShowPrivacy(true)}
-                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer"
+                className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer  hover:underline"
               >
                 Privacy Policy
               </p>
@@ -171,7 +171,7 @@ const Footer = () => {
       <div className="px-5 md:px-20 bg-white ">
         <div className="container-custom px-40  flex  items-center justify-between">
           <p className="text-xs text-[#AAAAAA] py-4">
-            &copy; {new Date().getFullYear()} zanmart - All rights Reserved.
+            &copy; {new Date().getFullYear()} Zanmart - All rights Reserved.
           </p>
           <p className="flex text-xs gap-2 text-[#AAAAAA]">
             {footerData?.webSetting?.facebook && (

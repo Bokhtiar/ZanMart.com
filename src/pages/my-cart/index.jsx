@@ -10,6 +10,9 @@ import Link from "next/link";
 import CartSkeleton from "@/components/loader/CartSkeleton";
 import AddressModal from "@/components/AddressModal";
 import { Toastify } from "@/components/toastify";
+import AddressForm from "@/pages/profile/addressForm";
+import { networkErrorHandeller } from "@/utils/helpers";
+import ConfirmModal from "@/components/confirmModal";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,9 +20,15 @@ const MyCart = () => {
   const [cart, setCart] = useState({ cart_items: [] });
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
+  const [modalLoading,setModalLoading]=useState(false)
   const router = useRouter();
-  const [addressModal, setAddressModal] = useState(false);
-
+  const { modal } = router.query;
+  useEffect(() => {
+    if (modal) {
+      setIsModalOpen(true);
+    }
+  }, [modal]);
+  
   useEffect(() => {
     const fetchCartData = async () => {
       const cartData = localStorage.getItem("cart");
@@ -126,6 +135,7 @@ const MyCart = () => {
     };
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
+        setModalLoading(false)
         const res = await privateRequest.post("user/orders", newMyOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
@@ -133,16 +143,18 @@ const MyCart = () => {
           // setCart(emptyCart);
           // localStorage.setItem("cart", JSON.stringify(emptyCart));
           window.dispatchEvent(new Event("cartUpdated"));
-          // router.push(
-          //   `/profile/confirm-order/${res?.data?.order_id?.order_id}`
-          // );
-        } else {
-          Toastify.Error(res.data?.message);
-        }
+          router.push(
+            `/profile/confirm-order/${res?.data?.order_id?.order_id}`
+          );
+          setModalLoading(false)
+        } 
       } else {
         Toastify.Error("Please select an address");
       }
-    } catch (error) {}
+    } catch (error) {
+      Toastify.Error(error.response.data.message)
+      setModalLoading(false)
+    }
   };
 
   return (
@@ -178,24 +190,24 @@ const MyCart = () => {
                       Color: {item?.color} | Size: {item?.attribute}
                     </p>
                   </div>
-                 <div className="flex flex-row  gap-4 ">
-                 <div className="text-center">
-                    <p className="text-xs font-bold">Price</p>
-                    <p className="text-sm font-bold text-primary">
-                      {item?.sell_price} Tk
-                    </p>
+                  <div className="flex flex-row  gap-4 ">
+                    <div className="text-center">
+                      <p className="text-xs font-bold">Price</p>
+                      <p className="text-sm font-bold text-primary">
+                        {item?.sell_price} Tk
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs font-bold">Subtotal</p>
+                      <p className="text-sm font-bold text-primary">
+                        {(
+                          item?.sell_price *
+                          (quantities[item.product_id] || item.qty)
+                        ).toFixed(2)}{" "}
+                        Tk
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold">Subtotal</p>
-                    <p className="text-sm font-bold text-primary">
-                      {(
-                        item?.sell_price *
-                        (quantities[item.product_id] || item.qty)
-                      ).toFixed(2)}{" "}
-                      Tk
-                    </p>
-                  </div>
-                 </div>
                   <div className="flex flex-col items-center gap-2">
                     <p className="text-xs font-bold">Quantity</p>
                     <div className="flex items-center gap-2">
@@ -225,7 +237,7 @@ const MyCart = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center text-center">
-              <div className="w-64 h-64">
+              {/* <div className="w-64 h-64">
                 <BsCartXFill className="w-64 h-64 text-primary" />
               </div>
               <h2 className="text-2xl font-bold text-orange-500 mt-5">
@@ -233,7 +245,14 @@ const MyCart = () => {
               </h2>
               <p className="text-gray-600 mt-2">
                 Looks like you haven’t added anything to your cart yet
-              </p>
+              </p> */}
+              <Image
+                height={400}
+                width={400}
+                className="mx-auto "
+                src="/empty_cart.png"
+                alt="Logo"
+              />
               <button
                 className="mt-5 px-6 py-2 bg-primary text-white rounded-lg"
                 onClick={() => (window.location.href = "/products")}
@@ -281,6 +300,7 @@ const MyCart = () => {
       </div>
 
       <ConfirmModal
+        loading={modalLoading}
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onConfirm={handleConfirm}
@@ -288,92 +308,9 @@ const MyCart = () => {
         title="Confirm Order"
         setAddressData={setAddressData}
       />
-      {addressModal && <AddressModal setAddressModal={setAddressModal} />}
     </div>
   );
 };
 
 export default MyCart;
 
-const ConfirmModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  message,
-  title,
-  setAddressData,
-}) => {
-  const [address, setAddress] = useState([]);
-  const fetchAddress = useCallback(async () => {
-    try {
-      const res = await privateRequest.get("user/address");
-      setAddress(res.data?.data);
-    } catch (error) {}
-  }, []);
-
-  useEffect(() => {
-    fetchAddress();
-  }, [fetchAddress]);
-
-  const [selected, setSelected] = useState(null);
-  const handleChange = (index, addressItem) => {
-    setAddressData(addressItem);
-    setSelected(index);
-  };
-
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg md:w-2/4 lg:w-3/4 w-full">
-        <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
-          <span className="block text-xs p-2">Please select address</span>
-          <Link
-            href="/profile?section=Address Book"
-            className="flex items-center gap-1 bg-primary rounded-md px-2 py-1"
-          >
-            <FaPlusCircle /> Add New
-          </Link>
-        </div>
-        {address.length > 0 &&
-          address.map((item, index) => (
-            <div
-              key={item.address_id}
-              className={` ${
-                selected === index + 1 ? "bg-blue-100" : "bg-gray-100"
-              } mb-4 gap-2 p-3 flex rounded-md cursor-pointer items-center`}
-              onClick={() => handleChange(index + 1, item)}
-            >
-              <FaCheckCircle
-                className={`${
-                  selected === index + 1 ? "text-blue-500" : "text-gray-400"
-                } w-8 h-8`}
-              />
-              <div>
-                {item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
-                {item?.upazila?.name}, {item?.district?.name},{" "}
-                {item?.division?.name}
-              </div>
-            </div>
-          ))}
-        <h2 className="text-lg font-semibold mb-4">{title}</h2>
-        <p className="text-sm mb-4">{message}</p>
-        <div className="flex justify-end space-x-4">
-          <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            disabled={!selected}
-            className={`px-4 rounded text-xs font-bold hover:bg-blue-400 ${
-              !selected
-                ? "opacity-50 cursor-not-allowed bg-gray-200 py-2"
-                : "bg-primary text-white"
-            }`}
-            onClick={onConfirm}
-          >
-            Confirm
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
