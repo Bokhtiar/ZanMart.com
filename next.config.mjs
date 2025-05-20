@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['purple-mongoose-717018.hostingersite.com' ], // Add your local domains here
+    domains: ['purple-mongoose-717018.hostingersite.com' ,'127.0.0.1'], // Add your local domains here
 },
 };
 

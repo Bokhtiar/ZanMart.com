@@ -130,12 +130,12 @@ const MyCart = () => {
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
           const emptyCart = { ...cart, cart_items: [] };
-          setCart(emptyCart);
-          localStorage.setItem("cart", JSON.stringify(emptyCart));
+          // setCart(emptyCart);
+          // localStorage.setItem("cart", JSON.stringify(emptyCart));
           window.dispatchEvent(new Event("cartUpdated"));
-          router.push(
-            `/profile/confirm-order/${res?.data?.order_id?.order_id}`
-          );
+          // router.push(
+          //   `/profile/confirm-order/${res?.data?.order_id?.order_id}`
+          // );
         } else {
           Toastify.Error(res.data?.message);
         }

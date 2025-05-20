@@ -146,7 +146,7 @@ const Login = () => {
             >
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
-                class="w-7 h-7"
+                className="w-7 h-7"
                 alt="Google logo"
               />
               <span>Continue with Google</span>
