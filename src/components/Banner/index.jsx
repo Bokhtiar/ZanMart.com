@@ -1,103 +1,96 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { CiShoppingBasket } from "react-icons/ci";
+import { Swiper, SwiperSlide } from "swiper/react";
 
-
-
-// Import Swiper styles
-// import 'swiper/css';
-// import 'swiper/css/pagination';
-// import 'swiper/css/navigation';
-
-// import required modules
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import { privateRequest, publicRequest } from '@/config/axios.config';
-import Link from 'next/link';
-import { useProduct } from '@/hooks/useProducts';
-import Image from 'next/image';
-import BannerSkeleton from '../loader/bannerSkaleton';
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { publicRequest } from "@/config/axios.config";
+import Link from "next/link";
+import Image from "next/image";
+import BannerSkeleton from "../loader/bannerSkaleton";
 
 const Banner = () => {
-  const [banner, setBanner] = useState([])
-  const [loading,setLoading]=useState(false)
+  const [banner, setBanner] = useState([]);
+  const [loading, setLoading] = useState(false);
   const fetchBanner = async () => {
     try {
-      setLoading(true)
-      const response = await publicRequest.get('banner')
-      setBanner(response.data.data)
-      setLoading(false)
-
-    }
-    catch (error) { 
-    }
-  }
- 
-  const { setProducts } = useProduct()
-  const bannerProduct = async (id) => {
-    try {
-      const response = await publicRequest.get(`banner-product/${id}`)
-      setProducts(response?.data?.data?.products)
-
-
-    } catch (error) {
-
-    }
-  }
+      setLoading(true);
+      const response = await publicRequest.get("banner");
+      setBanner(response.data.data);
+      setLoading(false);
+    } catch (error) {}
+  };
   useEffect(() => {
-    fetchBanner()
-  }, [])
-  if(loading){
-    return <BannerSkeleton></BannerSkeleton>
+    fetchBanner();
+  }, []);
+
+  if (loading) {
+    return <BannerSkeleton></BannerSkeleton>;
   }
   return (
-    <Swiper
-      spaceBetween={30}
-      centeredSlides={true}
-      autoplay={{
-        delay: 3000,
-        disableOnInteraction: false,
-      }}
-      pagination={{
-        clickable: true,
-      }}
-      speed={1000}
-      modules={[Autoplay, Pagination, Navigation]}
-      className="mySwiper"
-    >
-      {banner?.map((item) => (
-        <SwiperSlide key={item?.banner_id}>
-          <div className="relative h-80 bg-[#F5F5F5]">
-            {/* Static Content Container */}
-            <div className="absolute inset-0 flex items-center md:justify-start justify-center lg:left-44 md:left-24 z-10 ">
-              <div className="text-start ">
-                <h1 className="text-primary text-2xl md:text-3xl lg:text-[45px] font-extrabold capitalize">
-                  {item?.name}
-                </h1>
-                <p className="text-xl font-thin mb-4 ">On the selected items</p>
+    <div className="container-custom     ">
+      <div className="flex flex-col md:flex-row h-auto md:h-72 gap-2">
+        {/* Swiper Section */}
+        <div className="w-full md:w-3/4   md:h-full  ">
+          <Swiper
+            spaceBetween={30}
+            centeredSlides={true}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false,
+            }}
+            pagination={{
+              clickable: true,
+            }}
+            speed={1000}
+            modules={[Autoplay, Pagination, Navigation]}
+            className="h-full"
+          >
+            {banner.slice(1, 2)?.map((banner) => (
+              <SwiperSlide key={banner?.banner_id}>
                 <Link
-                  href={`banner-products?sale=${item?.name}`}
-                  onClick={() => bannerProduct(item?.banner_id)}
-                  className=" hover:bg-secondary rounded-full font-bold btn text-sm bg-primary text-white w-36 py-2 flex items-center justify-center gap-2"
+                  href={`/wow/offer/${banner?.name?.replace(
+                    /\s+/g,
+                    "-"
+                  )}?sale=${encodeURIComponent(banner?.name)}&offer_id=${
+                    banner?.banner_id
+                  }`}
+                  className="relative h-full bg-[#F5F5F5] block aspect-[3/1] "
                 >
-                  <CiShoppingBasket className="text-xl animate-bounce text-white font-bold" /> Shop
-                  Now
+                  <Image
+                    height={1000}
+                    width={1000}
+                    priority
+                    className="   w-full h-full object-fit"
+                    src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner?.image}`}
+                    alt={banner?.name}
+                  />
                 </Link>
-              </div>
-            </div>
-            {/* Sliding Image */}
-            <Image
-              height={1000}
-              width={1000}
-              priority
-              className="w-full h-full object-cover"
-              src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
-              alt={item?.name}
-            />
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        {/* Side Images */}
+        <div className="w-full md:w-1/4 flex md:flex-col md:space-y-2    aspect-[3/1]">
+          <Image
+            height={1000}
+            width={1000}
+            priority
+            className="w-1/2 md:w-full h-full object-fit pr-1 md:pr-0"
+            src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner[0]?.image}`}
+            alt={banner?.name}
+          />
+          <Image
+            height={1000}
+            width={1000}
+            priority
+            className="w-1/2 md:w-full h-full object-fit pl-1 md:pl-0"
+            src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner[4]?.image}`}
+            alt={banner?.name}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

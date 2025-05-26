@@ -55,20 +55,14 @@ const SingleCart = ({ item }) => {
             </span>
           </span>
           }
-          {item?.variants[0].discount_price?
+          {/* {  item && item?.variants[0]?.discount_price?
            <span className="flex text-secondary text-xs line-through items-center  ">
               {item?.variants[0]?.discount_price}{" "}
               <span className="text-xs font-normal text-gray-500 mt-[0px]">
                 Tk
               </span>
-            </span>:''
-            // <span className="flex text-secondary text-xs line-through items-center  ">
-            //   {item?.flat_discount}{" "}
-            //   <span className="text-xs font-normal text-gray-500 mt-[0px]">
-            //     Tk
-            //   </span>
-            // </span>
-            }
+            </span>:'' 
+            } */}
         </p>
       </div>
     </Link>

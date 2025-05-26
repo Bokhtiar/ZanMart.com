@@ -86,8 +86,7 @@ const MyCart = () => {
         acc + item.sell_price * (quantities[item.product_id] || item.qty),
       0
     );
-  };
-
+  }; 
   const handleDelete = (id) => {
     const updatedCartItems = data.filter(
       (item) => item.product_variant_id !== id
