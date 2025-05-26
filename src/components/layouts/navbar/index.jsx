@@ -19,6 +19,7 @@ import style from "./components/style.module.css";
 import { BiCategoryAlt } from "react-icons/bi";
 import { LuShoppingCart } from "react-icons/lu";
 import { useRouter } from "next/router";
+import useStickyFetch from "@/hooks/sticky";
 
 const navList = [
   { name: "Home", href: "/" },
@@ -36,7 +37,7 @@ export const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const router=useRouter()
+  const router = useRouter();
   const [cart, setCart] = useState({
     cart_items: [],
     shipping_address_id: 1,
@@ -64,12 +65,11 @@ export const Navbar = () => {
       const response = await publicRequest.get(
         `products-search?search=${searchQuery}`
       );
-      if(response.status==200){
-        setProducts(response?.data?.data || []); 
-        router.replace(`/search-products/?search=${searchQuery}`)
+      if (response.status == 200) {
+        setProducts(response?.data?.data || []);
+        router.replace(`/search-products/?search=${searchQuery}`);
         updateLoading(false);
       }
-   
     } catch (error) {}
   };
 
@@ -137,18 +137,15 @@ export const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  // sticky system here
+  const { isSticky } = useStickyFetch();
   return (
     <div className="z-50">
-      <div className="fixed h w-full h z-10 bg-white  ">
-        <nav className="py-3  flex container-custom mx-auto justify-between items-center">
+      <div className="w-full h z-10 bg-white   ">
+        <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
           <div className="flex items-center gap-2">
             {/* Drawer Toggle Button for Small Devices */}
-            <button
-              onClick={toggleDrawer}
-              className="lg:hidden md:hidden text-xl"
-            >
-              <TbAlignLeft />
-            </button>
+
             <Link href="/" passHref>
               <Image
                 height={400}
@@ -213,8 +210,12 @@ export const Navbar = () => {
           </div>
         </nav>
         {/* bottom navbar start  */}
-        <section className="bg-primary ">
-          <div className="flex gap-3 justify-between items-center container-custom container mx-auto py-2">
+        <section
+          className={`bg-primary transition-all duration-300 ${
+            isSticky && "fixed top-0 bg-primary shadow-md"
+          } w-full `}
+        >
+          <div className="flex gap-3 justify-between items-center container-custom container mx-auto  ">
             <div
               ref={dropdownRef}
               className="relative lg:flex md:flex hidden  "
@@ -321,18 +322,22 @@ export const Navbar = () => {
               </div>
             </div>
             <div className="flex rounded-full md:w-[658px] w-80 h-14 relative items-center">
+              <button
+                onClick={toggleDrawer}
+                className="lg:hidden md:hidden text-xl mr-2"
+              >
+                <TbAlignLeft />
+              </button>
               <input
                 onChange={handleSearchQuery}
                 className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2 w-full
-                 h-9 md:h-10 lg:h-12 outline-none"
+                 h-9   lg:h-10 outline-none"
                 type="text"
                 placeholder="Search product here"
               />
-              <button 
-                
-                onClick={()=>handleSearch()}
-                
-                className="flex absolute right-0 hover:text-secondary rounded-full bg-black md:text-sm lg:text-sm text-xs h-9 md:h-10 lg:h-12 text-white 
+              <button
+                onClick={() => handleSearch()}
+                className="flex absolute right-0 hover:text-secondary rounded-full bg-black md:text-sm lg:text-sm text-xs h-9   lg:h-10 text-white 
                 w-[70px] lg:w-40 md:w-32 items-center justify-center sm:px-2 gap-1 md:gap-2"
               >
                 Search <IoSearch className="h-4 w-4" />
@@ -375,11 +380,11 @@ export const Navbar = () => {
                 key={nav.name}
                 onClick={() => handleSelect(nav.name)}
                 href={nav.href}
-                className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none 
+                className={`text-md flex flex-col  pl-4 md:hover:after:ml-0  after:ml-4 py-2 leading-7 font-normal relative hover:border-none 
                   after:absolute after:w-0 after:h-[5px] after:bottom-0 after:bg-primary after:transition-all 
-                  after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+                  after:duration-200 after:ease-in-out after:rounded-full hover:after:w-1/2  md:hover:after:w-full hover:after:left-0 ${
                     pathName === nav?.href
-                      ? "after:w-full after:left-0"
+                      ? "after:w-1/2 md:after:w-full after:left-0"
                       : "after:left-1/2"
                   }`}
               >
@@ -390,9 +395,9 @@ export const Navbar = () => {
             {!token && (
               <Link
                 href={"/auth/log-in"}
-                className={`text-md flex flex-col text-center py-2 leading-7 font-normal relative hover:border-none 
+                className={`text-md flex flex-col md:hover:after:ml-0  after:ml-4 pl-4  py-2 leading-7 font-normal relative hover:border-none 
     after:absolute after:w-0 after:h-[5px] after:bottom-0 after:bg-primary after:transition-all 
-    after:duration-200 after:ease-in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+    after:duration-200 after:ease-in-out after:rounded-full hover:after:w-1/2  md:hover:after:w-full hover:after:left-0 ${
       pathName === "Log In" ? "after:w-full after:left-0" : "after:left-1/2"
     }`}
               >

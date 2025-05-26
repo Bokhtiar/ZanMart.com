@@ -1,18 +1,15 @@
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import Banner from "@/components/Banner";
-import ServiceQuality from "@/components/ServiceQuality";
-import TopFeature from "@/components/TopFeature";
-import PaymentOptions from "@/components/PaymentOptions";
-import CookieConsent from "@/components/termAndConiton";
+import ServiceQuality from "@/components/ServiceQuality"; 
+import PaymentOptions from "@/components/PaymentOptions"; 
 import { useEffect, useState } from "react";
-import { publicRequest } from "@/config/axios.config";
-import TopFeatureSkeleton from "@/components/loader/TopFeaturSkeleton";
-import ProductSkeleton from "@/components/loader/ProductSkeleton";
+import { publicRequest } from "@/config/axios.config"; 
 import HomePageCategorySkeletonLoader from "@/components/loader/homePageCategorySkeleton";
 import Link from "next/link";
 import { AllViewButton } from "@/components/button";
 import SingleCart from "@/components/singleCart";
+import useStickyFetch from "@/hooks/sticky";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -41,10 +38,10 @@ export default function Home() {
       const categoryFilterd = await publicRequest.get(`category/product/${id}`);
       setProducts(categoryFilterd?.data?.data?.data);
     } catch (error) {}
-  };
-
+  }; 
+  const {isSticky} = useStickyFetch();
   return (
-    <section className={`${poppins.className} px-2 pt-36  `}>
+    <section className={`${poppins.className} px-2  ${isSticky&&'mt-14'}`}>
       <Banner></Banner>
       <ServiceQuality></ServiceQuality>
       {loading ? (

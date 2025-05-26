@@ -12,9 +12,11 @@ import { PasswordInput, TextInput } from "@/components/input";
 import { UserContext } from "@/contex/UserContex";
 import { useProduct } from "@/hooks/useProducts";
 import Spinner from "@/components/spinner";
+import useStickyFetch from "@/hooks/sticky";
 
 const Login = () => {
   const userInfo = useProduct();
+    const {isSticky} = useStickyFetch();
   const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
@@ -49,7 +51,7 @@ const Login = () => {
     if (getToken()) router.push("/");
   }, []);
   return (
-    <div className="container mt-36 mx-auto py-10 flex justify-center">
+    <div className={`container  mx-auto ${isSticky&&'mt-14'}  py-10 flex justify-center`}>
       <div className="flex flex-col items-center text-gray-700">
         <span className="font-semibold text-xl sm:text-2xl text-center  leading-4">
           Welcome to Zanmart

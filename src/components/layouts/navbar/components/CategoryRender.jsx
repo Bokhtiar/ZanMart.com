@@ -31,7 +31,7 @@ const id=router.query?.category_id;
 
   const renderCategories = (categories ) => {
     return (
-      <ul className="  mt-2 pl-4  ">
+      <ul className="  mt-2   ">
         {categories.map((category) => (
           <li key={category.category_id} className={`my-1 relative   ${category?.category_id==id ?'text-primary font-bold text-base bg-gray-200 rounded-lg ' :""} `}>
             <div className="flex items-center justify-between hover:bg-gray-100 px-2  rounded-lg">
