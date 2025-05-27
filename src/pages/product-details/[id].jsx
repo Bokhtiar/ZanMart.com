@@ -1,6 +1,6 @@
 import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
 import { Toastify } from "@/components/toastify";
-import { publicRequest } from "@/config/axios.config";
+import { privateRequest, publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -22,6 +22,7 @@ import { MdOutlineFullscreen } from "react-icons/md";
 import Paginations from "@/components/pagination";
 import useStickyFetch from "@/hooks/sticky";
 import { TbCurrencyTaka } from "react-icons/tb";
+import ConfirmModal from "@/components/confirmModal";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -42,9 +43,17 @@ const ProductDetails = () => {
   const [gridCount, setGridCount] = useState(5);
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [avialableQty, setAvialableQty] = useState(0);
   const [lastPage, setLastPage] = useState(1);
-  // console.log(selectedDiscount);
-  /** product details */
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    // setModalAction(null);
+  };
+  const [addressData, setAddressData] = useState({});
+  console.log(addressData.address_id);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -75,6 +84,7 @@ const ProductDetails = () => {
         setSelectedColor_id(productVariants[0]?.color_id);
         setSelectedWeight(productVariants[0]?.weight);
         setSelectedDiscount(productVariants[0]?.discount_price);
+        setAvialableQty(productVariants[0]?.available_quantity);
       } else {
         setSelectedPrice(res?.data?.data?.sell_price);
         setSelectedWeight(res?.data?.data?.weight);
@@ -84,7 +94,7 @@ const ProductDetails = () => {
     }
     setLoading(false);
   };
-
+  console.log("============================", avialableQty);
   /** category releted product */
   const reletedProductCategory = useCallback(
     async (page = 1) => {
@@ -125,6 +135,7 @@ const ProductDetails = () => {
     weight: item?.weight,
     attribute_weight: item?.attribute?.attribute_weight,
     discount_price: item?.discount_price,
+    available_quantity: item?.available_quantity,
   }));
 
   const handelCart = () => {
@@ -135,10 +146,7 @@ const ProductDetails = () => {
         item?.attribute_id === selectdAtribute_id
     );
 
-    if (
-      selectedVariant &&
-      product?.low_stock_quantity_warning <= selectedVariant?.product_qty
-    ) {
+    if (selectedVariant && avialableQty > 0)  {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -179,6 +187,72 @@ const ProductDetails = () => {
       Toastify.Warning(
         "Selected size and color is not available.Please select another color or size"
       );
+    }
+  };
+  const [orderData, setorderData] = useState([]);
+  console.log(orderData);
+  const handleBuyNow = () => {
+    const selectedVariant = product?.product_variants.find(
+      (item) =>
+        item?.color_id === selectdColor_id &&
+        item?.attribute_id === selectdAtribute_id
+    );
+
+    if (selectedVariant && avialableQty > 0) {
+      setIsModalOpen(true);
+      const cartItem = {
+        product_id: product?.product_id,
+        sell_price: selectedPrice,
+        weight: product?.weight || selectedWeight || 1,
+        attribute_id: selectdAtribute_id,
+        // attribute: selectedAttribute,
+        color_id: selectdColor_id,
+        // color: selectedColor,
+        attribute_weight: selectedWeight || null,
+        attribute_price: selectedPrice,
+        qty: quantity,
+        // image: product?.thumbnail_image,
+        // category: categoryName,
+        // title: product?.title,
+        // payment: product?.delivery_status,
+        product_variant_id: selectedVariant?.product_variant_id,
+        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+      };
+      setorderData(cartItem);
+    } else {
+      Toastify.Warning(
+        "Selected size and color is not available.Please select another color or size"
+      );
+    }
+  };
+  const handleConfirm = async () => {
+    const newMyOrder = {
+      cart_items: [orderData],
+      billing_address_id: addressData?.address_id,
+      shipping_address_id: addressData?.address_id,
+    };
+    console.log("================>>>>>>>>>", newMyOrder);
+    try {
+      if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
+        setModalLoading(true);
+        const res = await privateRequest.post("user/orders", newMyOrder);
+        if (res?.status === 200 || res?.status === 201) {
+          Toastify.Success(res.data?.message);
+          // const emptyCart = { ...cart, cart_items: [] };
+          // setCart(emptyCart);
+          // localStorage.setItem("cart", JSON.stringify(emptyCart));
+          // window.dispatchEvent(new Event("cartUpdated"));
+          router.push(
+            `/profile/confirm-order/${res?.data?.order_id?.order_id}`
+          );
+          setModalLoading(false);
+        }
+      } else {
+        // Toastify.Error("Please select an address");
+      }
+    } catch (error) {
+      Toastify.Error(error.response.data.message);
+      setModalLoading(false);
     }
   };
 
@@ -229,6 +303,7 @@ const ProductDetails = () => {
     setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
+    setAvialableQty(newColor?.available_quantity); // Updated line
   };
 
   const attributeHandle = (attributedata) => {
@@ -246,6 +321,8 @@ const ProductDetails = () => {
     setSelectedDiscount(
       newAttribute?.discount_price || product?.discount_price
     ); // Updated line
+    setAvialableQty(newAttribute?.available_quantity); // Updated line
+    console.log(newAttribute?.available_quantity);
   };
 
   //change thumbnile image base on galllery
@@ -265,6 +342,7 @@ const ProductDetails = () => {
   if (l) {
     return <ProductDetailsSkeleton />;
   }
+  console.log(variant);
   return (
     <div className={`container-custom px-2 ${isSticky&&'mt-14'} pt-5`}>
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
@@ -389,6 +467,7 @@ const ProductDetails = () => {
                   ))}
               </p>
             )}
+
             {variant?.length > 0 && (
               <p className="text-base font-light  leading-6 pb-3 text-[#AAAAAA]">
                 Available Colors: <br />
@@ -416,8 +495,15 @@ const ProductDetails = () => {
               </p>
             )}
             <div className="flex gap-3">
-              <p className="flex text-center w-24 border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
-                <IoMdCheckmarkCircleOutline /> in stock
+              <p className=" text-center w-24 border  text-primary rounded-sm border-[#D9D9D9] px-1">
+                {avialableQty > 0 ? (
+                  <span className="flex items-center gap-1 ">
+                    <IoMdCheckmarkCircleOutline />
+                    In stock
+                  </span>
+                ) : (
+                  <span>Out of Stock</span>
+                )}
               </p>
               {product?.delivery_status === "cash" ? (
                 <p className="flex text-center border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
@@ -480,7 +566,7 @@ const ProductDetails = () => {
                 Add To Cart
               </button>
               <button
-                onClick={handelCart}
+                onClick={handleBuyNow}
                 className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-secondary rounded-xl"
               >
                 Buy Now
@@ -539,6 +625,15 @@ const ProductDetails = () => {
         </div>
         <Paginations page={1} setPage={currentPage} totalPage={lastPage} />
       </section>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        loading={modalLoading}
+        onClose={handleModalClose}
+        onConfirm={handleConfirm}
+        message="Are you sure you want to confirm the order?"
+        title="Confirm Order"
+        setAddressData={setAddressData}
+      />
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { FaArrowsAltH } from "react-icons/fa";
 const PriceFilter = ({ setMinPrice, setMaxPrice, maxPrice,minPrice }) => {
   const minGap = 1000;
   const sliderminValue = 10; // Minimum slider value
-  const sliderMaxValue = 5000; // Maximum slider value
+  const sliderMaxValue = 10000; // Maximum slider value
 
   // Initialize min and max value state
   const [minValue, setMinValue] = useState(minPrice||sliderminValue);
