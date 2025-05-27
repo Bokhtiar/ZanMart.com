@@ -20,6 +20,8 @@ import { Navigation, Pagination } from "swiper/modules";
 import style from "./style.module.css";
 import { MdOutlineFullscreen } from "react-icons/md";
 import Paginations from "@/components/pagination";
+import useStickyFetch from "@/hooks/sticky";
+import { TbCurrencyTaka } from "react-icons/tb";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -251,16 +253,20 @@ const ProductDetails = () => {
     setThumb(img);
   };
   const [isOpen, setIsOpen] = useState(false);
-
+  const {isSticky} = useStickyFetch();
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-  if (loading || reletedProductLoading) {
+
+ 
+
+  const l = false;
+  if (l) {
     return <ProductDetailsSkeleton />;
   }
   return (
-    <div className="container-custom px-2 mt-36 pt-5">
+    <div className={`container-custom px-2 ${isSticky&&'mt-14'} pt-5`}>
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
           <div className="flex justify-center items-center">
@@ -423,17 +429,18 @@ const ProductDetails = () => {
                 </p>
               )}
             </div>
-            <p className="flex py-3 flex-row items-center w-full lg:w-3/5 justify-between">
-              <span className="text-primary text-nowrap md:text-3xl text-xl lg:text-5xl font-bold">
-                {selectedPrice}{" "}
-                <span className="md:text-2xl text-lg lg:text-2xl font-normal text-black">
-                  tk
+            <p className="flex py-3 flex-row items-center w-full lg:w-3/5  ">
+              <span className="text-primary text-nowrap md:text-lg text-base lg:text-xl font-bold flex items-center">
+               
+                <span className="  font-normal text-primary">
+                <TbCurrencyTaka />
                 </span>
+                 {Math.ceil(selectedPrice)}{" "}
               </span>
               {selectedDiscount && (
-                <span className="text-secondary flex lg:text-2xl line-through">
-                  {selectedDiscount} tk
-                </span>
+                <sub className="text-secondary    text-xs md:text-sm line-through flex items-center">
+                  <TbCurrencyTaka />{Math.ceil(selectedDiscount)}  
+                </sub>
               )}
             </p>
             <div className="flex gap-8">
