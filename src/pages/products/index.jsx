@@ -33,7 +33,7 @@ const Products = () => {
 
   return (
     <>
-      <div className="mt-40">
+      <div className=" ">
         {/* product banner --------------------------- */}
         {/* <div className="text-center py-10">
           <h1 className="font-extrabold text-primary text-4xl py-2">

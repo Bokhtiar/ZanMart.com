@@ -8,7 +8,7 @@ const BannerProducts = () => {
     const bannarName=router.query.sale
     const {products}=useProduct()
   return (
-    <div className="mt-36 container-custom mx-auto ">
+    <div className="  container-custom mx-auto ">
 
     <div className="text-center py-10">
       <h1 className="font-extrabold text-primary text-4xl py-2">

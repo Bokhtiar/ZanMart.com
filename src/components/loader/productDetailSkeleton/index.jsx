@@ -2,7 +2,7 @@ import React from "react";
 
 const ProductDetailsSkeleton = () => {
   return (
-    <div className="container-custom px-2 mt-36 pt-5 animate-pulse">
+    <div className="container-custom px-2   pt-5 animate-pulse">
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Left side: Image skeleton */}
         <div className="flex flex-col gap-4">

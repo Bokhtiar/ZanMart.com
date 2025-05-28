@@ -54,7 +54,7 @@ const Register = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   return (
-    <div className="container mt-36  mx-auto py-10 justify-center flex">
+    <div className="container   mx-auto py-10 justify-center flex">
       <div className="items-center flex flex-col">
         <h1 className="font-semibold text-2xl text-center pb-10 leading-4">
           Create your ZANmart Account

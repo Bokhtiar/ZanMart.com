@@ -30,14 +30,14 @@ const SearchProdut = () => {
   }, [searchText]);
   if (loading)
     return (
-      <div className="container-custom mt-36">
+      <div className="container-custom  ">
         
           <ProductSkeleton />
        
       </div>
     );
   return (
-    <div className="mt-36">
+    <div className=" ">
       <div className="text-center py-10">
         <h1 className="font-extrabold text-primary text-4xl py-2">
           You search for {searchText}

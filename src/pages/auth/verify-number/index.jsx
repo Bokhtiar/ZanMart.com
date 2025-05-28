@@ -78,7 +78,7 @@ const VerifyNumber = () => {
   };
 
   return (
-    <div className="container mt-20 sm:mt-36 mx-auto py-6 sm:py-10 flex justify-center">
+    <div className="container   mx-auto py-6 sm:py-10 flex justify-center">
       <div className="flex flex-col items-center w-full px-4 sm:px-0">
         <h1 className="font-semibold text-lg sm:text-2xl text-center pb-4 sm:pb-10">
           Verify your Email

@@ -9,10 +9,10 @@ const SingleCart = ({ item }) => {
       href={`/product-details/${item?.product_id}`}
       className="w-full h-fit rounded-lg  shadow-lg "
     >
-      <div className="overflow-hidden w-full   p-2 ">
+      <div className="overflow-hidden w-full   p-2 aspect-auto">
         <Image
           height={400}
-          width={300}
+          width={4000}
           className="w-full object-cover h-40 transition-transform duration-500 hover:scale-125 rounded"
           src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.thumbnail_image}`}
           alt=""

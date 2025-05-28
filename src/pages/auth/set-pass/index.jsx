@@ -43,7 +43,7 @@ const NewPass = () => {
   };
 
   return (
-    <div className="container mt-36 mx-auto py-10 flex justify-center">
+    <div className="container   mx-auto py-10 flex justify-center">
       <div className="flex flex-col items-center text-gray-700">
         <span className="font-semibold text-xl sm:text-2xl text-center pb-6 sm:pb-10 leading-4">
           Set your new password

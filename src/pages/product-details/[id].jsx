@@ -23,6 +23,9 @@ import Paginations from "@/components/pagination";
 import useStickyFetch from "@/hooks/sticky";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmModal from "@/components/confirmModal";
+import { RiStore2Line } from "react-icons/ri";
+import Link from "next/link";
+import ProductReview from "./components/Review";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -146,7 +149,7 @@ const ProductDetails = () => {
         item?.attribute_id === selectdAtribute_id
     );
 
-    if (selectedVariant && avialableQty > 0)  {
+    if (selectedVariant && avialableQty > 0) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -330,21 +333,20 @@ const ProductDetails = () => {
     setThumb(img);
   };
   const [isOpen, setIsOpen] = useState(false);
-  const {isSticky} = useStickyFetch();
+  const { isSticky } = useStickyFetch();
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
 
- 
-
   const l = false;
   if (l) {
     return <ProductDetailsSkeleton />;
   }
-  console.log(variant);
+  console.log(product);
   return (
-    <div className={`container-custom px-2 ${isSticky&&'mt-14'} pt-5`}>
+    <div className={`container-custom px-2 ${isSticky && "mt-14"} pt-5`}>
+      {/* start single product design  */}
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
           <div className="flex justify-center items-center">
@@ -406,45 +408,51 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <InnerImageZoom
-                src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-                zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-                alt="Product Thumbnail"
-                zoomType="hover"
-                zoomPreload={true}
-                zoomPosition="left"
-                fillAvailableSpace={true}
-                className=" max-h-[550px] w-[550px] rounded"
-              />
+              <div className="aspect-auto">
+                <InnerImageZoom
+                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+                  zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+                  alt="Product Thumbnail"
+                  zoomType="hover"
+                  zoomPreload={true}
+                  zoomPosition="left"
+                  fillAvailableSpace={true}
+                  className="   rounded"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="flex py-5 gap-4 w-1/2">
-            {imageArray?.map((img, index) => (
-              <Image
-                onClick={() => handleThumb(img)}
-                key={index}
-                height={500}
-                width={500}
-                className="h-20 w-20 cursor-pointer"
-                src={`${process.env.NEXT_PUBLIC_API_SERVER}${img}`} // Assuming the path is correct
-                alt={`Thumbnail ${index + 1}`}
-              />
-            ))}
-          </div>
+          {imageArray.length > 0 && (
+            <div className="flex py-5 gap-4 w-1/2">
+              {imageArray?.map((img, index) => (
+                <Image
+                  onClick={() => handleThumb(img)}
+                  key={index}
+                  height={500}
+                  width={500}
+                  className="h-20 w-20 cursor-pointer"
+                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${img}`} // Assuming the path is correct
+                  alt={`Thumbnail ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
-        <div className="flex flex-col content-between items- w-full lg:w-1/2">
+        <div className="flex flex-col content-between  w-full lg:w-1/2 space-y-3">
           <>
-            <h1 className="font-medium text-3xl text-start leading-10 text-gray-600">
+            <h1 className="  font-medium text-3xl text-start leading-10 text-gray-600">
               {product?.title}
             </h1>
-
-            <p className="text-lg pt-4 pb-3 leading-4 font-bold text-secondary">
-              {categoryName}
-            </p>
+            {/* sort description  */}
+            <div
+              dangerouslySetInnerHTML={{ __html: product?.short_description }}
+              className="line-clamp-6"
+            />
+            {/* variant size  size  */}
             {variant?.length > 0 && (
-              <p className="text-base font-light leading-6 pb-3 text-[#AAAAAA]">
-                Available Size: <br />
+              <p className="text-base font-bold leading-6   text-[#494949] flex items-center gap-2">
+                Size:
                 {!have && <p>size not avialable</p>}
                 {data
                   ?.filter(
@@ -455,22 +463,22 @@ const ProductDetails = () => {
                   .map((attribute, index) => (
                     <button
                       onClick={() => attributeHandle(attribute)}
-                      className={`font-semibold px-2 py-1 me-1 border rounded-md ${
+                      className={`font-medium text-xs leading-4  h-8 w-8 me-1 border rounded-full ${
                         selectedAttribute === attribute?.attribute
                           ? "bg-primary text-white"
                           : "bg-transparent"
                       }`}
                       key={index}
                     >
-                      {attribute?.attribute}
+                      {attribute?.attribute.toLowerCase()}
                     </button>
                   ))}
               </p>
             )}
 
             {variant?.length > 0 && (
-              <p className="text-base font-light  leading-6 pb-3 text-[#AAAAAA]">
-                Available Colors: <br />
+              <p className="text-base font-bold  leading-6  text-[#494949] flex items-center gap-2">
+                Color:
                 {!have && <p>color not avialable</p>}
                 {data
                   ?.filter(
@@ -479,60 +487,86 @@ const ProductDetails = () => {
                       self.findIndex((o) => o.color_id === obj.color_id)
                   )
                   .map((color, index) => (
-                    <button
-                      onClick={() => handleColor(color)}
-                      // onClick={()=>setcm(color?.color_name)}
-                      className={`font-bold p-2 me-1 border rounded-md ${
-                        selectedColor === color?.color_name
-                          ? "bg-primary text-white"
-                          : "bg-transparent"
-                      }`}
+                    <span
                       key={index}
+                      className=" h-6 w-6 rounded-full border-2 flex justify-center items-center"
                     >
-                      {color?.color_name}
-                    </button>
+                      <button
+                        onClick={() => handleColor(color)}
+                        // onClick={()=>setcm(color?.color_name)}
+                        className={`font-bold h-4 w-4    rounded-full shadow-md ${
+                          selectedColor === color?.color_name
+                            ? "bg-primary text-white h-5 w-5 border-2 border-blue-400"
+                            : " "
+                        }`}
+                        style={{
+                          background: color?.color_name,
+                        }}
+                      ></button>
+                    </span>
                   ))}
               </p>
             )}
-            <div className="flex gap-3">
-              <p className=" text-center w-24 border  text-primary rounded-sm border-[#D9D9D9] px-1">
+            <div className="flex gap-3 justify-between">
+              <p className=" text-center    text-primary flex items-center gap-2">
+                <span className="font-bold  leading-6   text-[#494949]">
+                  Stock:
+                </span>
                 {avialableQty > 0 ? (
                   <span className="flex items-center gap-1 ">
                     <IoMdCheckmarkCircleOutline />
                     In stock
                   </span>
                 ) : (
-                  <span>Out of Stock</span>
+                  <span className="text-red-500">Sold Out</span>
                 )}
               </p>
-              {product?.delivery_status === "cash" ? (
-                <p className="flex text-center border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
-                  <IoMdCheckmarkCircleOutline /> Cash on delivery Available
-                </p>
-              ) : (
-                <p className="flex text-center border items-center text-primary rounded-sm border-[#D9D9D9] px-1">
-                  <IoMdCheckmarkCircleOutline /> Online Payment
-                </p>
-              )}
-            </div>
-            <p className="flex py-3 flex-row items-center w-full lg:w-3/5  ">
-              <span className="text-primary text-nowrap md:text-lg text-base lg:text-xl font-bold flex items-center">
-               
-                <span className="  font-normal text-primary">
-                <TbCurrencyTaka />
+              <div className="flex items-center gap-2">
+                <span className="font-bold  leading-6   text-[#494949]">
+                  Delivery:
                 </span>
-                 {Math.ceil(selectedPrice)}{" "}
+                {product?.delivery_status === "cash" ? (
+                  <p className="flex text-center items-center text-primary ">
+                    <IoMdCheckmarkCircleOutline /> Cash on Delivery
+                  </p>
+                ) : (
+                  <p className="flex text-center  items-center text-primary rounded-sm ">
+                    <IoMdCheckmarkCircleOutline /> Online Payment
+                  </p>
+                )}
+              </div>
+            </div>
+            {/* price field implement  */}
+            <div className="flex  flex-col   w-full lg:w-3/5  ">
+              <span className="text-primary leading-5 text-nowrap md:text-xl text-lg lg:text-xl font-bold flex items-center ">
+                <span className="  font-normal text-primary leading-5 -ml-1 ">
+                  <TbCurrencyTaka />
+                </span>
+                {Math.ceil(selectedPrice)}{" "}
+                {selectedDiscount && (
+                  <sub className="text-secondary    text-xs md:text-sm line-through flex items-center">
+                    <TbCurrencyTaka />
+                    {Math.ceil(selectedDiscount)}
+                  </sub>
+                )}
+                {selectedDiscount && (
+                  <sub className="text-secondary pl-2">
+                    {" "}
+                    -
+                    {Math.ceil(
+                      ((selectedDiscount - selectedPrice) * 100) /
+                        selectedDiscount
+                    )}
+                    %
+                  </sub>
+                )}
               </span>
-              {selectedDiscount && (
-                <sub className="text-secondary    text-xs md:text-sm line-through flex items-center">
-                  <TbCurrencyTaka />{Math.ceil(selectedDiscount)}  
-                </sub>
-              )}
-            </p>
+            </div>
+            {/* quantity set  */}
             <div className="flex gap-8">
               <div className="flex items-center gap-2">
                 Qty:
-                <span className="border flex items-center justify-between gap-5 rounded-xl border-[#D9D9D9]">
+                <span className="border flex items-center justify-between gap-5 rounded-md border-[#D9D9D9]">
                   <button onClick={handelDiccriment} className="p-1">
                     -
                   </button>{" "}
@@ -542,56 +576,76 @@ const ProductDetails = () => {
                   </button>
                 </span>
               </div>
+              {/* product rating  */}
               {product?.rating && (
-                <span className="flex justify-start py-2">
-                  {product &&
-                    Array(Math.floor(product?.rating) - 1)
-                      .fill(null)
-                      .map((_, index) => (
-                        <FaStar key={index} className="text-secondary" />
-                      ))}
-                  {product?.rating % 2 !== 0 ? (
-                    <FaStar className="text-secondary" />
-                  ) : (
+                <span className="flex justify-start items-center">
+                  {Array.from({ length: Math.floor(product.rating) }).map(
+                    (_, i) => (
+                      <FaStar key={i} className="text-secondary" />
+                    )
+                  )}
+                  {!Number.isInteger(product.rating) && (
                     <FaStarHalfAlt className="text-secondary" />
                   )}
+                  <span className="text-secondary pl-2">{product.rating}</span>
                 </span>
               )}
             </div>
-            <div className=" flex gap-2 md:gap-6 my-5 ">
+            {/* responsive button  */}
+            <div className="md:hidden fixed bottom-0 md:static flex w-full bg-white">
+              {/* Store Button (with skew) */}
+              {/*   */}
+
+              {/* Buy Now Button */}
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 bg-gradient-to-l from-sky-400 to-sky-600 text-white font-bold py-3 transform -skew-x-[20deg]"
+              >
+                <span className="skew-x-[20deg] block text-center">
+                  Buy Now
+                </span>
+              </button>
+
+              {/* Add to Cart Button */}
               <button
                 onClick={handelCart}
-                className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-primary rounded-xl"
+                className="flex-1 bg-gradient-to-l from-orange-400 to-orange-500 text-white font-bold py-3 transform -skew-x-[20deg] w-1/2"
               >
-                Add To Cart
+                <span className="skew-x-[20deg] block text-center">
+                  Add to Cart
+                </span>
               </button>
+            </div>
+            {/* normal button  */}
+            <div className="hidden md:flex gap-2 md:gap-6 my-5 ">
               <button
                 onClick={handleBuyNow}
                 className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-secondary rounded-xl"
               >
                 Buy Now
               </button>
+              <button
+                onClick={handelCart}
+                className="p-1 lg:py-2 text-base w-full hover:opacity-75 lg:px-3 text-white bg-primary rounded-xl"
+              >
+                Add To Cart
+              </button>
             </div>
           </>
-
-          {/* <div className='py-8 flex gap-3'>
-                        <FaFacebookF className='text-2xl border-2 p-2 border-gray-200 hover:bg-gray-100 rounded-full' />
-                        <FaInstagram className='text-2xl border-2 p-2 border-gray-200 hover:bg-gray-100 rounded-full' />
-                        <FaLinkedinIn className='text-2xl border-2 p-2 border-gray-200 hover:bg-gray-100 rounded-full' />
-                        <FaTwitter className='text-2xl border-2 p-2 border-gray-200 hover:bg-gray-100 rounded-full' />
-                    </div> */}
         </div>
       </div>
-      {/* <TopFeature
-        key={id}
-        categoryid={id}
-        title="Related Products"
-        dataUrl={"home-page-category"}
-      ></TopFeature> */}
+      <div
+        dangerouslySetInnerHTML={{ __html: product?.description }}
+        className="  bg-gray-100  px-2 my-2 rounded-md py-2"
+      />
+      {/* product design end  */}
+      {/* product review section  */}
+      <ProductReview product={product}/>
+
       <section>
         <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
           <h1 className="font-extrabold text-primary md:text-xl py-2 flex items-center gap-1">
-            <HiClipboardDocumentList /> Releted Products
+            <HiClipboardDocumentList /> You may also like
           </h1>
 
           <p className="flex items-center gap-2">

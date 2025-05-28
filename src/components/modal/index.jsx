@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Modal = ({ isOpen, onClose, onConfirm, message, title }) => {
+const Modal = ({ isOpen, onClose, onConfirm, message, title  }) => {
   if (!isOpen) return null;
 
   return (
@@ -8,7 +8,7 @@ const Modal = ({ isOpen, onClose, onConfirm, message, title }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
         <h2 className="text-lg font-semibold mb-4">{title}</h2>
         <p className="text-sm mb-4">{message}</p>
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-4"> 
           <button
             className="bg-gray-300 px-4 py-2 rounded"
             onClick={onClose}
