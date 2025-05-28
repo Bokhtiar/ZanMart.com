@@ -158,7 +158,7 @@ const MyCart = () => {
 
   return (
     <div className="container-custom">
-      <div className="flex items-center mt-40 justify-between bg-gray-100 px-2 mb-3 rounded-md">
+      <div className="flex items-center   justify-between bg-gray-100 px-2 mb-3 rounded-md">
         <h1 className="text-2xl font-bold py-1 rounded-md flex items-center gap-2 text-gray-700">
           <FaShoppingCart /> Your Cart
         </h1>

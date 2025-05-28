@@ -21,7 +21,7 @@ export const TextInput = (props) => {
   const handleValidation = (e) => {
     onChange(e); // Sync value with React Hook Form
     onBlur(e);
-    props.trigger(props.name); // Validate field in real-time 
+    props?.trigger(props?.name); // Validate field in real-time 
   };
   return (
     <div>
@@ -42,8 +42,8 @@ export const TextInput = (props) => {
         min={0}
         className={
           props?.error
-            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border border-red-500 ${props?.className}`
-            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props?.className}`
+            ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none ${props?.padding?props?.padding:'p-[14px]'} border border-red-500 ${props?.className}`
+            : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none ${props?.padding?props?.padding:'p-[14px]'} border disabled:border-gray-300 ${props?.className}`
         }
       />
       {props?.error && (

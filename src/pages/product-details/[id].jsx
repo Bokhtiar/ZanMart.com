@@ -408,7 +408,7 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <div className="aspect-auto">
+              <div className="aspect-auto"> 
                 <InnerImageZoom
                   src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
                   zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}

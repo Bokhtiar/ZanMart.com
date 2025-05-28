@@ -111,7 +111,7 @@ const NewPass = () => {
               <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 gap-2 text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`mt-8 sm:mt-10 gap-2 text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold  py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >

@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { TbCurrencyTaka } from "react-icons/tb";
 
-const SingleCart = ({ item }) => { 
+const SingleCart = ({ item }) => {
   return (
     <Link
       href={`/product-details/${item?.product_id}`}
@@ -19,7 +20,7 @@ const SingleCart = ({ item }) => {
         />
       </div>
       <div className="p-2">
-        <p title={item?.title} className="text-xs truncate">
+        <p title={item?.title} className="text-xs truncate ">
           {item?.title}{" "}
         </p>
         <p className="text-xs font-bold text-secondary flex  justify-between items-center">
@@ -41,28 +42,21 @@ const SingleCart = ({ item }) => {
           )}
         </p>
         <p className="flex items-center  justify-between ">
-          {
-            item?.variants? <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
-            {item?.variants[0]?.price}
-            <span className="text-xs font-normal text-gray-500 mt-[5px]">
-              Tk
-            </span>
-          </span>:
-          <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
-            {item?.sell_price}
-            <span className="text-xs font-normal text-gray-500 mt-[5px]">
-              Tk
-            </span>
-          </span>
-          }
-          {/* {  item && item?.variants[0]?.discount_price?
-           <span className="flex text-secondary text-xs line-through items-center  ">
-              {item?.variants[0]?.discount_price}{" "}
-              <span className="text-xs font-normal text-gray-500 mt-[0px]">
-                Tk
+          {item?.variants ? (
+            <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+              {Math.ceil(item?.variants[0]?.price)}
+              <span className="text-xs font-normal text-gray-500 mt-[5px]">
+                <TbCurrencyTaka />
               </span>
-            </span>:'' 
-            } */}
+            </span>
+          ) : (
+            <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+              {Math.ceil(item?.sell_price)}
+              <span className="text-xs font-normal text-gray-500 mt-[5px]">
+                <TbCurrencyTaka />
+              </span>
+            </span>
+          )}
         </p>
       </div>
     </Link>

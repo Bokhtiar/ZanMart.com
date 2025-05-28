@@ -8,7 +8,7 @@ const ProfileLayout = ({ children }) => {
   return (
     <div className="flex flex-col overflow-hidden container-custom">
       {/* <Navbar /> */}
-      <main className=" md:flex  mt-40  gap-20">
+      <main className=" md:flex    gap-20">
         <div className="">
           <ProfileSidebar />
         </div>

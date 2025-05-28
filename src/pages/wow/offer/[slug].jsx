@@ -12,7 +12,7 @@ const OfferBanner = () => {
   const {data:banner,loading} = useDynamicIdFetch(bannarId); 
   if(loading) return <BannerSkeleton/>;
   return (
-    <div className="mt-40 container-custom mx-auto ">
+    <div className=" container-custom mx-auto ">
       {/* <div className="text-center py-10">
         <h1 className="font-extrabold text-primary text-4xl py-2">
           {bannarName}

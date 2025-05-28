@@ -71,10 +71,10 @@ const Register = () => {
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full flex flex-col justify-center"
+            className="w-full flex flex-col justify-center space-y-4"
           >
             {/* Full Name Input */}
-            <div className="mt-5">
+            <div className=" ">
               <TextInput
                 name="fullName"
                 type="text"
@@ -98,7 +98,7 @@ const Register = () => {
               />
             </div>
             {/* Email Input */}
-            <div className="mt-5">
+            <div className=" ">
               <TextInput
                 name="email"
                 type="email"
@@ -124,7 +124,7 @@ const Register = () => {
 
             {/* Phone Number Input */}
 
-            <div className="mt-5">
+            <div className=" ">
               <TextInput
                 name="phoneNumber"
                 type="text"
@@ -149,7 +149,7 @@ const Register = () => {
             </div>
 
             {/* Password Input */}
-            <div className="mt-5 relative">
+            <div className="  relative">
               <PasswordInput
                 name="password"
                 placeholder="Enter your Password"
@@ -172,7 +172,7 @@ const Register = () => {
               />
             </div>
             {/* Re-Type Password Input */}
-            <div className="mt-5 relative">
+            <div className=" relative">
               <PasswordInput
                 name="retypePassword"
                 placeholder="Enter your ReType Password"
@@ -203,7 +203,7 @@ const Register = () => {
               setShowTerms={setShowPolicy}
               showTerms={showPolicy}
             />
-            <p className="mt-10 text-white text-md font-normal text-start">
+            <p className="  text-white text-md font-normal text-start">
               By clicking &quot;SIGN UP&quot; I agree to the{" "}
               <span
                 className="hover:underline cursor-pointer"
@@ -229,14 +229,14 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={!isValid}
-                className={`mt-8 sm:mt-10 flex justify-center items-center gap-2 text-primary bg-white rounded-lg text-xs font-bold sm:py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
+                className={`    gap-2 w-full text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold  py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
                {loading ?  <Spinner/>: "Sign Up"}
               </button>
             </div>
-            <div className="mt-5">
+            <div className=" ">
               <p className="text-white font-light text-sm leading-6 text-center">
                 Already have an account?{" "}
                 <Link

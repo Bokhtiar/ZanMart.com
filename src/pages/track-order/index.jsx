@@ -61,7 +61,7 @@ import React from "react";
 
 const TrackOrder = () => {
   return (
-    <div className="min-h-screen md:mt-0 mt-40 bg-gradient-to-br from-primary via-white to-white flex items-center justify-center py-20 px-4">
+    <div className="min-h-screen md:mt-0   bg-gradient-to-br from-primary via-white to-white flex items-center justify-center py-20 px-4">
       <div className="w-full max-w-6xl rounded-3xl bg-white/20 backdrop-blur-md shadow-2xl border border-white/30 p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden transition-all duration-300 group">
         {/* Floating Icon */}
         <div className="absolute -top-6 -left-6 bg-white rounded-full p-4 shadow-xl z-10">

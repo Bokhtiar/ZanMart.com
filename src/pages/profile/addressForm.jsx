@@ -5,161 +5,59 @@ import { networkErrorHandeller } from "@/utils/helpers";
 import ProfileLayout from "@/components/layouts/ProfileLayout/ProfileLayout";
 import { useRouter } from "next/router";
 import Spinner from "@/components/spinner";
+import { SingleSelect, TextInput } from "@/components/input";
+import { useForm } from "react-hook-form";
+import { addressFormData } from "./components/addressForm";
+import useLocationFetch from "@/hooks/api/useLocationApiFetch";
 const AddressForm = () => {
-  const [division, setDivision] = useState([]);
-  const [district, setDistrict] = useState([]);
-  const [upazila, setUpazila] = useState([]);
-  const [union, setUnion] = useState([]);
+  const {
+    handleSubmit,
+    formState: { errors, isValid },
+    control,
+    trigger,
+    setValue,
+    watch,
+  } = useForm();
   const [formData, setFormData] = useState({
     country: "Bangladesh", // Default value
     type: "home", // Default value
   });
-const [loading,setLoading]=useState(false)
+  console.log(watch("division_id")?.name);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { modal } = router.query;
   const id = router.query.id;
-  console.log(id);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // log(formData);
-    setLoading(true)
-    try {
-      const updatedFormData = {
-        ...formData,
-        name: formData.name || "", // Ensure name is provided
-        phone: formData.phone || "", // Ensure phone is provided
-        email: formData.email || "", // Ensure email is provided
-        address_line1: formData.address_line1 || "",
-        address_line2: formData.address_line2 || "",
-        division_id: formData.division_id || "",
-        district_id: formData.district_id || "",
-        upazila_id: formData.upazila_id || "",
-        union_id: formData.union_id || "",
-        postal_code: formData.postal_code || "",
-        type: formData.type || "", // Example: 'home', 'office'
-        _method: "PUT",
-      };
-
-      if (id) {
-        
-        const res = await privateRequest.post(
-          `user/address/${id}`,
-          updatedFormData
-        );
-
-        if (res.status === 200) {
-          Toastify.Success(res?.data?.message);
-          router.replace('/profile/address')
-          setLoading(false)
-        }
-      } else {
-        const response = await privateRequest.post("user/address", formData);
-        console.log(response.status);
-        if (response.status == 201) {
-          Toastify.Success(response.data.message);
-          router.replace(modal ? `/my-cart?modal=${true}` : "/profile/address");
-          setLoading(false)
-        }
-      }
-    } catch (error) {
-      networkErrorHandeller(error);
-      setLoading(false)
-    }
-
-    // Close the modal
-  };
-
-  // Fetch divisions
-  const handleDivision = async () => {
-    try {
-      const res = await privateRequest.get("division");
-      setDivision(res.data?.data);
-    } catch (error) {}
-  };
-
-  // Fetch districts based on selected division
-  const handleDistrict = async (divisionId) => {
-    try {
-      const res = await privateRequest.get(`district/${divisionId}`);
-      setDistrict(res.data?.data);
-    } catch (error) {}
-  };
-
-  // Fetch upazilas based on selected district
-  const handleUpazila = async (districtId) => {
-    try {
-      const res = await privateRequest.get(`upazila/${districtId}`);
-      setUpazila(res.data?.data);
-    } catch (error) {}
-  };
-
-  // Fetch unions based on selected upazila
-  const handleUnion = async (upazilaId) => {
-    try {
-      const res = await privateRequest.get(`union/${upazilaId}`);
-      setUnion(res.data?.data);
-    } catch (error) {}
-  };
-
-  const handleDivisionChange = (e) => {
-    const divisionId = e.target.value;
-    setFormData({
-      ...formData,
-      division_id: divisionId,
-      district_id: "",
-      upazila_id: "",
-      union_id: "",
-    });
-    handleDistrict(divisionId);
-  };
-
-  const handleDistrictChange = (e) => {
-    const districtId = e.target.value;
-    setFormData({
-      ...formData,
-      district_id: districtId,
-      upazila_id: "",
-      union_id: "",
-    });
-    handleUpazila(districtId);
-  };
-
-  const handleUpazilaChange = (e) => {
-    const upazilaId = e.target.value;
-    setFormData({ ...formData, upazila_id: upazilaId, union_id: "" });
-    handleUnion(upazilaId);
-  };
-  useEffect(() => {
-    handleDivision();
-  }, []);
-
-  // const [detailAddress, setDetailAddress] = useState({});
+  // fetch details address
   const fatchDetailAddress = async () => {
     if (!id) return;
     try {
       const res = await privateRequest.get(`user/address/${id}`);
-      console.log(res.data.data);
       if (res.status == 200) {
         const address = res.data.data;
-
-        // Set dependent dropdowns
-        await handleDistrict(address.division_id);
-        await handleUpazila(address.district_id);
-        await handleUnion(address.upazila_id);
+        const fields = [
+          "name",
+          "email",
+          "phone",
+          "address_line1",
+          "address_line2",
+          "postal_code",
+        ];
+        fields.forEach((field) => {
+          setValue(field, address?.[field] || "");
+        });
+        const locationFields = ["union", "district", "division", "upazila"];
+        locationFields.forEach((field) => {
+          setValue(
+            `${field}_id`,
+            address?.[field]
+              ? { ...address[field], label: address[field]?.name }
+              : ""
+          );
+        });
         setFormData({
-          name: address?.name || "",
-          email: address?.email || "",
-          phone: address?.phone || "",
-          address_line1: address?.address_line1 || "",
-          address_line2: address?.address_line2 || "",
-          division_id: address?.division?.id || "",
-          district_id: address?.district?.id || "",
-          upazila_id: address?.upazila?.id || "",
-          union_id: address?.union?.id || "",
-          postal_code: address?.postal_code || "",
           country: address?.country || "Bangladesh",
           type: address?.type || "home",
         });
@@ -171,174 +69,171 @@ const [loading,setLoading]=useState(false)
       fatchDetailAddress();
     }
   }, [id]);
+
+  // submit address
+  const onSubmit = async (data) => {
+    setLoading(true);
+    console.log(data);
+    try {
+      const updatedFormData = {
+        ...data,
+        division_id: data?.division_id?.id || "",
+        district_id: data?.district_id?.id || "",
+        upazila_id: data?.upazila_id?.id || "",
+        union_id: data?.union_id?.id,
+        type: formData.type || "",
+        country: "Bangladesh",
+      };
+
+      if (id) {
+        const res = await privateRequest.post(`user/address/${id}`, {
+          ...updatedFormData,
+          _method: "PUT",
+        });
+
+        if (res.status === 200) {
+          Toastify.Success(res?.data?.message);
+          router.replace("/profile/address");
+          setLoading(false);
+        }
+      } else {
+        const response = await privateRequest.post(
+          "user/address",
+          updatedFormData
+        );
+        console.log(response.status);
+        if (response.status == 201) {
+          Toastify.Success(response.data.message);
+          router.replace(modal ? `/my-cart?modal=${true}` : "/profile/address");
+          setLoading(false);
+        }
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+      setLoading(false);
+    }
+  };
+  // division find
+  const { loading: divisionLoading, data: divisionData } =
+    useLocationFetch("division");
+  // Fetch districts based on selected division
+  const [localLocationId, setLocalLocationId] = useState({});
+  const [localAreaData, setLocalAreaData] = useState({
+    district: [],
+    union: [],
+    upazila: [],
+  });
+  const fetchLocalLocation = async (url) => {
+    try {
+      const response = await privateRequest.get(url);
+      const { data } = response?.data;
+      switch (localLocationId?.key) {
+        case "division_id":
+          setLocalAreaData((prev) => ({ ...prev, district: data }));
+          break;
+        case "district_id":
+          setLocalAreaData((prev) => ({ ...prev, upazila: data }));
+          break;
+        case "upazila_id":
+          setLocalAreaData((prev) => ({ ...prev, union: data }));
+          break;
+      }
+    } catch (error) {}
+  };
+  // fetch zila upazila union
+  useEffect(() => {
+    if (!localLocationId?.id || !localLocationId?.key) return;
+    const urlMap = {
+      division_id: `district/${localLocationId?.id}`,
+      district_id: `upazila/${localLocationId?.id}`,
+      upazila_id: `union/${localLocationId?.id}`,
+    };
+    if (urlMap[localLocationId?.key]) {
+      fetchLocalLocation(urlMap[localLocationId?.key]);
+    }
+  }, [localLocationId]);
+  // location data fetch
+  const locationDataFetch = (name) => {
+    const map = {
+      division_id: divisionData,
+      district_id: localAreaData?.district,
+      upazila_id: localAreaData?.upazila,
+      union_id: localAreaData?.union,
+    };
+    return (map[name] || []).map((item) => ({
+      ...item,
+      label: item?.name,
+      value: item?.id,
+    }));
+  };
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
-      <div className="bg-white p-6 rounded-lgg w-full max-w-2xl">
+      <div className="  p-6 rounded-lgg w-full max-w-2xl">
         <h2 className="text-xl font-bold mb-4">Select Location</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3  ">
           {/* Address Type */}
-          <div className="mb-4">
+          <div>
             <span className="block mb-2 font-semibold">Address Type</span>
             <div className="flex items-center gap-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="type"
-                  value="home"
-                  checked={formData.type === "home"}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                Home
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="type"
-                  value="office"
-                  checked={formData.type === "office"}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                Office
-              </label>
+              {["home", "office"].map((item, idx) => (
+                <label className="flex items-center uppercase " key={idx}>
+                  <input
+                    type="radio"
+                    name="type"
+                    value={item}
+                    checked={formData.type === item}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  {item}
+                </label>
+              ))}
             </div>
           </div>
-
-          {/* Address Fields */}
-          <div className="mb-4">
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Full Name"
-              className="w-full border p-2"
-              required
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {" "}
+            {/* Address Fields */}
+            {addressFormData.map((item, idx) => (
+              <div key={idx} className="">
+                {item?.type == "select" ? (
+                  <SingleSelect
+                    label={item?.label}
+                    name={item?.name}
+                    error={errors[item?.name] && errors[item?.name].message}
+                    control={control}
+                    isClearable={true}
+                    placeholder={item?.placeholder}
+                    options={locationDataFetch(item?.name)}
+                    rules={{ required: item?.rules }}
+                    onSelected={(items) => {
+                      setLocalLocationId({
+                        [item?.name]: items?.value,
+                        id: items?.value,
+                        key: item?.name,
+                      });
+                    }}
+                  />
+                ) : (
+                  <TextInput
+                    name={item?.name}
+                    type={item?.type}
+                    control={control}
+                    label={
+                      <div className="flex gap-2 pb-1 pl-3.5 text-black">
+                        {item?.label}
+                      </div>
+                    }
+                    rules={{
+                      required: `${item?.rules}`,
+                    }}
+                    error={errors?.[`${item?.name}`]?.message}
+                    placeholder={item?.placeholder}
+                    trigger={trigger}
+                  />
+                )}
+              </div>
+            ))}
           </div>
-          <div className="mb-4">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              className="w-full border p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone"
-              className="w-full border p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="text"
-              name="address_line1"
-              value={formData.address_line1}
-              onChange={handleChange}
-              placeholder="Address Line 1"
-              className="w-full border p-2"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="text"
-              name="address_line2"
-              value={formData.address_line2}
-              onChange={handleChange}
-              placeholder="Address Line 2"
-              className="w-full border p-2"
-            />
-          </div>
-
-          {/* Location Selects */}
-          <div className="mb-4">
-            <select
-              name="division_id"
-              value={formData.division_id}
-              onChange={handleDivisionChange}
-              className="w-full border p-2"
-              required
-            >
-              <option value="">Select Division</option>
-              {division.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <select
-              name="district_id"
-              value={formData.district_id}
-              onChange={handleDistrictChange}
-              className="w-full border p-2"
-              required
-            >
-              <option value="">Select District</option>
-              {district.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <select
-              name="upazila_id"
-              value={formData.upazila_id}
-              onChange={handleUpazilaChange}
-              className="w-full border p-2"
-              required
-            >
-              <option value="">Select Upazila</option>
-              {upazila.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <select
-              name="union_id"
-              value={formData.union_id}
-              onChange={handleChange}
-              className="w-full border p-2"
-            >
-              <option value="">Select Union</option>
-              {union.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Postal Code */}
-          <div className="mb-4">
-            <input
-              type="text"
-              name="postal_code"
-              value={formData.postal_code}
-              onChange={handleChange}
-              placeholder="Postal Code"
-              className="w-full border p-2"
-              required
-            />
-          </div>
-
           {/* Action Buttons */}
           <div className="flex justify-end gap-4">
             <button
@@ -351,10 +246,7 @@ const [loading,setLoading]=useState(false)
               type="submit"
               className="bg-secondary text-white px-4 py-2 rounded"
             >
-              {
-  loading ? <Spinner /> : (id ? "Update" : "Add")
-}
-
+              {loading ? <Spinner /> : id ? "Update" : "Add"}
             </button>
           </div>
         </form>

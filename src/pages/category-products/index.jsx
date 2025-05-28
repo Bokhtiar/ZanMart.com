@@ -109,7 +109,7 @@ const CategoryProducts = () => {
   }, [category]);
 
   return (
-    <section className="mt-40 container-custom container">
+    <section className="  container-custom container">
       <section className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 gap-4">
         {/* Left side */}
         {categoryLoading === true ? (

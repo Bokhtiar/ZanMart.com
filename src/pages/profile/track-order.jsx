@@ -6,7 +6,7 @@ import { FaShippingFast } from 'react-icons/fa';
 const TrackOrder = () => {
     return (
         <div>
-             <div className="   w-full  mt-40 container-custom  ">
+             <div className="   w-full    container-custom  ">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center  w-full">
         <h1 className="text-2xl font-semibold text-gray-800 pb-5">Track Your Order</h1>
         <p className="text-sm text-gray-500 mb-6">Enter your order number below to track your order status.</p>
