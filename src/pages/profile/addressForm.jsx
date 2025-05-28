@@ -6,9 +6,9 @@ import ProfileLayout from "@/components/layouts/ProfileLayout/ProfileLayout";
 import { useRouter } from "next/router";
 import Spinner from "@/components/spinner";
 import { SingleSelect, TextInput } from "@/components/input";
-import { useForm } from "react-hook-form";
-import { addressFormData } from "./components/addressForm";
+import { useForm } from "react-hook-form"; 
 import useLocationFetch from "@/hooks/api/useLocationApiFetch";
+import { addressFormData } from "@/components/Profile/addressFormData";
 const AddressForm = () => {
   const {
     handleSubmit,
