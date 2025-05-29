@@ -182,11 +182,16 @@ const CategoryProducts = () => {
 
         {/* Right side: Products */}
         <section className="col-span-6">
-          <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
-            <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
-              <HiClipboardDocumentList /> All Products
+         
+
+          {loading ? (
+            <ProductSkeleton count={4} />
+          ) : products.length > 0 ? (
+            <div> <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
+            <h1 className="font-extrabold  text-primary text-base md:text-xl py-2 flex items-center gap-1">
+              <HiClipboardDocumentList /> {category?.category_name} 
             </h1>
-            <p className="flex items-center gap-2">
+            <p className="flex items-center hidden md:flex gap-2">
               <PiDotsNineBold
                 onClick={() => setGridCount(4)}
                 className={`border border-primary text-2xl rounded-md ${
@@ -207,17 +212,13 @@ const CategoryProducts = () => {
               />
             </p>
           </div>
-
-          {loading ? (
-            <ProductSkeleton count={4} />
-          ) : products.length > 0 ? (
             <div
               className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
             >
               {products.map((product) => (
                 <SingleCart key={product?.product_id} item={product} />
               ))}
-            </div>
+            </div></div>
           ) : (
             <Image
               height={400}

@@ -32,7 +32,7 @@ export const Navbar = () => {
   const userInfo = useProduct();
   const { token } = userInfo;
   const pathName = usePathname();
-  const [openCategory, setOpenCategory] = useState(true);
+  const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

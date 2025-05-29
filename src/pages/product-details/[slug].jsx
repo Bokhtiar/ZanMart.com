@@ -148,7 +148,7 @@ const ProductDetails = () => {
         item?.attribute_id === selectdAtribute_id
     );
 
-    if (selectedVariant && avialableQty > 0) {
+    if (product?.product_variants.length!==0 && (selectedVariant && avialableQty > 0)) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -185,7 +185,41 @@ const ProductDetails = () => {
         window.dispatchEvent(new Event("cartUpdated"));
         Toastify.Success("Product added successfully");
       }
-    } else {
+    } 
+    else if (product?.product_variants?.length==0) {
+      const cartItem = {
+        product_id: product?.product_id,
+        sell_price: selectedPrice,
+        weight: product?.weight || selectedWeight || 1,
+        attribute_id: selectdAtribute_id || null,
+        color_id: selectdColor_id || null,
+        attribute_weight: selectedWeight || null,
+        attribute_price: selectedPrice,
+        qty: quantity,
+        image: product?.thumbnail_image,
+        category: categoryName,
+        title: product?.title,
+        payment: product?.delivery_status,
+        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+      };
+
+      let cart = localStorage.getItem("cart");
+      cart = cart ? JSON.parse(cart) : { cart_items: [] };
+
+      const isProductInCart = cart?.cart_items?.some(
+        (item) => item?.product_id === cartItem?.product_id
+      );
+
+      if (isProductInCart) {
+        Toastify.Warning("Already in Cart");
+      } else {
+        cart.cart_items.push(cartItem);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
+        Toastify.Success("Product added successfully");
+      }
+    }
+    else {
       Toastify.Warning(
         "Selected size and color is not available.Please select another color or size"
       );
@@ -194,34 +228,48 @@ const ProductDetails = () => {
   const [orderData, setorderData] = useState([]);
   console.log(orderData);
   const handleBuyNow = () => {
+
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === selectdColor_id &&
         item?.attribute_id === selectdAtribute_id
     );
 
-    if (selectedVariant && avialableQty > 0) {
+    if (product?.product_variants.length!==0 && (selectedVariant && avialableQty > 0)) {
       setIsModalOpen(true);
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
         weight: product?.weight || selectedWeight || 1,
-        attribute_id: selectdAtribute_id,
-        // attribute: selectedAttribute,
-        color_id: selectdColor_id,
-        // color: selectedColor,
+        attribute_id: selectdAtribute_id  || null,
+        color_id: selectdColor_id || null,
         attribute_weight: selectedWeight || null,
         attribute_price: selectedPrice,
         qty: quantity,
-        // image: product?.thumbnail_image,
-        // category: categoryName,
-        // title: product?.title,
-        // payment: product?.delivery_status,
         product_variant_id: selectedVariant?.product_variant_id,
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
+      
       setorderData(cartItem);
-    } else {
+    } 
+    else if (product?.product_variants?.length==0) {
+ setIsModalOpen(true);
+  const cartItem = {
+        product_id: product?.product_id,
+        sell_price: selectedPrice,
+        weight: product?.weight || selectedWeight || 1,
+        // attribute_id: selectdAtribute_id  || null,
+        // color_id: selectdColor_id || null,
+        attribute_weight: selectedWeight || null,
+        attribute_price: selectedPrice,
+        qty: quantity,
+        // product_variant_id: selectedVariant?.product_variant_id ,
+        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+      };
+      
+      setorderData(cartItem);
+   console.log("cartItem",cartItem) }
+    else {
       Toastify.Warning(
         "Selected size and color is not available.Please select another color or size"
       );
@@ -253,7 +301,7 @@ const ProductDetails = () => {
         // Toastify.Error("Please select an address");
       }
     } catch (error) {
-      Toastify.Error(error.response.data.message);
+      Toastify.Error(error.response?.data?.message);
       setModalLoading(false);
     }
   };
@@ -338,8 +386,8 @@ const ProductDetails = () => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
 
-  const l = false;
-  if (l) {
+  
+  if (loading) {
     return <ProductDetailsSkeleton />;
   }
   console.log(product);
@@ -462,7 +510,7 @@ const ProductDetails = () => {
                   .map((attribute, index) => (
                     <button
                       onClick={() => attributeHandle(attribute)}
-                      className={`font-medium text-xs leading-4  h-8 w-8 me-1 border rounded-full ${
+                      className={`font-medium text-xs leading-4  p-1 me-1 border rounded ${
                         selectedAttribute === attribute?.attribute
                           ? "bg-primary text-white"
                           : "bg-transparent"
@@ -536,20 +584,23 @@ const ProductDetails = () => {
               </div>
             </div>
             {/* price field implement  */}
-            <div className="flex  flex-col   w-full lg:w-3/5  ">
-              <span className="text-primary leading-5 text-nowrap md:text-xl text-lg lg:text-xl font-bold flex items-center ">
+            <div className="flex gap-4  w-full lg:w-3/5  ">
+          <span className="text-primary leading-5 text-nowrap  flex md:text-xl text-lg  font-bold flex items-center ">
                 <span className="  font-normal text-primary leading-5 -ml-1 ">
                   <TbCurrencyTaka />
                 </span>
                 {Math.ceil(selectedPrice)}{" "}
+              
+              </span>
+            <span className="flex items-center text-secondary md:text-xl text-lg font-medium md:text-sm">
                 {selectedDiscount && (
-                  <sub className="text-secondary    text-xs md:text-sm line-through flex items-center">
+                  <span className="text-secondary  line-through flex  items-center">
                     <TbCurrencyTaka />
                     {Math.ceil(selectedDiscount)}
-                  </sub>
+                  </span>
                 )}
                 {selectedDiscount && (
-                  <sub className="text-secondary pl-2">
+                  <sapn className="text-secondary pl-2">
                     {" "}
                     -
                     {Math.ceil(
@@ -557,9 +608,10 @@ const ProductDetails = () => {
                         selectedDiscount
                     )}
                     %
-                  </sub>
+                  </sapn>
                 )}
-              </span>
+            </span>
+                
             </div>
             {/* quantity set  */}
             <div className="flex gap-8">

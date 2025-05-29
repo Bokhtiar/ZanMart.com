@@ -6,11 +6,17 @@ const ProductSkeleton = () => {
     <div className=" ">
       <div className=" ">
         <div>
-          <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded animate-pulse">
-            <div className="flex gap-2">
+          <div className="   bg-gray-50 px-2 my-2 rounded animate-pulse">
+            <div className="flex items-center justify-between ">
               {" "}
-              <div className="h-8 w-8 bg-gray-300 rounded-md"></div>
+              <div className="flex gap-2"><div className="h-8 w-8 bg-gray-300 rounded-md"></div>
               <div className="h-8 w-32 bg-gray-300 rounded-md"></div>
+              </div>
+              <div  className="flex gap-2 hidden md:flex">
+                <div className="h-8 w-8 bg-gray-300 rounded-md"></div>
+                <div className="h-8 w-8 bg-gray-300 rounded-md"></div>
+                <div className="h-8 w-8 bg-gray-300 rounded-md"></div>
+              </div>
             </div>
 
             {/* <div className="flex items-center gap-2">

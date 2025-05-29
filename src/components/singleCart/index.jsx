@@ -10,7 +10,7 @@ const SingleCart = ({ item }) => {
       href={`/product-details/${item?.slug}?id=${item?.product_id}`}
       className="w-full h-fit rounded-lg  shadow-lg "
     >
-      <div className="overflow-hidden w-full   p-2 aspect-auto">
+      <div className="overflow-hidden w-full   p-2 aspect-square">
         <Image
           height={400}
           width={4000}
@@ -42,19 +42,32 @@ const SingleCart = ({ item }) => {
           )}
         </p>
         <p className="flex items-center  justify-between ">
-          {item?.variants ? (
+          {item?.variants?.length ? (
             <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
-              {Math.ceil(item?.variants[0]?.price)}
+              {Math.ceil(item?.variants[0]?.price || item?.sell_price)}
               <span className="text-xs font-normal text-gray-500 mt-[5px]">
                 <TbCurrencyTaka />
               </span>
+               <sub className=" text-secondary ms-2 flex  items-center line-through text-sm  md:base  font-bold">
+              {Math.ceil(item?.variants[0]?.discount_price || item?.price)}
+              <span className="text-xs font-normal  text-gray-500 mt-[5px]">
+                <TbCurrencyTaka />
+              </span>
+            </sub>
             </span>
+
           ) : (
-            <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+           <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
               {Math.ceil(item?.sell_price)}
               <span className="text-xs font-normal text-gray-500 mt-[5px]">
                 <TbCurrencyTaka />
               </span>
+               <sub className=" text-secondary ms-2 flex  items-center line-through text-sm  md:base  font-bold">
+              {Math.ceil(item?.flat_discount)}
+              <span className="text-xs font-normal  text-gray-500 mt-[5px]">
+                <TbCurrencyTaka />
+              </span>
+            </sub>
             </span>
           )}
         </p>

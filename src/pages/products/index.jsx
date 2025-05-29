@@ -66,7 +66,7 @@ const Products = () => {
               /> */}
           </div>
           {loading || !product?.data ? (
-            <div className="w-3/4">
+            <div className="w-full" >
               <ProductSkeleton />
             </div>
           ) : (
@@ -74,11 +74,11 @@ const Products = () => {
               {/* All product show */}
               <section>
                 <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
-                  <h1 className="font-extrabold text-primary text-xl py-2 flex items-center gap-1">
+                  <h1 className="font-extrabold text-primary text-base md:text-xl py-2 flex items-center gap-1">
                     <HiClipboardDocumentList /> All Products
                   </h1>
 
-                  <p className="flex items-center gap-2">
+                  <p className="flex items-center hidden md:flex gap-2">
                     <PiDotsNineBold
                       onClick={() => setGridCount(4)}
                       className={`border border-primary text-2xl rounded-md ${
