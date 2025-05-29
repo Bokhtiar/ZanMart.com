@@ -7,7 +7,7 @@ import { TbCurrencyTaka } from "react-icons/tb";
 const SingleCart = ({ item }) => {
   return (
     <Link
-      href={`/product-details/${item?.product_id}`}
+      href={`/product-details/${item?.slug}?id=${item?.product_id}`}
       className="w-full h-fit rounded-lg  shadow-lg "
     >
       <div className="overflow-hidden w-full   p-2 aspect-auto">

@@ -26,12 +26,13 @@ import ConfirmModal from "@/components/confirmModal";
 import { RiStore2Line } from "react-icons/ri";
 import Link from "next/link";
 import ProductReview from "./components/Review";
+import { useParams, useSearchParams } from "next/navigation";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const router = useRouter();
+  const searchParams = useSearchParams(); 
   const [product, setProduct] = useState({});
-  const { id } = router.query;
+  const id = searchParams.get("id");
   const [categoryName, setCategoryName] = useState("");
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedAttribute, setSelectedAttribute] = useState(null);

@@ -4,12 +4,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
 import OrderDetailsSkeleton from "../loader/OrderDetailsSkeleton";
+import Link from "next/link";
+import ReviewModal from "../reviewModal";
 const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const id = router?.query?.slug;
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderItems, setOrderitems] = useState([]);
+  const [reviewProduct, setReviewProduct] = useState({});
   console.log(orderDetails)
   const fetchOrderDetails = useCallback(async () => {
     setLoading(true);
@@ -25,6 +29,10 @@ const OrderDetails = () => {
       setLoading(false);
     }
   }, [id]);
+  const handleReviewModal = (product) => {
+    setIsOpen(!isOpen);
+    setReviewProduct(product);
+  };
   useEffect(() => {
     if(id){
       fetchOrderDetails();
@@ -144,12 +152,15 @@ const OrderDetails = () => {
                       )}
                     </div>
                   </div>
-                  <div className="text-sm">
+                  <div className="text-sm flex  items-center md:gap-10 gap-4 items-start sm:items-end">
                     <p>
                       Price:{" "}
                       {product?.sell_price || product?.product?.sell_price}
                     </p>
-                    <p>Quantity: {product?.qty}</p>
+                    <p className=" text-start">Quantity: {product?.qty}</p>
+                   {
+                    orderDetails?.order_status === "delivered" &&  <button onClick={()=>handleReviewModal(product)} className="text-yellow-500 text-nowrape">Write  Review</button>
+                   }
                   </div>
                 </div>
               ))}
@@ -194,12 +205,15 @@ const OrderDetails = () => {
             <button className="border border-gray-300  px-4 py-2 rounded">
               Cancel
             </button>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+            {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">
               Ship Order
-            </button>
+            </button> */}
           </div>
         </div>
       )}
+      {
+            isOpen && <ReviewModal isOpen={isOpen} onClose={handleReviewModal} product={reviewProduct} />
+      }
     </>
   );
 };
