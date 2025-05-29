@@ -23,10 +23,8 @@ import Paginations from "@/components/pagination";
 import useStickyFetch from "@/hooks/sticky";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmModal from "@/components/confirmModal";
-import { RiStore2Line } from "react-icons/ri";
-import Link from "next/link";
 import ProductReview from "./components/Review";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
