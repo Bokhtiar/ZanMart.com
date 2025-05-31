@@ -4,7 +4,7 @@ import { privateRequest, publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { FaCheck, FaCheckCircle, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
 import InnerImageZoom from "react-inner-image-zoom";
@@ -28,7 +28,7 @@ import { useSearchParams } from "next/navigation";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const searchParams = useSearchParams(); 
+  const searchParams = useSearchParams();
   const [product, setProduct] = useState({});
   const id = searchParams.get("id");
   const [categoryName, setCategoryName] = useState("");
@@ -96,7 +96,7 @@ const ProductDetails = () => {
       Toastify.Error(error);
     }
     setLoading(false);
-  }; 
+  };
   /** category releted product */
   const reletedProductCategory = useCallback(
     async (page = 1) => {
@@ -148,7 +148,7 @@ const ProductDetails = () => {
         item?.attribute_id === selectdAtribute_id
     );
 
-    if (product?.product_variants.length!==0 && (selectedVariant && avialableQty > 0)) {
+    if (product?.product_variants.length !== 0 && (selectedVariant && avialableQty > 0)) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -185,8 +185,8 @@ const ProductDetails = () => {
         window.dispatchEvent(new Event("cartUpdated"));
         Toastify.Success("Product added successfully");
       }
-    } 
-    else if (product?.product_variants?.length==0) {
+    }
+    else if (product?.product_variants?.length == 0) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -226,32 +226,32 @@ const ProductDetails = () => {
       );
     }
   };
-  const [orderData, setorderData] = useState([]); 
-  const handleBuyNow = () => { 
+  const [orderData, setorderData] = useState([]);
+  const handleBuyNow = () => {
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === selectdColor_id &&
         item?.attribute_id === selectdAtribute_id
-    ); 
-    if (product?.product_variants.length!==0 && (selectedVariant && avialableQty > 0)) {
+    );
+    if (product?.product_variants.length !== 0 && (selectedVariant && avialableQty > 0)) {
       setIsModalOpen(true);
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
         weight: product?.weight || selectedWeight || 1,
-        attribute_id: selectdAtribute_id  || null,
+        attribute_id: selectdAtribute_id || null,
         color_id: selectdColor_id || null,
         attribute_weight: selectedWeight || null,
         attribute_price: selectedPrice,
         qty: quantity,
         product_variant_id: selectedVariant?.product_variant_id,
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
-      }; 
+      };
       setorderData(cartItem);
-    } 
-    else if (product?.product_variants?.length==0) {
- setIsModalOpen(true);
-  const cartItem = {
+    }
+    else if (product?.product_variants?.length == 0) {
+      setIsModalOpen(true);
+      const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
         weight: product?.weight || selectedWeight || 1,
@@ -263,9 +263,10 @@ const ProductDetails = () => {
         product_variant_id: 0 ,
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
-      
+
       setorderData(cartItem);
-   console.log("cartItem",cartItem) }
+      console.log("cartItem", cartItem)
+    }
     else {
       Toastify.Warning(
         "Selected size and color is not available.Please select another color or size"
@@ -277,12 +278,12 @@ const ProductDetails = () => {
       cart_items: [orderData],
       billing_address_id: addressData?.address_id,
       shipping_address_id: addressData?.address_id,
-    }; 
+    };
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
         setModalLoading(true);
         const res = await privateRequest.post("user/orders", newMyOrder);
-        
+
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
           console.log("dukse")
@@ -384,7 +385,7 @@ const ProductDetails = () => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
 
-  
+
   if (loading) {
     return <ProductDetailsSkeleton />;
   }
@@ -453,7 +454,7 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <div className="aspect-auto"> 
+              <div className="aspect-auto">
                 <InnerImageZoom
                   src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
                   zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
@@ -508,11 +509,10 @@ const ProductDetails = () => {
                   .map((attribute, index) => (
                     <button
                       onClick={() => attributeHandle(attribute)}
-                      className={`font-medium text-xs leading-4  p-1 me-1 border rounded ${
-                        selectedAttribute === attribute?.attribute
-                          ? "bg-primary text-white"
-                          : "bg-transparent"
-                      }`}
+                      className={`font-medium text-xs leading-4  p-1 me-1 border rounded ${selectedAttribute === attribute?.attribute
+                        ? "bg-primary text-white"
+                        : "bg-transparent"
+                        }`}
                       key={index}
                     >
                       {attribute?.attribute.toLowerCase()}
@@ -522,35 +522,39 @@ const ProductDetails = () => {
             )}
 
             {variant?.length > 0 && (
-              <p className="text-base font-bold  leading-6  text-[#494949] flex items-center gap-2">
+              <p className="text-base font-bold leading-6 text-[#494949] flex items-center gap-2">
                 Color:
-                {!have && <p>color not avialable</p>}
+                {!have && <p>color not available</p>}
                 {data
                   ?.filter(
                     (obj, index, self) =>
-                      index ===
-                      self.findIndex((o) => o.color_id === obj.color_id)
+                      index === self.findIndex((o) => o.color_id === obj.color_id)
                   )
                   .map((color, index) => (
                     <span
                       key={index}
-                      className=" h-6 w-6 rounded-full border-2 flex justify-center items-center"
+                      className="h-6 w-6 rounded-full flex justify-center items-center relative"
                     >
                       <button
                         onClick={() => handleColor(color)}
-                        // onClick={()=>setcm(color?.color_name)}
-                        className={`font-bold h-4 w-4    rounded-full shadow-md ${
-                          selectedColor === color?.color_name
-                            ? "bg-primary text-white h-5 w-5 border-2 border-blue-400"
-                            : " "
-                        }`}
+                        className={`font-bold h-4 w-4 rounded-full shadow-md relative ${selectedColor === color?.color_name
+                          ? "bg-primary text-white h-5 w-5 border-2 border-blue-400"
+                          : ""
+                          }`}
                         style={{
                           background: color?.color_name,
                         }}
                       ></button>
+                      {selectedColor === color?.color_name && (
+                        <span className="absolute   text-xs font-bold">
+                          <FaCheck calssName="h-4 w-4 "
+                           />
+                        </span>
+                      )}
                     </span>
                   ))}
               </p>
+
             )}
             <div className="flex gap-3 justify-between">
               <p className=" text-center    text-primary flex items-center gap-2">
@@ -583,14 +587,14 @@ const ProductDetails = () => {
             </div>
             {/* price field implement  */}
             <div className="flex gap-4  w-full lg:w-3/5  ">
-          <span className="text-primary leading-5 text-nowrap  flex md:text-xl text-lg  font-bold flex items-center ">
+              <span className="text-primary leading-5 text-nowrap  flex md:text-xl text-lg  font-bold flex items-center ">
                 <span className="  font-normal text-primary leading-5 -ml-1 ">
                   <TbCurrencyTaka />
                 </span>
                 {Math.ceil(selectedPrice)}{" "}
-              
+
               </span>
-            <span className="flex items-center text-secondary md:text-xl text-lg font-medium md:text-sm">
+              <span className="flex items-center text-secondary md:text-xl text-lg font-medium md:text-sm">
                 {selectedDiscount && (
                   <span className="text-secondary  line-through flex  items-center">
                     <TbCurrencyTaka />
@@ -603,13 +607,13 @@ const ProductDetails = () => {
                     -
                     {Math.ceil(
                       ((selectedDiscount - selectedPrice) * 100) /
-                        selectedDiscount
+                      selectedDiscount
                     )}
                     %
                   </sapn>
                 )}
-            </span>
-                
+              </span>
+
             </div>
             {/* quantity set  */}
             <div className="flex gap-8">
@@ -689,7 +693,13 @@ const ProductDetails = () => {
       />
       {/* product design end  */}
       {/* product review section  */}
-      <ProductReview product={product}/>
+      {
+        product?.review?.length > 0 ? (
+          <ProductReview product={product} />
+        ) : (
+          ''
+        )
+      }
 
       <section>
         <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
@@ -700,21 +710,18 @@ const ProductDetails = () => {
           <p className="flex items-center gap-2">
             <PiDotsNineBold
               onClick={() => setGridCount(5)}
-              className={`border border-primary text-2xl rounded-md ${
-                gridCount === 5 ? "bg-primary text-white" : ""
-              } cursor-pointer`}
+              className={`border border-primary text-2xl rounded-md ${gridCount === 5 ? "bg-primary text-white" : ""
+                } cursor-pointer`}
             />
             <PiDotsSixVerticalBold
               onClick={() => setGridCount(4)}
-              className={`border border-primary text-2xl ${
-                gridCount === 4 ? "bg-primary text-white" : ""
-              } rounded-md cursor-pointer`}
+              className={`border border-primary text-2xl ${gridCount === 4 ? "bg-primary text-white" : ""
+                } rounded-md cursor-pointer`}
             />
             <PiDotsThreeVertical
               onClick={() => setGridCount(3)}
-              className={`border border-primary text-2xl  ${
-                gridCount === 3 ? "bg-primary text-white" : ""
-              } rounded-md cursor-pointer`}
+              className={`border border-primary text-2xl  ${gridCount === 3 ? "bg-primary text-white" : ""
+                } rounded-md cursor-pointer`}
             />
           </p>
         </div>
