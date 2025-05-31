@@ -87,9 +87,10 @@ const Address = () => {
                     <strong className="font-medium whitespace-nowrap">
                       Address {index + 1}:
                     </strong>
-                    {item?.address_line1} {item?.address_line2}{" "}
-                    {item?.union?.name} {item?.upazila?.name},{" "}
-                    {item?.district?.name}, {item?.division?.name}
+                    {item?.postal_code },
+                    {item?.address_line1}
+                    {/* {item?.union?.name} {item?.upazila?.name},{" "}
+                    {item?.district?.name}, {item?.division?.name} */}
                   </p>
                 </div>
                 <div className="flex w-full justify-start md:justify-center items-center gap-2"></div>

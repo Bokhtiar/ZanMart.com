@@ -48,6 +48,7 @@ const ProductDetails = () => {
   const [modalLoading, setModalLoading] = useState(false);
   const [avialableQty, setAvialableQty] = useState(0);
   const [lastPage, setLastPage] = useState(1);
+  const router = useRouter();
   const handleModalClose = () => {
     setIsModalOpen(false);
     // setModalAction(null);
@@ -280,8 +281,10 @@ const ProductDetails = () => {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
         setModalLoading(true);
         const res = await privateRequest.post("user/orders", newMyOrder);
+        
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
+          console.log("dukse")
           // const emptyCart = { ...cart, cart_items: [] };
           // setCart(emptyCart);
           // localStorage.setItem("cart", JSON.stringify(emptyCart));

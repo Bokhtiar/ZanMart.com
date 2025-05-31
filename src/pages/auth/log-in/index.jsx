@@ -77,7 +77,7 @@ const Login = () => {
               {/* email field  */}
               <TextInput
                 name="contactInfo"
-                type="email"
+                type="text"
                 control={control}
                 label={
                   <div className="flex gap-2 pb-2 pl-3.5 text-white">
@@ -88,12 +88,12 @@ const Login = () => {
                 rules={{
                   required: "Email required",
                   pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$|^\d{10}$/,
+                   
                     message: "Invalid phone number or email",
                   },
                 }}
                 error={errors?.contactInfo?.message}
-                placeholder="Enter your email"
+                placeholder="Enter your email or phone"
                 trigger={trigger}
               />
             </div>
