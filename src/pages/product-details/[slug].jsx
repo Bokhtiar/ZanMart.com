@@ -95,8 +95,7 @@ const ProductDetails = () => {
       Toastify.Error(error);
     }
     setLoading(false);
-  };
-  console.log("============================", avialableQty);
+  }; 
   /** category releted product */
   const reletedProductCategory = useCallback(
     async (page = 1) => {
@@ -225,16 +224,13 @@ const ProductDetails = () => {
       );
     }
   };
-  const [orderData, setorderData] = useState([]);
-  console.log(orderData);
-  const handleBuyNow = () => {
-
+  const [orderData, setorderData] = useState([]); 
+  const handleBuyNow = () => { 
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === selectdColor_id &&
         item?.attribute_id === selectdAtribute_id
-    );
-
+    ); 
     if (product?.product_variants.length!==0 && (selectedVariant && avialableQty > 0)) {
       setIsModalOpen(true);
       const cartItem = {
@@ -248,8 +244,7 @@ const ProductDetails = () => {
         qty: quantity,
         product_variant_id: selectedVariant?.product_variant_id,
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
-      };
-      
+      }; 
       setorderData(cartItem);
     } 
     else if (product?.product_variants?.length==0) {
@@ -280,8 +275,7 @@ const ProductDetails = () => {
       cart_items: [orderData],
       billing_address_id: addressData?.address_id,
       shipping_address_id: addressData?.address_id,
-    };
-    console.log("================>>>>>>>>>", newMyOrder);
+    }; 
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
         setModalLoading(true);
@@ -471,7 +465,7 @@ const ProductDetails = () => {
           </div>
 
           {imageArray.length > 0 && (
-            <div className="flex py-5 gap-4 w-1/2">
+            <div className="flex py-5 gap-4 overflow-x-auto">
               {imageArray?.map((img, index) => (
                 <Image
                   onClick={() => handleThumb(img)}

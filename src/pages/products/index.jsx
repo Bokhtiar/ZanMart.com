@@ -30,7 +30,7 @@ const Products = () => {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
+   
   return (
     <>
       <div className=" ">
