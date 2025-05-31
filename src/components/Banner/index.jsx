@@ -71,7 +71,7 @@ const Banner = () => {
         </div>
 
         {/* Side Images */}
-        <div className="w-full md:w-1/4 flex md:flex-col md:space-y-2    aspect-[3/1]">
+        <div className="w-full md:w-1/4 flex md:flex-col md:space-y-2    aspect-[3/1] overflow-hidden">
           <Image
             height={1000}
             width={1000}
