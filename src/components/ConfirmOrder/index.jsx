@@ -143,12 +143,9 @@ const ConfirmOrder = () => {
               <IoLocationOutline />
               <span className="">
                 Delivery Location:{" "}
+                {orderDetails?.shipping_address?.postal_code},{" "}
                 {orderDetails?.shipping_address?.address_line1},{" "}
-                {orderDetails?.shipping_address?.address_line2},
-                {orderDetails?.shipping_address?.union?.name}, <br />
-                {orderDetails?.shipping_address?.upazila?.name},
-                {orderDetails?.shipping_address?.district?.name},
-                {orderDetails?.shipping_address?.divison?.name}
+            
               </span>
             </div>
             <p className="text-sm font-bold leading-4 py-5">Total Summary</p>

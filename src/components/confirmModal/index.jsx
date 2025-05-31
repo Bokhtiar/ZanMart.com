@@ -36,7 +36,7 @@ const  ConfirmModal = ({
     if (!isOpen) return null;
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg md:w-2/4 lg:w-3/4 w-full">
+        <div className="bg-white p-6 mx-5 rounded-lg shadow-lg md:w-2/4 lg:w-3/4 w-full">
           <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
             <span className="block text-xs p-2">Please select address</span>
             <Link
@@ -61,9 +61,7 @@ const  ConfirmModal = ({
                   } w-8 h-8`}
                 />
                 <div>
-                  {item?.address_line1} {item?.address_line2} {item?.union?.name}{" "}
-                  {item?.upazila?.name}, {item?.district?.name},{" "}
-                  {item?.division?.name}
+                 {item?.postal_code}, {item?.address_line1} 
                 </div>
               </div>
             ))}

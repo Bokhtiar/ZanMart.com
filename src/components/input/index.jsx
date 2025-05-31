@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 
 /* Text input */
-export const TextInput = (props) => {
+export const TextInput = ( props) => {
   const {
     field: { onChange, onBlur, value },
   } = useController({
