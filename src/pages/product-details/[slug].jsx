@@ -688,7 +688,15 @@ const ProductDetails = () => {
       />
       {/* product design end  */}
       {/* product review section  */}
-      <ProductReview product={product}/>
+     {
+        product?.review?.length > 0 ? (
+           <ProductReview product={product}/>
+        ) : (
+          <div className="text-center text-gray-500 py-5">
+            No reviews available for this product.
+          </div>
+        )
+     }
 
       <section>
         <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
