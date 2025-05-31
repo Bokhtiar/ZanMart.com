@@ -30,11 +30,11 @@ const ConfirmOrder = () => {
   const [loadingOrder, setLoadingOrder] = useState(true);
 
   const data = [
-    {
-      name: "Pay Online",
-      img: "/images/payment1.png",
-      payment_method: "ssl_commerz",
-    },
+    // {
+    //   name: "Pay Online",
+    //   img: "/images/payment1.png",
+    //   payment_method: "ssl_commerz",
+    // },
     {
       name: "Cash on delivery",
       img: "/images/COD.svg",
