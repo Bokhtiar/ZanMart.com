@@ -1,12 +1,12 @@
-import { privateRequest } from "@/config/axios.config";
 import React, { useEffect, useState } from "react";
-import { Toastify } from "../../components/toastify";
+import { useForm, Controller } from "react-hook-form";
+import { useRouter } from "next/router";
+import { privateRequest } from "@/config/axios.config";
+import { Toastify } from "@/components/toastify";
 import { networkErrorHandeller } from "@/utils/helpers";
 import ProfileLayout from "@/components/layouts/ProfileLayout/ProfileLayout";
-import { useRouter } from "next/router";
 import Spinner from "@/components/spinner";
 import { SingleSelect, TextInput } from "@/components/input";
-import { useForm } from "react-hook-form";
 import { addressFormData } from "@/components/Profile/addressFormData";
 
 const AddressForm = () => {
@@ -16,7 +16,6 @@ const AddressForm = () => {
     control,
     trigger,
     setValue,
-    watch,
   } = useForm();
 
   const [formData, setFormData] = useState({
@@ -24,47 +23,139 @@ const AddressForm = () => {
     type: "home",
   });
 
-  const [showExample, setShowExample] = useState(false); // NEW
+  const [showExample, setShowExample] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { modal } = router.query;
   const id = router.query.id;
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [locationOptions, setLocationOptions] = useState({
+    divisions: [],
+    districts: [],
+    upazilas: [],
+    unions: [],
+  });
 
-  const fatchDetailAddress = async () => {
-    if (!id) return;
-    try {
-      const res = await privateRequest.get(`user/address/${id}`);
-      if (res.status == 200) {
-        const address = res.data.data;
-        const fields = ["name", "phone", "address_line1", "postal_code"];
-        fields.forEach((field) => {
-          setValue(field, address?.[field] || "");
-        });
-        setFormData({
-          country: address?.country || "Bangladesh",
-          type: address?.type || "home",
-        });
-      }
-    } catch (error) { }
-  };
+  const [localLocationId, setLocalLocationId] = useState({});
 
+  // Fetch divisions on component mount
   useEffect(() => {
-    if (id) {
-      fatchDetailAddress();
+    const fetchDivisions = async () => {
+      try {
+        const res = await privateRequest.get(`/division`);
+        setLocationOptions((prev) => ({
+          ...prev,
+          divisions: res.data?.data || [],
+        }));
+      } catch (error) {
+        networkErrorHandeller(error);
+      }
+    };
+    fetchDivisions();
+  }, []);
+
+  // Fetch districts when division_id changes
+  useEffect(() => {
+    const fetchDistricts = async (divisionId) => {
+      try {
+        const res = await privateRequest.get(`/district/${divisionId}`);
+        setLocationOptions((prev) => ({
+          ...prev,
+          districts: res.data?.data || [],
+        }));
+      } catch (error) {
+        networkErrorHandeller(error);
+      }
+    };
+    if (localLocationId.division_id) {
+      fetchDistricts(localLocationId.division_id);
     }
-  }, [id]);
+  }, [localLocationId.division_id]);
+
+  // Fetch upazilas when district_id changes
+  useEffect(() => {
+    const fetchUpazilas = async (districtId) => {
+      try {
+        const res = await privateRequest.get(`/upazila/${districtId}`);
+        setLocationOptions((prev) => ({
+          ...prev,
+          upazilas: res.data?.data || [],
+        }));
+      } catch (error) {
+        networkErrorHandeller(error);
+      }
+    };
+    if (localLocationId.district_id) {
+      fetchUpazilas(localLocationId.district_id);
+    }
+  }, [localLocationId.district_id]);
+
+  // Fetch existing address details for editing
+  useEffect(() => {
+    const fetchDetailAddress = async () => {
+      if (!id) return;
+      try {
+        const res = await privateRequest.get(`user/address/${id}`);
+        if (res.status === 200) {
+          const address = res.data.data;
+          const fields = [
+            "name",
+            "email",
+            "phone",
+            "address_line1",
+            "address_line2",
+            "postal_code",
+            "division_id",
+            "district_id",
+            "upazila_id",
+            "union_id",
+          ];
+          fields.forEach((field) => {
+            setValue(field, address?.[field] || "");
+          });
+          setFormData({
+            country: address?.country || "Bangladesh",
+            type: address?.type || "home",
+          });
+          setValue("division_id", {
+            label: address.division?.name, // make sure API provides this
+            value: address.division_id,
+          });
+          setValue("district_id", {
+            label: address.district?.name,
+            value: address.district_id,
+          });
+          setValue("upazila_id", {
+            label: address.upazila?.name,
+            value: address.upazila_id,
+          });
+          setLocalLocationId({
+            division_id: address?.division_id,
+            district_id: address?.district_id,
+            upazila_id: address?.upazila_id,
+            // union_id: address?.union_id,
+          });
+        }
+      } catch (error) {
+        networkErrorHandeller(error);
+      }
+    };
+    if (id) {
+      fetchDetailAddress();
+    }
+  }, [id, setValue]);
 
   const onSubmit = async (data) => {
+    console.log(data);
     setLoading(true);
     try {
       const updatedFormData = {
         ...data,
         type: formData.type || "",
         country: "Bangladesh",
+        division_id: data?.division_id?.value,
+        district_id: data?.district_id?.value,
+        upazila_id: data?.upazila_id?.value,
       };
 
       if (id) {
@@ -81,7 +172,7 @@ const AddressForm = () => {
           "user/address",
           updatedFormData
         );
-        if (response.status == 201) {
+        if (response.status === 201) {
           Toastify.Success(response.data.message);
           router.replace(modal ? `/my-cart?modal=${true}` : "/profile/address");
         }
@@ -92,20 +183,20 @@ const AddressForm = () => {
     setLoading(false);
   };
 
-  const [localLocationId, setLocalLocationId] = useState({});
-
   const locationDataFetch = (name) => {
     const map = {
-      division_id: [], // Replace with actual data
-      district_id: [],
-      upazila_id: [],
-      union_id: [],
+      division_id: locationOptions.divisions,
+      district_id: locationOptions.districts,
+      upazila_id: locationOptions.upazilas,
     };
     return (map[name] || []).map((item) => ({
-      ...item,
       label: item?.name,
       value: item?.id,
     }));
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -159,8 +250,6 @@ const AddressForm = () => {
                     <TextInput
                       name={item?.name}
                       type={item?.type}
-                      // onFocus={props.onFocus}
-                      // onBlur={props.onBlur}
                       control={control}
                       label={
                         <div className="flex gap-2 pb-1 pl-3.5 text-black">
@@ -168,19 +257,20 @@ const AddressForm = () => {
                         </div>
                       }
                       rules={{
-                        required: `${item?.rules}`,
+                        required: item?.rules,
                       }}
                       error={errors?.[item?.name]?.message}
                       placeholder={item?.placeholder}
                       trigger={trigger}
                       onFocus={() => {
-                        if (item.name == "address_line1") setShowExample(true);
+                        if (item.name === "address_line1") setShowExample(true);
                       }}
                       onBlur={() => {
-                        if (item.name == "address_line1") setShowExample(false);
+                        if (item.name === "address_line1")
+                          setShowExample(false);
                       }}
                     />
-                    {item.name == "address_line1" && showExample && (
+                    {item.name === "address_line1" && showExample && (
                       <p className="text-sm text-gray-500 pl-3">
                         e.g., House 123, Road 10, Dhanmondi
                       </p>
@@ -196,6 +286,7 @@ const AddressForm = () => {
             <button
               type="button"
               className="bg-gray-500 text-white px-4 py-2 rounded"
+              onClick={() => router.back()}
             >
               Cancel
             </button>

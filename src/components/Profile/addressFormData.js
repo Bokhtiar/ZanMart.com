@@ -6,13 +6,13 @@ export const addressFormData = [
     rules: "Full Name Required",
     placeholder: "Enter Your Full Name",
   },
-  {
-    name: "email",
-    type: "email",
-    label: "Enter Email",
-    rules: "Email Required",
-    placeholder: "Enter Your Email",
-  },
+  // {
+  //   name: "email",
+  //   type: "email",
+  //   label: "Enter Email",
+  //   rules: "Email Required",
+  //   placeholder: "Enter Your Email",
+  // },
 
   {
     name: "phone",
@@ -57,13 +57,13 @@ export const addressFormData = [
     rules: "Upazila is required",
     // url:''
   },
-  {
-    label: "Union",
-    name: "union_id",
-    type: "select",
-    placeholder: "Enter Union name",
-    rules: "Union is required",
-  },
+  // {
+  //   label: "Union",
+  //   name: "union_id",
+  //   type: "select",
+  //   placeholder: "Enter Union name",
+  //   rules: "Union is required",
+  // },
   {
     name: "postal_code",
     type: "text",

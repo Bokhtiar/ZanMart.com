@@ -15,11 +15,7 @@ import Spinner from "../spinner";
 const Address = () => {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState([]);
-
- ;
-
-;
-
+  
   // Get all addresses
   const userAddresses = async () => {
     try {
