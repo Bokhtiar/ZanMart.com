@@ -27,7 +27,7 @@ export const TextInput = ( props) => {
     <div>
       <span className="text-sm mb-1 text-gray-500 flex gap-1">
         {props?.label}{" "}
-        <span className="text-white">{props?.rules?.required ? "*" : ""}</span>
+        <span className="text-red-500">{props?.rules?.required ? "*" : ""}</span>
       </span>
 
       <input

@@ -200,7 +200,8 @@ const ProductDetails = () => {
         category: categoryName,
         title: product?.title,
         payment: product?.delivery_status,
-        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+        attribute_discount_price: selectedDiscount || 0,
+           product_variant_id: 0 , // Include the variant ID
       };
 
       let cart = localStorage.getItem("cart");
@@ -259,7 +260,7 @@ const ProductDetails = () => {
         attribute_weight: selectedWeight || null,
         attribute_price: selectedPrice,
         qty: quantity,
-        // product_variant_id: selectedVariant?.product_variant_id ,
+        product_variant_id: 0 ,
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
       

@@ -6,6 +6,7 @@ import Image from "next/image";
 import OrderDetailsSkeleton from "../loader/OrderDetailsSkeleton";
 import Link from "next/link";
 import ReviewModal from "../reviewModal";
+import { Toastify } from "../toastify";
 const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +15,7 @@ const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderItems, setOrderitems] = useState([]);
   const [reviewProduct, setReviewProduct] = useState({});
-  console.log(orderDetails)
+  console.log(orderDetails);
   const fetchOrderDetails = useCallback(async () => {
     setLoading(true);
     try {
@@ -34,14 +35,27 @@ const OrderDetails = () => {
     setReviewProduct(product);
   };
   useEffect(() => {
-    if(id){
+    if (id) {
       fetchOrderDetails();
     }
   }, [id]);
+  // cancel order
+  const handleCancelProduct = async (id) => {
+    try {
+      const res = await privateRequest.get(`user/order/cancel/${id}`);
+      if (res.status == 200) {
+        Toastify.Success(res?.data?.message);
+        router.replace("/profile/orders");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <>
       {loading ? (
-        <OrderDetailsSkeleton/>
+        <OrderDetailsSkeleton />
       ) : (
         <div>
           <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
@@ -158,9 +172,14 @@ const OrderDetails = () => {
                       {product?.sell_price || product?.product?.sell_price}
                     </p>
                     <p className=" text-start">Quantity: {product?.qty}</p>
-                   {
-                    orderDetails?.order_status === "delivered" &&  <button onClick={()=>handleReviewModal(product)} className="text-yellow-500 text-nowrape">Write  Review</button>
-                   }
+                    {orderDetails?.order_status === "delivered" && (
+                      <button
+                        onClick={() => handleReviewModal(product)}
+                        className="text-yellow-500 text-nowrape"
+                      >
+                        Write Review
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -202,8 +221,11 @@ const OrderDetails = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap justify-end gap-4">
-            <button className="border border-gray-300  px-4 py-2 rounded">
-              Cancel
+            <button
+              className="border border-gray-300  px-4 py-2 rounded bg-red-300 hover:bg-red-500"
+              onClick={() => handleCancelProduct(id)}
+            >
+              Cancel Order
             </button>
             {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">
               Ship Order
@@ -211,9 +233,13 @@ const OrderDetails = () => {
           </div>
         </div>
       )}
-      {
-            isOpen && <ReviewModal isOpen={isOpen} onClose={handleReviewModal} product={reviewProduct} />
-      }
+      {isOpen && (
+        <ReviewModal
+          isOpen={isOpen}
+          onClose={handleReviewModal}
+          product={reviewProduct}
+        />
+      )}
     </>
   );
 };
