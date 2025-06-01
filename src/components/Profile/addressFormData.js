@@ -21,20 +21,7 @@ export const addressFormData = [
     rules: "Phone Number Required",
     placeholder: "Enter Your Phone Number",
   },
-  {
-    name: "address_line1",
-    type: "text",
-    label: "Full Address Line 1",
-    rules: "Address  Required",
-    placeholder: "Enter Your Full Address",
-  },
-  {
-    name: "address_line2",
-    type: "text",
-    label: "Full Address Line 2",
-    rules: "",
-    placeholder: "Enter Your Address Line2",
-  },
+  
   {
     label: "Division",
     name: "division_id",
@@ -64,6 +51,20 @@ export const addressFormData = [
   //   placeholder: "Enter Union name",
   //   rules: "Union is required",
   // },
+  {
+    name: "address_line1",
+    type: "text",
+    label: "Full Address Line 1",
+    rules: "Address  Required",
+    placeholder: "Enter Your Full Address",
+  },
+  {
+    name: "address_line2",
+    type: "text",
+    label: "Full Address Line 2",
+    rules: "",
+    placeholder: "Enter Your Address Line2",
+  },
   {
     name: "postal_code",
     type: "text",

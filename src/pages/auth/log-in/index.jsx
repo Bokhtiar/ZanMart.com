@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
-import { FiPhone } from "react-icons/fi";
+import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md"; 
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { publicRequest } from "@/config/axios.config";
@@ -8,12 +7,10 @@ import { useRouter } from "next/router";
 import { Toastify } from "@/components/toastify";
 import { getToken, networkErrorHandeller, setToken } from "@/utils/helpers";
 import Image from "next/image";
-import { PasswordInput, TextInput } from "@/components/input";
-import { UserContext } from "@/contex/UserContex";
+import { PasswordInput, TextInput } from "@/components/input"; 
 import { useProduct } from "@/hooks/useProducts";
 import Spinner from "@/components/spinner";
-import useStickyFetch from "@/hooks/sticky";
-
+import useStickyFetch from "@/hooks/sticky"; 
 const Login = () => {
   const userInfo = useProduct();
   const { isSticky } = useStickyFetch();
@@ -52,28 +49,26 @@ const Login = () => {
   return (
     <div
       className={`container  mx-auto ${
-        isSticky && "mt-14"
-      }  py-10 flex justify-center`}
+        isSticky && " "
+      }    flex justify-center`}
     >
       {/* <button onClick={()=>{
         Toastify.Success("welcome to home")
       }}>hit the button</button> */}
       <div className="flex flex-col items-center text-gray-700">
-        <span className="font-semibold text-xl sm:text-2xl text-center  leading-4">
-          Welcome to ZANmart
-        </span>
-        <span className="font-semibold text-xl sm:text-2xl text-center pb-6 sm:pb-10 leading-4">
-          Sign into your account
-        </span>
-        <div className="bg-primary w-full sm:w-[550px] p-6 sm:p-10 rounded-xl flex flex-col items-center justify-center">
-          <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] rounded-full bg-white">
+        
+        <div className="bg-primary w-full sm:w-[550px] p-2  sm:p-5 rounded-xl flex flex-col items-center justify-center">
+          <div className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] rounded-full bg-white">
             <Image
               src={"/logo.png"}
               height={200}
               width={2000}
               alt=""
-              className="bg-   p-5  "
+              className="p-5"
             />
+          </div>
+          <div className="text-center font-medium text-lg py-2">
+            Sign in with email or phone
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -157,8 +152,7 @@ const Login = () => {
                 alt="Google logo"
               />
               <span>Continue with Google</span>
-            </button>
-                      
+            </button> 
           </div>
           <div className="mt-5 text-center">
             <Link

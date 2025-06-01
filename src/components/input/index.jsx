@@ -284,17 +284,11 @@ export const SingleSelect = (props) => {
             </span>
           </p>
         )} */}
-
-      {props.error ? (
-        <p className="text-sm mb-1 text-red-500">{props.error}</p>
-      ) : (
-        <p className="text-sm mb-1 text-gray-500">
-          {props.label}
-          <span className="text-red-500">
-            {props.rules.required ? "*" : ""}
-          </span>
-        </p>
-      )}
+ 
+      <span className="text-sm mb-1 text-gray-500 flex gap-1">
+        {props?.label}{" "}
+        <span className="text-red-500">{props?.rules?.required ? "*" : ""}</span>
+      </span>
 
       <Select
         classNamePrefix={`custom-select`}
@@ -312,6 +306,9 @@ export const SingleSelect = (props) => {
         defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
         placeholder={props.placeholder}
       />
+       {props?.error && (
+        <p className="text-xs text-red-500 pl-3.5">{props?.error}</p>
+      )}
     </div>
   );
 };

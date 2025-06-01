@@ -40,13 +40,15 @@ const Register = () => {
       const response = await publicRequest.post("register", newData); // Use the endpoint 'register' (modify if necessary)
 
       if (response?.status == 201) {
-        router.push(redirect?`/auth/log-in?redirect=${redirect}`:'/auth/log-in' );
+        router.push(
+          redirect ? `/auth/log-in?redirect=${redirect}` : "/auth/log-in"
+        );
         // router.replace(redirect ? String(redirect) : "/");
         Toastify.Success("Registered successfully");
       }
     } catch (error) {
       networkErrorHandeller(error);
-      setLoading(false)
+      setLoading(false);
     } finally {
       setLoading(false); // Set loading back to false after API call
     }
@@ -54,13 +56,10 @@ const Register = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
   return (
-    <div className="container   mx-auto py-10 justify-center flex">
+    <div className="container   mx-auto  justify-center flex">
       <div className="items-center flex flex-col">
-        <h1 className="font-semibold text-2xl text-center pb-10 leading-4">
-          Create your ZANmart Account
-        </h1>
-        <div className="bg-primary w-full max-w-md md:max-w-lg lg:max-w-xl p-6 md:p-8 lg:p-10 rounded-xl flex flex-col items-center justify-center">
-          <div className="w-[80px] h-[80px] sm:w-[110px] sm:h-[110px] rounded-full bg-white">
+        <div className="bg-primary w-full max-w-md md:max-w-lg lg:max-w-xl p-2  sm:p-5  rounded-xl flex flex-col items-center justify-center">
+          <div className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] rounded-full bg-white">
             <Image
               src={"/logo.png"}
               height={200}
@@ -68,6 +67,9 @@ const Register = () => {
               alt=""
               className="  p-5"
             />
+          </div>
+          <div className="text-center font-medium text-lg py-2">
+            Sign up with email or phone
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -108,15 +110,7 @@ const Register = () => {
                     <MdOutlineMailOutline className="h-5 w-5" />
                     E-mail
                   </div>
-                }
-                rules={{
-                  required: "Email  is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$|^\d{10}$/,
-                    message: "Invalid  email",
-                  },
-                }}
-                error={errors?.email?.message}
+                }  
                 placeholder="Enter your  email"
                 trigger={trigger}
               />
@@ -233,7 +227,7 @@ const Register = () => {
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-               {loading ?  <Spinner  className="h-4 w-4"/>: "Sign Up"}
+                {loading ? <Spinner className="h-4 w-4" /> : "Sign Up"}
               </button>
             </div>
             <div className=" ">

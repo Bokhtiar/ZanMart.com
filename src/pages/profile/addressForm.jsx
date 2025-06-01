@@ -222,8 +222,7 @@ const AddressForm = () => {
                 </label>
               ))}
             </div>
-          </div>
-
+          </div> 
           <div className="grid grid-cols-1 gap-2">
             {addressFormData.map((item, idx) => (
               <div key={idx}>
@@ -252,7 +251,7 @@ const AddressForm = () => {
                       type={item?.type}
                       control={control}
                       label={
-                        <div className="flex gap-2 pb-1 pl-3.5 text-black">
+                        <div className="flex gap-2 pb-1   text-gray-500">
                           {item?.label}
                         </div>
                       }
