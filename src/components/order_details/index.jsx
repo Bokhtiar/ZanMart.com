@@ -7,6 +7,7 @@ import OrderDetailsSkeleton from "../loader/OrderDetailsSkeleton";
 import Link from "next/link";
 import ReviewModal from "../reviewModal";
 import { Toastify } from "../toastify";
+import Spinner from "../spinner";
 const OrderDetails = () => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -39,22 +40,26 @@ const OrderDetails = () => {
       fetchOrderDetails();
     }
   }, [id]);
+  const [btnLoading, setBtnLoadin] = useState(false);
   // cancel order
   const handleCancelProduct = async (id) => {
+    setBtnLoadin(true);
     try {
       const res = await privateRequest.get(`user/order/cancel/${id}`);
       if (res.status == 200) {
         Toastify.Success(res?.data?.message);
+        setLoading(false);
         router.replace("/profile/orders");
       }
     } catch (error) {
+      setLoading(false);
       console.log(error.message);
     }
+    setLoading(false);
   };
-
   return (
     <>
-      {loading ? (
+      {false ? (
         <OrderDetailsSkeleton />
       ) : (
         <div>
@@ -64,23 +69,13 @@ const OrderDetails = () => {
             </h1>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center bg-gray-100 p-4 shadow rounded gap-4">
-            <div>
-              <h2 className="text-xl font-bold">
-                Order {orderDetails?.order_id}
-              </h2>
-              <span className="bg-green-200 text-green-700 px-2 py-1 rounded text-sm">
-                {orderDetails?.order_status}
-              </span>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <button className="border border-gray-300 px-4 py-2 rounded text-sm md:text-base">
-                Export
-              </button>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded text-sm md:text-base">
-                Create shipping label
-              </button>
-            </div>
+          <div className="w-full flex justify-between items-center bg-gray-100 p-2 shadow rounded-md gap-4">
+            <h2 className="text-xl font-bold">
+              Order #{orderDetails?.order_id}
+            </h2>
+            <span className="bg-green-200 text-green-700 px-2 py-1 rounded text-sm">
+              {orderDetails?.order_status}
+            </span>
           </div>
 
           <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 ">
@@ -193,7 +188,7 @@ const OrderDetails = () => {
 
           <div className="mt-6 bg-white shadow p-4 rounded">
             <h3 className="font-bold mb-4">Invoices</h3>
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between flex-wrap">
               <div className="flex items-center">
                 <span className="font-semibold mr-2">No:</span>
                 <span>{orderDetails?.tran_id}</span>
@@ -222,10 +217,12 @@ const OrderDetails = () => {
 
           <div className="mt-6 flex flex-wrap justify-end gap-4">
             <button
-              className="border border-gray-300  px-4 py-2 rounded bg-red-300 hover:bg-red-500"
+              disabled={orderDetails?.order_status !== "processing"}
+              className="relative overflow-hidden border border-gray-300 h-10 w-32 rounded bg-red-300 hover:bg-red-500 flex items-center justify-center font-medium text-sm text-gray-800 transition-all duration-300 hover:text-white group
+before:bg-red-500 before:absolute before:inset-0 before:scale-x-0 before:origin-left before:transition-transform before:duration-300 group-hover:before:scale-x-100 before:z-0 z-10"
               onClick={() => handleCancelProduct(id)}
             >
-              Cancel Order
+              {btnLoading ? <Spinner className="h-5 w-5" /> : "Cancel Order"}
             </button>
             {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">
               Ship Order

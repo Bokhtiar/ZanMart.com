@@ -1,11 +1,12 @@
 import React from 'react';
 
-const Spinner = ({color}) => {
+const Spinner = ({ color = "primary", className = "" }) => {
   return (
-    <div className="flex justify-center items-center ">
-  <div className={`w-6 h-6 border-4 border-dashed rounded-full animate-spin border-${color? color:'primary'}`}></div>
-</div>
-
+    <div className={`flex justify-center items-center w-full h-full`}>
+      <div
+        className={` border-4 border-dashed rounded-full animate-spin border-${color} ${className?className:"h-5 w-5"}`}
+      ></div>
+    </div>
   );
 };
 
