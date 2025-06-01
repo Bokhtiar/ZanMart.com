@@ -141,7 +141,7 @@ fetchWebSetting()
   // sticky system here
   const { isSticky } = useStickyFetch();
   return (
-    <div className="z-50">
+    <div className="z-50 mb-2.5 shadow-md">
       <div className="w-full h z-10 bg-white   ">
         <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
           <div className="flex items-center gap-2">

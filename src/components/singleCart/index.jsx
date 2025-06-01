@@ -4,11 +4,14 @@ import React, { useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
 
-const SingleCart = ({ item,page }) => {
-  
+const SingleCart = ({ item, page }) => {
   return (
     <Link
-     href={`/product-details/${item?.slug}${page ? `?latest_page=${page}&id=${item?.product_id}` : `?id=${item?.product_id}`}`}
+      href={`/product-details/${item?.slug}${
+        page
+          ? `?latest_page=${page}&id=${item?.product_id}`
+          : `?id=${item?.product_id}`
+      }`}
       className="w-full h-fit rounded-lg  shadow-lg "
     >
       <div className="overflow-hidden w-full   p-2 aspect-square">
@@ -49,26 +52,31 @@ const SingleCart = ({ item,page }) => {
               <span className="text-xs font-normal text-gray-500 mt-[5px]">
                 <TbCurrencyTaka />
               </span>
-               <sub className=" text-secondary ms-2 flex  items-center line-through text-sm  md:base  font-bold">
-              {Math.ceil(item?.variants[0]?.discount_price || item?.price)}
-              <span className="text-xs font-normal  text-gray-500 mt-[5px]">
-                <TbCurrencyTaka />
-              </span>
-            </sub>
+              {(item?.variants[0]?.discount_price || item?.price) && (
+                <sub className=" text-secondary ms-2 flex  items-center line-through text-sm  md:base  font-bold">
+                  {Math.ceil(item?.variants[0]?.discount_price || item?.price)}
+                  <span className="text-xs font-normal  text-gray-500 mt-[5px]">
+                    <TbCurrencyTaka />
+                  </span>
+                </sub>
+              )}
             </span>
-
           ) : (
-           <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
+            <span className="text-primary flex  items-center text-sm lg:text-xl md:base  font-bold">
               {Math.ceil(item?.sell_price)}
               <span className="text-xs font-normal text-gray-500 mt-[5px]">
                 <TbCurrencyTaka />
               </span>
-               <sub className=" text-secondary ms-2 flex  items-center line-through text-sm  md:base  font-bold">
-              {Math.ceil(item?.flat_discount)}
-              <span className="text-xs font-normal  text-gray-500 mt-[5px]">
-                <TbCurrencyTaka />
-              </span>
-            </sub>
+              {parseInt(item?.flat_discount) ? (
+                <sub className=" text-secondary ms-2 flex  items-center line-through text-sm  md:base  font-bold">
+                  {Math.ceil(item?.flat_discount)}
+                  <span className="text-xs font-normal  text-gray-500 mt-[5px]">
+                    <TbCurrencyTaka />
+                  </span>
+                </sub>
+              ) : (
+                ""
+              )}
             </span>
           )}
         </p>

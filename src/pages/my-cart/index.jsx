@@ -13,6 +13,7 @@ import { Toastify } from "@/components/toastify";
 import AddressForm from "@/pages/profile/addressForm";
 import { networkErrorHandeller } from "@/utils/helpers";
 import ConfirmModal from "@/components/confirmModal";
+import { TbCurrencyTaka } from "react-icons/tb";
 
 const MyCart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +21,7 @@ const MyCart = () => {
   const [cart, setCart] = useState({ cart_items: [] });
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
-  const [modalLoading,setModalLoading]=useState(false)
+  const [modalLoading, setModalLoading] = useState(false);
   const router = useRouter();
   const { modal } = router.query;
   useEffect(() => {
@@ -28,7 +29,7 @@ const MyCart = () => {
       setIsModalOpen(true);
     }
   }, [modal]);
-  
+
   useEffect(() => {
     const fetchCartData = async () => {
       const cartData = localStorage.getItem("cart");
@@ -95,7 +96,7 @@ const MyCart = () => {
         acc + item.sell_price * (quantities[item.product_id] || item.qty),
       0
     );
-  }; 
+  };
   const handleDelete = (id) => {
     const updatedCartItems = data.filter(
       (item) => item.product_variant_id !== id
@@ -134,7 +135,7 @@ const MyCart = () => {
     };
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
-        setModalLoading(false)
+        setModalLoading(false);
         const res = await privateRequest.post("user/orders", newMyOrder);
         if (res?.status === 200 || res?.status === 201) {
           Toastify.Success(res.data?.message);
@@ -145,14 +146,14 @@ const MyCart = () => {
           router.push(
             `/profile/confirm-order/${res?.data?.order_id?.order_id}`
           );
-          setModalLoading(false)
-        } 
+          setModalLoading(false);
+        }
       } else {
         Toastify.Error("Please select an address");
       }
     } catch (error) {
-      Toastify.Error(error.response.data.message)
-      setModalLoading(false)
+      Toastify.Error(error.response.data.message);
+      setModalLoading(false);
     }
   };
 
@@ -192,18 +193,21 @@ const MyCart = () => {
                   <div className="flex flex-row  gap-4 ">
                     <div className="text-center">
                       <p className="text-xs font-bold">Price</p>
-                      <p className="text-sm font-bold text-primary">
-                        {item?.sell_price} Tk
+                      <p className="text-sm font-bold text-primary flex items-center">
+                        {Math.ceil(item?.sell_price)}{" "}
+                        <span className="text-base font-normal    ">
+                          <TbCurrencyTaka />
+                        </span>
                       </p>
                     </div>
                     <div className="text-center">
                       <p className="text-xs font-bold">Subtotal</p>
-                      <p className="text-sm font-bold text-primary">
-                        {(
-                          item?.sell_price *
-                          (quantities[item.product_id] || item.qty)
-                        ).toFixed(2)}{" "}
-                        Tk
+                      <p className="text-sm font-bold text-primary flex items-center">
+                        {item?.sell_price *
+                          (quantities[item.product_id] || item.qty)}{" "}
+                        <span className="text-base font-normal   ">
+                          <TbCurrencyTaka />
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -267,19 +271,25 @@ const MyCart = () => {
             <p className="text-sm font-bold mb-4">Total Summary</p>
             <div className="flex justify-between items-center mb-2">
               <p className="text-xs">Subtotal ({data.length} Items)</p>
-              <p className="text-xs font-bold">
-                {calculateSubtotal().toFixed(2)} Tk
+              <p className="text-xs font-bold flex items-center">
+                {calculateSubtotal()}{" "}
+                <span className="text-base font-normal  ">
+                  <TbCurrencyTaka />
+                </span>
               </p>
             </div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-xs">Shipping Fee</p>
-              <p className="text-xs font-bold">Based on E-corier</p>
+              <p className="text-xs font-bold">Based on E-courier</p>
             </div>
             <hr />
             <div className="flex justify-between items-center mb-2">
               <p className="text-xs">Total</p>
-              <p className="text-xs font-bold">
-                {calculateSubtotal().toFixed(2)} Tk
+              <p className="text-xs font-bold flex items-center pt-1 ">
+                {calculateSubtotal()}{" "}
+                <span className="text-base font-normal    ">
+                  <TbCurrencyTaka />
+                </span>
               </p>
             </div>
             <hr />
@@ -312,4 +322,3 @@ const MyCart = () => {
 };
 
 export default MyCart;
-

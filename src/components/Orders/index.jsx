@@ -101,8 +101,8 @@ const Orders = () => {
         <h1 className="text-xl md:text-2xl font-bold  px-2 py-1 rounded-md flex items-center gap-2 text-gray-700">
           <FaRegListAlt /> Order
         </h1>
-      </div>
-
+      </div> 
+      {/* button area  */}
       <div className="w-full flex overflow-x-auto justify-between gap-2 rounded-md  bg-gray-100 shadow-md py-2 px-2">
         {[" ", "processing", "shipped", "delivered", "Cancelled"].map(
           (status) => (
@@ -119,8 +119,8 @@ const Orders = () => {
             </button>
           )
         )}
-      </div>
-
+      </div> 
+      {/* button releted data fetch area show  */}
       {false ? (
         <>
           {Array.from({ length: 10 }).map((_, index) => (
@@ -136,7 +136,7 @@ const Orders = () => {
             data.map((item) => (
               <div
                 key={item?.id}
-                className="bg-white shadow-md rounded-xl p-4 sm:p-6 border space-y-4"
+                className="bg-white shadow-md rounded-xl p-2 sm:p-3 border space-y-4"
               >
                 {/* Order Top Row */}
                 <div className="flex flex-wrap md:flex-nowrap justify-between items-start md:items-center gap-4">
