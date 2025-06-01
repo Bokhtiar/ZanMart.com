@@ -7,13 +7,15 @@ import { RiEyeLine } from "react-icons/ri";
 import { FaRegListAlt } from "react-icons/fa";
 import { CiCircleChevDown } from "react-icons/ci";
 import OrderSkeleton from "../loader/OrderSkeleton";
+import { useRouter } from "next/router";
+import { TbCurrencyTaka } from "react-icons/tb";
 
 const Orders = () => {
   const [data, setData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [expandedOrders, setExpandedOrders] = useState({}); // Track expanded orders
-
+  const router = useRouter();
   const fetchOrders = async (status = "") => {
     try {
       setLoading(true);
@@ -21,7 +23,7 @@ const Orders = () => {
         `user/orders?order_status=${status}`
       );
       setData(res?.data?.data || []);
-    } catch (error) { 
+    } catch (error) {
     } finally {
       setLoading(false);
     }
@@ -40,6 +42,10 @@ const Orders = () => {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
+
+    const statusFromQuery = router.query.order_status || "";
+    setSelectedStatus(statusFromQuery);
     fetchOrders();
   }, []);
 
@@ -74,25 +80,38 @@ const Orders = () => {
         return status;
     }
   };
-  
+  useEffect(() => {
+    if (!router.isReady) return;
 
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          order_status: selectedStatus,
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
+  }, [selectedStatus]);
   return (
-    <div className="">
-      <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
-        <h1 className="text-xl md:text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
+    <div className="space-y-3 mt-2">
+      <div className="flex items-center justify-between bg-gray-100 shadow-md ">
+        <h1 className="text-xl md:text-2xl font-bold  px-2 py-1 rounded-md flex items-center gap-2 text-gray-700">
           <FaRegListAlt /> Order
         </h1>
       </div>
 
-      <div className="flex flex-wrap justify-start gap-2 sm:gap-4 mt-2 pb-4 ">
+      <div className="w-full flex overflow-x-auto justify-between gap-2 rounded-md  bg-gray-100 shadow-md py-2 px-2">
         {[" ", "processing", "shipped", "delivered", "Cancelled"].map(
           (status) => (
             <button
               key={status}
               onClick={() => handleStatus(status)}
-              className={`py-2 px-3 sm:px-4 text-sm font-semibold   ${
+              className={`w   text-sm font-semibold text-nowrap  ${
                 selectedStatus === status
-                  ? "text-primary border-b-2 border-primary"
+                  ? "text-primary border-b  border-primary"
                   : "text-gray-600 hover:text-primary"
               }`}
             >
@@ -102,62 +121,60 @@ const Orders = () => {
         )}
       </div>
 
-      {loading ? (
+      {false ? (
         <>
-        {
-          Array.from({ length: 10 }).map((_, index) => (
-          <>
-            <OrderSkeleton key={index} /><br/>
-          </>
-          ))
-        } 
+          {Array.from({ length: 10 }).map((_, index) => (
+            <>
+              <OrderSkeleton key={index} />
+              <br />
+            </>
+          ))}
         </>
-       
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {data.length > 0 ? (
             data.map((item) => (
               <div
                 key={item?.id}
-                className="flex flex-col bg-gray-100 shadow rounded-md p-4 sm:p-5 space-y-4 "
+                className="bg-white shadow-md rounded-xl p-4 sm:p-6 border space-y-4"
               >
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-                  <div className="space-y-1">
+                {/* Order Top Row */}
+                <div className="flex flex-wrap md:flex-nowrap justify-between items-start md:items-center gap-4">
+                  {/* Order Info */}
+                  <div className="flex-1 space-y-1">
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Order ID:</span>{" "}
-                      <span className="text-primary font-bold">
+                      <span className="font-semibold">Order ID:</span>{" "}
+                      <span className="text-blue-600 font-bold">
                         #{item["order Details"]?.order_id}
                       </span>
                     </p>
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Name:</span>{" "}
+                      <span className="font-semibold">Name:</span>{" "}
                       {item["order Details"]?.shipping_address?.name}
                     </p>
                   </div>
 
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="flex  items-center md:blok">
-                      <span className="text-sm text-gray-600 font-medium">
-                        Price:
-                      </span>
-                      <span className="text-lg text-primary font-bold">
-                        {item["order Details"]?.total_amount} Tk
-                      </span>
-                    </div>
+                  {/* Price */}
+                  <div className="text-center">
+                    <p className="text-sm text-gray-500">Price</p>
+                    <p className="text-lg font-bold text-primary flex items-center">
+                      {Math.ceil(item["order Details"]?.total_amount)}{" "}
+                      <TbCurrencyTaka />
+                    </p>
                   </div>
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="flex  justify-start items-center">
-                      <p className="text-sm text-gray-600 font-medium">
-                        Product Quantity:
-                      </p>
-                      <p className="text-lg text-primary font-bold">
-                        {item["order item"].length}
-                      </p>
-                    </div>
+
+                  {/* Quantity */}
+                  <div className="text-center">
+                    <p className="text-sm text-gray-500">Qty</p>
+                    <p className="text-lg font-bold text-primary">
+                      {item["order item"]?.length}
+                    </p>
                   </div>
-                  <div className="flex md:flex-col flex-row md:items-center justify-between gap-2">
+
+                  {/* Status */}
+                  <div className="text-center">
                     <p
-                      className={`px-4 rounded-full text-sm font-medium ${getStatusClass(
+                      className={`inline-block px-4 py-1 rounded-full text-sm font-medium ${getStatusClass(
                         item["order Details"]?.order_status
                       )}`}
                     >
@@ -165,69 +182,74 @@ const Orders = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-end gap-2">
-                    <div className="flex items-center ">
-                      <button
-                        onClick={() =>
-                          toggleOrderDetails(item["order Details"]?.order_id)
-                        }
-                        className="flex items-center gap-2 px-2 lg:py-1 text-white bg-primary hover:bg-gray-200 text-sm rounded-md"
-                      >
-                        <CiCircleChevDown className="text-2xl" />
-                        {/* {expandedOrders[item["order Details"]?.order_id]
-                          ? "Hide Details"
-                          : "View More"} */}
-                      </button>
-                    </div>
-
-                    <Link
-                      href={`/profile/order-details/${item["order Details"]?.order_id}`}
-                      className="flex  gap-2 px-2 py-1 bg-blue-500 text-white hover:bg-gray-200 text-sm rounded-md"
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        toggleOrderDetails(item["order Details"]?.order_id)
+                      }
+                      className="p-2 bg-primary text-white hover:bg-gray-100 hover:text-primary rounded-md transition"
+                      title="Toggle Items"
                     >
-                      <RiEyeLine className="text-2xl" />
+                      <CiCircleChevDown className="text-xl" />
+                    </button>
+                    <Link
+                      href={`/profile/order-details/${item["order Details"]?.order_id}?order_status=${selectedStatus}`}
+                      className="p-2 bg-blue-500 text-white hover:bg-gray-100 hover:text-blue-600 rounded-md transition"
+                      title="View Details"
+                    >
+                      <RiEyeLine className="text-xl" />
                     </Link>
                   </div>
                 </div>
 
                 {/* Order Items Section */}
                 {expandedOrders[item["order Details"]?.order_id] && (
-                  <div className="mt-4 space-y-2">
+                  <div className="pt-4 border-t space-y-3">
                     {item["order item"]?.map((product) => (
                       <div
                         key={product?.order_item_id}
-                        className="border-b py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                        className="flex flex-wrap sm:flex-nowrap gap-4 items-center border-b pb-3"
                       >
                         <Image
                           height={60}
                           width={60}
                           src={`${process.env.NEXT_PUBLIC_API_SERVER}${product?.product?.thumbnail_image}`}
-                          alt=""
-                          className="h-12 w-12"
+                          alt={product?.product?.title}
+                          className="rounded-md object-cover h-16 w-16"
                         />
-                        <p className="flex-1 text-sm font-medium text-gray-700">
-                          <span className="block text-base">
+                        <div className="flex-1">
+                          <p className="font-semibold">
                             {product?.product?.title}
-                          </span>
-                          <span className="text-sm text-gray-500">
+                          </p>
+                          <div className="text-sm text-gray-500 space-x-2 mt-1">
                             {product?.color?.name && (
-                              <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                              <span className="bg-gray-100 px-2 py-1 rounded text-gray-600">
                                 {product?.color?.name}
                               </span>
                             )}
                             {product?.attribute?.name && (
-                              <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded ml-2">
+                              <span className="bg-gray-100 px-2 py-1 rounded text-gray-600">
                                 {product?.attribute?.name}
                               </span>
                             )}
-                          </span>
-                        </p>
-                        <div className="flex gap-8 font-medium">
-                        <p className="text-sm ">
-                          Price:{" "}
-                          {product?.sell_price || product?.product?.sell_price}{" "}
-                          Tk
-                        </p>
-                        <p className="text-sm">Quantity: {product?.qty}</p>
+                          </div>
+                        </div>
+                        <div className="text-right space-y-1">
+                          <p className="text-sm text-gray-700">
+                            Price:{" "}
+                            <span className="font-semibold">
+                              {product?.sell_price ||
+                                product?.product?.sell_price}{" "}
+                              Tk
+                            </span>
+                          </p>
+                          <p className="text-sm text-gray-700">
+                            Quantity:{" "}
+                            <span className="font-semibold">
+                              {product?.qty}
+                            </span>
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -244,4 +266,4 @@ const Orders = () => {
   );
 };
 
-export default  Orders;
+export default Orders;

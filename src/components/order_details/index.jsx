@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
 import OrderDetailsSkeleton from "../loader/OrderDetailsSkeleton";
-import Link from "next/link";
 import ReviewModal from "../reviewModal";
 import { Toastify } from "../toastify";
 import Spinner from "../spinner";
@@ -59,21 +58,27 @@ const OrderDetails = () => {
   };
   return (
     <>
-      {false ? (
+      {loading ? (
         <OrderDetailsSkeleton />
       ) : (
         <div>
-          <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
+          <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 mt-2 rounded-md shadow-md">
             <h1 className="text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
               Order Show
             </h1>
           </div>
 
-          <div className="w-full flex justify-between items-center bg-gray-100 p-2 shadow rounded-md gap-4">
+          <div className="w-full flex justify-between items-center bg-gray-100 p-2   rounded-md gap-4 shadow-md">
             <h2 className="text-xl font-bold">
               Order #{orderDetails?.order_id}
             </h2>
-            <span className="bg-green-200 text-green-700 px-2 py-1 rounded text-sm">
+            <span
+              className={`${
+                orderDetails?.order_status == "cancelled"
+                  ? "bg-red-200"
+                  : "bg-green-200"
+              }  text-green-700 px-2 py-1  rounded-sm text-sm`}
+            >
               {orderDetails?.order_status}
             </span>
           </div>
@@ -219,14 +224,11 @@ const OrderDetails = () => {
             <button
               disabled={orderDetails?.order_status !== "processing"}
               className="relative overflow-hidden border border-gray-300 h-10 w-32 rounded bg-red-300 hover:bg-red-500 flex items-center justify-center font-medium text-sm text-gray-800 transition-all duration-300 hover:text-white group
-before:bg-red-500 before:absolute before:inset-0 before:scale-x-0 before:origin-left before:transition-transform before:duration-300 group-hover:before:scale-x-100 before:z-0 z-10"
+before:bg-red-500 before:absolute before:inset-0 before:scale-x-0 before:origin-left before:transition-transform before:duration-300 group-hover:before:scale-x-100 before:z-0 z-10 "
               onClick={() => handleCancelProduct(id)}
             >
               {btnLoading ? <Spinner className="h-5 w-5" /> : "Cancel Order"}
             </button>
-            {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">
-              Ship Order
-            </button> */}
           </div>
         </div>
       )}
