@@ -16,7 +16,7 @@ import useStickyFetch from "@/hooks/sticky";
 
 const Login = () => {
   const userInfo = useProduct();
-    const {isSticky} = useStickyFetch();
+  const { isSticky } = useStickyFetch();
   const [loading, setLoading] = useState(false);
   const {
     handleSubmit,
@@ -37,8 +37,7 @@ const Login = () => {
       if (response.data.data.token) {
         userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);
-        Toastify.Success("Successfully Login");
-        // router.push("/");
+        Toastify.Success("Successfully Login"); 
         router.replace(redirect ? String(redirect) : "/");
         setLoading(false);
       }
@@ -51,7 +50,14 @@ const Login = () => {
     if (getToken()) router.push("/");
   }, []);
   return (
-    <div className={`container  mx-auto ${isSticky&&'mt-14'}  py-10 flex justify-center`}>
+    <div
+      className={`container  mx-auto ${
+        isSticky && "mt-14"
+      }  py-10 flex justify-center`}
+    >
+      {/* <button onClick={()=>{
+        Toastify.Success("welcome to home")
+      }}>hit the button</button> */}
       <div className="flex flex-col items-center text-gray-700">
         <span className="font-semibold text-xl sm:text-2xl text-center  leading-4">
           Welcome to ZANmart
@@ -88,7 +94,6 @@ const Login = () => {
                 rules={{
                   required: "Email required",
                   pattern: {
-                   
                     message: "Invalid phone number or email",
                   },
                 }}
@@ -127,7 +132,7 @@ const Login = () => {
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {loading ? <Spinner /> : "Login"}
+                {loading ? <Spinner className="h-4 w-4" /> : "Login"}
               </button>
             </div>
           </form>
@@ -140,9 +145,9 @@ const Login = () => {
           <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
             <button
               onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_API_SERVER}api/auth/google?route=${
-                  redirect ? String(redirect) : "/"
-                }`;
+                window.location.href = `${
+                  process.env.NEXT_PUBLIC_API_SERVER
+                }api/auth/google?route=${redirect ? String(redirect) : "/"}`;
               }}
               class="w-full   flex items-center justify-center gap-3 "
             >

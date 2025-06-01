@@ -52,15 +52,6 @@ const Products = () => {
     <>
       <div className=" ">
         {/* product banner --------------------------- */}
-        {/* <div className="text-center py-10">
-          <h1 className="font-extrabold text-primary text-4xl py-2">
-            All Products
-          </h1>
-          <p className="font-normal text-xl leading-7">
-            Choose form the best collections
-          </p>
-        </div> */}
-
         <div className="flex container-custom mx-auto items-start gap-4 w-full">
           {/* Filter options */}
           <div className="w-1/4 hidden lg:flex md:flex flex-col ">

@@ -228,12 +228,12 @@ const Register = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                disabled={!isValid}
+                disabled={!isValid || loading}
                 className={`    gap-2 w-full text-primary flex justify-center items-center bg-white rounded-lg text-xs font-bold  py-3.5 px-16 sm:px-20 hover:bg-gray-100 ${
                   !isValid ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-               {loading ?  <Spinner/>: "Sign Up"}
+               {loading ?  <Spinner  className="h-4 w-4"/>: "Sign Up"}
               </button>
             </div>
             <div className=" ">
