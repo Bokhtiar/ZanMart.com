@@ -11,25 +11,25 @@ import {
 } from "react-icons/pi";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { RiFilterOffLine } from "react-icons/ri";
-
 import SingleCart from "@/components/singleCart";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
 import Paginations from "@/components/pagination";
 import { publicRequest } from "@/config/axios.config";
-
-import style from "./style.module.css";
+import { useRouter } from "next/router";
 
 const BesSelling = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [gridCount, setGridCount] = useState(4);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(null);
   const [lastPage, setLastPage] = useState(1);
   const [minPrice, setMinPrice] = useState(10);
   const [maxPrices, setMaxPrice] = useState(10000);
   useEffect(() => {
+    if (!page) return;
     const fetchProducts = async () => {
       setLoading(true);
       try {
@@ -46,12 +46,28 @@ const BesSelling = () => {
     };
 
     fetchProducts();
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          latest_page: page,
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
   }, [page, minPrice, maxPrices]);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-
+  // set active pagination
+  useEffect(() => {
+    if (!router.isReady) return;
+    const initialPage = parseInt(router.query.latest_page || "1");
+    setPage(initialPage);
+  }, [router.isReady]);
   // if (loading) return <ProductSkeleton />;
 
   return (
@@ -133,7 +149,11 @@ const BesSelling = () => {
               className={`w-full grid grid-cols-2 gap-2 md:grid-cols-${gridCount} lg:grid-cols-${gridCount} lg:gap-4 md:gap-4 justify-between`}
             >
               {products?.map((product) => (
-                <SingleCart key={product?.product_id} item={product} />
+                <SingleCart
+                  key={product?.product_id}
+                  item={product}
+                  page={page}
+                />
               ))}
             </div>
           ) : (

@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { TbCurrencyTaka } from "react-icons/tb";
 
-const SingleCart = ({ item }) => {
+const SingleCart = ({ item,page }) => {
+  
   return (
     <Link
-      href={`/product-details/${item?.slug}?id=${item?.product_id}`}
+     href={`/product-details/${item?.slug}${page ? `?latest_page=${page}&id=${item?.product_id}` : `?id=${item?.product_id}`}`}
       className="w-full h-fit rounded-lg  shadow-lg "
     >
       <div className="overflow-hidden w-full   p-2 aspect-square">

@@ -1,7 +1,5 @@
 import SingleCart from "@/components/singleCart";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { FiFilter } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import PriceFilter from "@/components/priceFilter";
@@ -14,23 +12,42 @@ import { HiClipboardDocumentList } from "react-icons/hi2";
 import { useProduct } from "@/hooks/useProducts";
 import PaginationSkeleton from "@/components/loader/PaginationSkeleton";
 import { FaFilter } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 const Products = () => {
-  // const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  // const [products, setProducts] = useState([]);
   const [gridCount, setGridCount] = useState(4);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(null);
   const [minPrice, setMinPrice] = useState(10);
   const [maxPrices, setMaxPrice] = useState(0);
   const { fetchProducts, newProduct: product, loading } = useProduct();
+
   useEffect(() => {
+    if (!page) return;
     fetchProducts({ page: page, max_price: maxPrices, min_price: minPrice });
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          latest_page: page,
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
   }, [page, minPrice, maxPrices]);
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
-   
+  // set active pagination
+  useEffect(() => {
+    if (!router.isReady) return;
+    const initialPage = parseInt(router.query.latest_page || "1");
+    setPage(initialPage);
+  }, [router.isReady]);
+
   return (
     <>
       <div className=" ">
@@ -66,7 +83,7 @@ const Products = () => {
               /> */}
           </div>
           {loading || !product?.data ? (
-            <div className="w-full" >
+            <div className="w-full">
               <ProductSkeleton />
             </div>
           ) : (
@@ -102,7 +119,7 @@ const Products = () => {
                       className="flex lg:hidden md:hidden border border-primary text-2xl rounded-md"
                     >
                       <button className="text-2xl">
-                        <FaFilter className="p-1"/>
+                        <FaFilter className="p-1" />
                       </button>
                     </div>
                   </p>
@@ -113,7 +130,11 @@ const Products = () => {
                 >
                   {product?.data && Array.isArray(product?.data) ? (
                     product?.data?.map((product) => (
-                      <SingleCart key={product?.product_id} item={product} />
+                      <SingleCart
+                        key={product?.product_id}
+                        item={product}
+                        page={page}
+                      />
                     ))
                   ) : (
                     <p>No products available</p>
