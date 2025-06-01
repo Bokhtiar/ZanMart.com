@@ -54,17 +54,17 @@ export const addressFormData = [
   {
     name: "address_line1",
     type: "text",
-    label: "Full Address Line 1",
+    label: "Full Address Line ",
     rules: "Address  Required",
     placeholder: "Enter Your Full Address",
   },
-  {
-    name: "address_line2",
-    type: "text",
-    label: "Full Address Line 2",
-    rules: "",
-    placeholder: "Enter Your Address Line2",
-  },
+  // {
+  //   name: "address_line2",
+  //   type: "text",
+  //   label: "Full Address Line 2",
+  //   rules: "",
+  //   placeholder: "Enter Your Address Line2",
+  // },
   {
     name: "postal_code",
     type: "text",

@@ -200,7 +200,7 @@ const AddressForm = () => {
   };
 
   return (
-    <div className="bg-gray-50 rounded-lg flex items-center justify-center px-2 py-4">
+    <div className="  rounded-lg   flex items-center justify-center px-2 py-4 pb-10">
       <div className="w-full max-w-2xl">
         <h2 className="text-xl font-bold mb-4">Select Location</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
