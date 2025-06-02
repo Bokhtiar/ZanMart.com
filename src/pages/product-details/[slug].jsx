@@ -484,7 +484,7 @@ const ProductDetails = () => {
         </div>
         <div className="flex flex-col content-between  w-full lg:w-1/2 space-y-3">
           <>
-            <h1 className="  font-medium text-3xl text-start leading-10 text-gray-600">
+            <h1 className="  font-medium text-2xl text-start leading-10 text-gray-800">
               {product?.title}
             </h1>
             {/* sort description  */}
@@ -584,14 +584,14 @@ const ProductDetails = () => {
             </div>
             {/* price field implement  */}
             <div className="flex gap-4  w-full lg:w-3/5  ">
-              <span className="text-primary leading-5 text-nowrap  flex md:text-xl text-lg  font-bold flex items-center ">
-                <span className="  font-normal text-primary leading-5 -ml-1 ">
+              <span className="text-primary leading-5 text-nowrap  flex text-2xl   font-semibold flex items-center ">
+                <span className="  font-semibold text-primary leading-5 -ml-1 ">
                   <TbCurrencyTaka />
                 </span>
                 {Math.ceil(selectedPrice)}{" "}
 
               </span>
-              <span className="flex items-center text-secondary md:text-xl text-lg font-medium md:text-sm">
+              <span className="flex items-center text-secondary text-xl  font-base ">
                 {selectedDiscount && (
                   <span className="text-secondary  line-through flex  items-center">
                     <TbCurrencyTaka />
@@ -599,7 +599,7 @@ const ProductDetails = () => {
                   </span>
                 )}
                 {selectedDiscount && (
-                  <sapn className="text-secondary pl-2">
+                  <span className="text-secondary text-sm bg-gray-100 p-1 ms-5">
                     {" "}
                     -
                     {Math.ceil(
@@ -607,20 +607,20 @@ const ProductDetails = () => {
                       selectedDiscount
                     )}
                     %
-                  </sapn>
+                  </span>
                 )}
               </span>
 
             </div>
             {/* quantity set  */}
             <div className="flex gap-8">
-              <div className="flex items-center gap-2">
-                Qty:
-                <span className="border flex items-center justify-between gap-5 rounded-md border-[#D9D9D9]">
+              <div className="flex items-center font-semibold gap-2">
+                Quantity:
+                <span className="border text-xl  flex items-center justify-between gap-5 rounded-md border-[#D9D9D9]">
                   <button onClick={handelDiccriment} className="p-1">
                     -
                   </button>{" "}
-                  {quantity}
+                 <span className="font-medium"> {quantity}</span>
                   <button onClick={handelIncriment} className="p-1">
                     +
                   </button>
