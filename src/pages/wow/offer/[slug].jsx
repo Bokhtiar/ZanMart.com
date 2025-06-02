@@ -21,13 +21,13 @@ const OfferBanner = () => {
           Choose form the best collections
         </p>
       </div> */}
-      <div className="relative h-48 lg:h-60 bg-[#F5F5F5] block">
+      <div className="relative  w-full bg-[#F5F5F5] block aspect-[2/1]">
         {/* Static Content Container */}
         <Image 
           height={1000}
-          width={1000}
+          width={500}
           priority
-          className="w-full h-full object-cover rounded-b-md"
+          className="w-full object-cover rounded-lg"
           src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner?.image}`}
           alt={banner?.name}
         />

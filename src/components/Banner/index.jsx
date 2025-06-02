@@ -53,13 +53,13 @@ const Banner = () => {
                   )}?sale=${encodeURIComponent(banner?.name)}&offer_id=${
                     banner?.banner_id
                   }`}
-                  className="relative h-full bg-[#F5F5F5] object-fit aspect-[2/1] w-full "
+                  className="relative  bg-[#F5F5F5]  aspect-[2/1]   "
                 >
                   <Image
                     height={500}
                     width={1000}
                     priority
-                    className="w-full h-full object-fit rounded-lg"
+                    className="  object-cover rounded-lg"
                     src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner?.image}`}
                     alt={banner?.name}
                   />
@@ -70,7 +70,7 @@ const Banner = () => {
         </div>
 
         {/* Side Images */}
-        <div className="w-full md:w-1/4 flex md:flex-col md:space-y-2    aspect-[2/1] overflow-hidden">
+        <div className="w-full flex md:flex-col md:space-y-2    aspect-[2/1] overflow-hidden">
           {campaignBanner.length > 0 &&
             campaignBanner.slice(0,2).map((banner) => (
               <Image
