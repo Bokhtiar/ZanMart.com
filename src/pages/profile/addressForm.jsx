@@ -225,7 +225,7 @@ const AddressForm = () => {
           </div> 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {addressFormData.map((item, idx) => (
-              <div key={idx}>
+              <div key={idx} className={`${item?.className?item?.className:''}`}>
                 {item?.type === "select" ? (
                   <SingleSelect
                     label={item?.label}

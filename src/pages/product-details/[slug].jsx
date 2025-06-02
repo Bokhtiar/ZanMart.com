@@ -383,13 +383,10 @@ const ProductDetails = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
-  };
-
-
+  }; 
   if (loading) {
     return <ProductDetailsSkeleton />;
-  }
-  console.log(product);
+  } 
   return (
     <div className={`container-custom px-2 ${isSticky && "mt-14"} pt-5`}>
       {/* start single product design  */}
