@@ -25,6 +25,13 @@ const Register = () => {
     trigger,
   } = useForm();
   const router = useRouter();
+    const value = router?.query;
+  let str = "";
+  for (let vl in value) {
+    if (vl !== "redirect") {
+      str += "&" + vl + "=" + value[vl];
+    }
+  }
   const { redirect } = router.query;
   const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
@@ -41,7 +48,7 @@ const Register = () => {
 
       if (response?.status == 201) {
         router.push(
-          redirect ? `/auth/log-in?redirect=${redirect}` : "/auth/log-in"
+          redirect ? `/auth/log-in?redirect=${redirect +str}` : "/auth/log-in"
         );
         // router.replace(redirect ? String(redirect) : "/");
         Toastify.Success("Registered successfully");
@@ -55,6 +62,7 @@ const Register = () => {
   };
   const [showTerms, setShowTerms] = useState(false);
   const [showPolicy, setShowPolicy] = useState(false);
+
   return (
     <div className="container   mx-auto  justify-center flex">
       <div className="items-center flex flex-col">

@@ -198,7 +198,34 @@ const AddressForm = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  const [isAddress,setIsAddress] = useState([]);
+   const userAddresses = async () => {
+      try {
+        // setLoading(true);
+        const res = await privateRequest.get("user/address");
+        
+          setIsAddress(res?.data?.data?.length)
+          
+        // setAddress(res.data?.data);
+        // setLoading(false);
+      } catch (error) {
+        networkErrorHandeller(error);
+        // setLoading(false);
+      }
+    };
+    useEffect(()=>{
+      userAddresses();
+      console.log("djfaksdfjasd")
+    },[])
+   useEffect(()=>{
+   console.log(router , isAddress);
+    if(router?.query?.isAuth=="true" && isAddress>0 ){
+     router.replace(`/my-cart?modal=${true}`  );  
+      console.log("find auth or not auth");
+    }
+    
+   console.log(router , isAddress);
+   },[router,isAddress])
   return (
     <div className="  rounded-lg   flex items-center justify-center px-2 py-4 pb-10">
       <div className="w-full max-w-2xl">
