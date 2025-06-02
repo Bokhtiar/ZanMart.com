@@ -2,26 +2,12 @@ import { privateRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { IoLocationOutline } from "react-icons/io5";
 import { Toastify } from "../toastify";
 import isAuth from "@/middleware/auth.middleware";
 import { networkErrorHandeller } from "@/utils/helpers";
-import Spinner from "../spinner";
-import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmOrderSkeleton from "../loader/ConfirmOrderSkeleton";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-
-// Skeleton Loader Component
-const Skeleton = () => (
-  <div className="animate-pulse space-y-4">
-    <div className="h-8 bg-gray-300 rounded w-1/3"></div>
-    <div className="h-6 bg-gray-300 rounded w-1/2"></div>
-    <div className="h-4 bg-gray-300 rounded w-full"></div>
-    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-    <div className="h-10 bg-gray-300 rounded w-full mt-5"></div>
-  </div>
-);
-
+import Spinner from "../spinner";
 const ConfirmOrder = () => {
   const router = useRouter();
   const id = router.query?.slug;
@@ -29,7 +15,8 @@ const ConfirmOrder = () => {
   const [orders, setOrders] = useState([]);
   const { "order Details": orderDetails } = orders || {};
   const [loading, setLoading] = useState(true);
-
+  const [buttonLoading, setButtonLoading] = useState(true);
+  const [cancelLoading, setCancelLoading] = useState(true);
   const data = [
     // {
     //   name: "Pay Online",
@@ -66,17 +53,21 @@ const ConfirmOrder = () => {
   const handleConfirmOrder = async (modalAction) => {
     if (modalAction === "cancel") {
       try {
+        setCancelLoading(false);
         const res = await privateRequest.get(`user/order/cancel/${id}`);
         if (res.status == 200) {
           Toastify.Success(res?.data?.message);
           router.replace("/profile/orders");
+          setButtonLoading(true);
+          setCancelLoading(true);
         }
       } catch (error) {
         networkErrorHandeller(error);
+        setButtonLoading(true);
       }
     } else if (modalAction === "confirm") {
+      setButtonLoading(false);
       try {
-        setLoading(true);
         const res = await privateRequest.post(`user/payments/${id}`, {
           payment_method: payment,
         });
@@ -86,18 +77,20 @@ const ConfirmOrder = () => {
           if (gatewayUrl) {
             window.location.href = gatewayUrl;
           } else {
+            setButtonLoading(true);
             Toastify.Success("Order Placed Successfully");
             router.replace("/profile/orders");
           }
         }
       } catch (error) {
+        setButtonLoading(true);
         networkErrorHandeller(error);
       } finally {
-        setLoading(false);
+        setButtonLoading(true);
+        setLoading(true);
       }
     }
-  };
-  console.log(orders);
+  }; 
   // inside dhaka outside dhaka amount update
   const deliveryAmount = () =>
     orderDetails?.shipping_address?.district?.name?.toLowerCase() === "dhaka"
@@ -169,25 +162,28 @@ const ConfirmOrder = () => {
                 ৳ {Math.ceil(orderDetails?.total_amount) + deliveryAmount()}
               </p>
               <button
+                disabled={!buttonLoading}
                 onClick={() => handleConfirmOrder("cancel")}
                 className="px-4 w-32 text-[#D9D9D9] rounded text-nowrap  border-2 py-2 hover:text-gray-600  bg-red-500 hover:bg-red-300 "
               >
-                Cancel Order
+                {!cancelLoading ? <Spinner /> : " Cancel Order"}
               </button>
               {payment === "ssl_commerz" ? (
                 <button
+                  disabled={!buttonLoading}
                   onClick={() => handleConfirmOrder("confirm")}
                   className="px-4 w-32 text-white rounded text-nowrap  hover:bg-secondary bg-primary py-2"
                 >
-                  Pay Now
+                  {!buttonLoading ? <Spinner /> : "Pay Now"}
                 </button>
               ) : (
                 <button
+                  disabled={!buttonLoading}
                   onClick={() => handleConfirmOrder("confirm")}
                   // disabled={payment !== "cod"}
-                  className="px-4 w-32 text-white rounded hover:bg-blue-700 disabled:opacity-50   bg-primary py-2 text-nowrap"
+                  className="px-4 w-32 text-white rounded hover:bg-blue-500 disabled:opacity-50   bg-blue-200 py-2 text-nowrap"
                 >
-                  Confirm Order
+                  {!buttonLoading ? <Spinner /> : "Confirm Order"}
                 </button>
               )}
             </div>
@@ -283,4 +279,3 @@ const CartAccordion = ({ order = [] }) => {
     </div>
   );
 };
- 

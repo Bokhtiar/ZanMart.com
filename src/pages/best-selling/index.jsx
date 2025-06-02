@@ -38,8 +38,7 @@ const BesSelling = () => {
         );
         setProducts(res.data?.data?.data);
         setLastPage(res.data?.data?.last_page);
-      } catch (err) {
-        console.error(err);
+      } catch (err) { 
       } finally {
         setLoading(false);
       }

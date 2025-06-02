@@ -17,8 +17,7 @@ const ratingLabels = {
 
 const ReviewModal = ({ isOpen, onClose,product }) => {
   const [rating, setRating] = useState(5); // default to 5 stars
-  const [comment, setComment] = useState("");
-console.log("from modal",product)
+  const [comment, setComment] = useState(""); 
   if (!isOpen) return null;
 
   const handleStarClick = (value) => {

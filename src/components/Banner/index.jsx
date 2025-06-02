@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { publicRequest } from "@/config/axios.config";
 import Link from "next/link";
@@ -22,7 +21,7 @@ const Banner = () => {
   useEffect(() => {
     fetchBanner();
   }, []);
-
+  let campaignBanner = banner.filter((item) => item.is_campaign);
   if (loading) {
     return <BannerSkeleton></BannerSkeleton>;
   }
@@ -45,7 +44,7 @@ const Banner = () => {
             modules={[Autoplay, Pagination, Navigation]}
             className="h-full"
           >
-            {banner.slice(1, 2)?.map((banner) => (
+            {banner.filter(item=>!item?.is_campaign).map((banner) => (
               <SwiperSlide key={banner?.banner_id}>
                 <Link
                   href={`/wow/offer/${banner?.name?.replace(
@@ -54,13 +53,13 @@ const Banner = () => {
                   )}?sale=${encodeURIComponent(banner?.name)}&offer_id=${
                     banner?.banner_id
                   }`}
-                  className="relative h-full bg-[#F5F5F5] block aspect-[3/1] "
+                  className="relative h-full bg-[#F5F5F5] object-fit aspect-[2/1] w-full "
                 >
                   <Image
-                    height={1000}
+                    height={500}
                     width={1000}
                     priority
-                    className="   w-full h-full object-fit"
+                    className="w-full h-full object-fit rounded-lg"
                     src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner?.image}`}
                     alt={banner?.name}
                   />
@@ -71,23 +70,19 @@ const Banner = () => {
         </div>
 
         {/* Side Images */}
-        <div className="w-full md:w-1/4 flex md:flex-col md:space-y-2    aspect-[3/1] overflow-hidden">
-          <Image
-            height={1000}
-            width={1000}
-            priority
-            className="w-1/2 md:w-full h-full object-fit pr-1 md:pr-0"
-            src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner[0]?.image}`}
-            alt={banner?.name}
-          />
-          <Image
-            height={1000}
-            width={1000}
-            priority
-            className="w-1/2 md:w-full h-full object-fit pl-1 md:pl-0"
-            src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner[4]?.image}`}
-            alt={banner?.name}
-          />
+        <div className="w-full md:w-1/4 flex md:flex-col md:space-y-2    aspect-[2/1] overflow-hidden">
+          {campaignBanner.length > 0 &&
+            campaignBanner.slice(0,2).map((banner) => (
+              <Image
+                key={banner?.banner_id}
+                height={500}
+                width={1000}
+                priority
+                className="w-1/2 md:w-full h-full object-fit pr-1 md:pr-0 rounded-lg"
+                src={`${process.env.NEXT_PUBLIC_API_SERVER}${banner?.image}`}
+                alt={banner?.name}
+              />
+            ))}
         </div>
       </div>
     </div>

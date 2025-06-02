@@ -35,8 +35,7 @@ const ProfileInfo = () => {
       setValue("role", profile?.role); // Ensure role is correctly set
     }
   }, [profile]);
-
-  console.log("user",)
+ 
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);

@@ -1,8 +1,6 @@
-import Image from "next/image";
-import { Poppins } from "next/font/google";
+ import { Poppins } from "next/font/google";
 import Banner from "@/components/Banner";
 import ServiceQuality from "@/components/ServiceQuality";
-import PaymentOptions from "@/components/PaymentOptions";
 import { useEffect, useState } from "react";
 import { publicRequest } from "@/config/axios.config";
 import HomePageCategorySkeletonLoader from "@/components/loader/homePageCategorySkeleton";
@@ -23,8 +21,7 @@ export default function Home() {
     try {
       setLoading(true);
       const response = await publicRequest.get("home-page-category");
-      setCategories(response?.data);
-      console.log(response?.data);
+      setCategories(response?.data); 
       setLoading(false);
     } catch (error) {
       setLoading(false);

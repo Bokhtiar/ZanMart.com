@@ -66,8 +66,7 @@ const VerifyNumber = () => {
       if (response.status == 200 || response.status == 201) {
         // router.push(`/auth/verify-number?email=${data?.contact}`);
         Toastify.Success(response?.data?.message);
-        setResendLoading(false);
-        // console.log(resendLoading)
+        setResendLoading(false); 
       } else {
         setResendLoading(false);
       }

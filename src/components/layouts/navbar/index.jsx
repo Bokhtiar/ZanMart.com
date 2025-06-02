@@ -141,7 +141,7 @@ fetchWebSetting()
   // sticky system here
   const { isSticky } = useStickyFetch();
   return (
-    <div className="z-50 mb-2.5 shadow-md">
+    <div className="z-50 mb-5 shadow-md ">
       <div className="w-full h z-10 bg-white   ">
         <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
           <div className="flex items-center gap-2">
@@ -214,7 +214,7 @@ fetchWebSetting()
         <section
           className={`bg-primary transition-all duration-300 ${
             isSticky && "fixed top-0 bg-primary shadow-md"
-          } w-full `}
+          } w-full shadow-lg`}
         >
           <div className="flex gap-3 justify-between items-center container-custom container mx-auto  ">
             <div

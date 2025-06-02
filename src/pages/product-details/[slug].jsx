@@ -53,8 +53,7 @@ const ProductDetails = () => {
     setIsModalOpen(false);
     // setModalAction(null);
   };
-  const [addressData, setAddressData] = useState({});
-  console.log(addressData.address_id);
+  const [addressData, setAddressData] = useState({}); 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchProduct = async () => {
@@ -264,8 +263,7 @@ const ProductDetails = () => {
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
 
-      setorderData(cartItem);
-      console.log("cartItem", cartItem)
+      setorderData(cartItem); 
     }
     else {
       Toastify.Warning(
@@ -285,8 +283,7 @@ const ProductDetails = () => {
         const res = await privateRequest.post("user/orders", newMyOrder);
 
         if (res?.status === 200 || res?.status === 201) {
-          Toastify.Success(res.data?.message);
-          console.log("dukse")
+          Toastify.Success(res.data?.message); 
           // const emptyCart = { ...cart, cart_items: [] };
           // setCart(emptyCart);
           // localStorage.setItem("cart", JSON.stringify(emptyCart));
@@ -370,8 +367,7 @@ const ProductDetails = () => {
     setSelectedDiscount(
       newAttribute?.discount_price || product?.discount_price
     ); // Updated line
-    setAvialableQty(newAttribute?.available_quantity); // Updated line
-    console.log(newAttribute?.available_quantity);
+    setAvialableQty(newAttribute?.available_quantity); 
   };
 
   //change thumbnile image base on galllery

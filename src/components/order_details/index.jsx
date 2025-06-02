@@ -14,8 +14,7 @@ const OrderDetails = () => {
   const id = router?.query?.slug;
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderItems, setOrderitems] = useState([]);
-  const [reviewProduct, setReviewProduct] = useState({});
-  console.log(orderDetails);
+  const [reviewProduct, setReviewProduct] = useState({}); 
   const fetchOrderDetails = useCallback(async () => {
     setLoading(true);
     try {
@@ -51,8 +50,7 @@ const OrderDetails = () => {
         router.replace("/profile/orders");
       }
     } catch (error) {
-      setLoading(false);
-      console.log(error.message);
+      setLoading(false); 
     }
     setLoading(false);
   };

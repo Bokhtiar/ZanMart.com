@@ -7,8 +7,7 @@ import { networkErrorHandeller } from "@/utils/helpers";
 import ProfileLayout from "@/components/layouts/ProfileLayout/ProfileLayout";
 import Spinner from "@/components/spinner";
 import { SingleSelect, TextInput } from "@/components/input";
-import { addressFormData } from "@/components/Profile/addressFormData";
-
+import { addressFormData } from "@/components/Profile/addressFormData"; 
 const AddressForm = () => {
   const {
     handleSubmit,
@@ -16,8 +15,7 @@ const AddressForm = () => {
     control,
     trigger,
     setValue,
-  } = useForm();
-
+  } = useForm(); 
   const [formData, setFormData] = useState({
     country: "Bangladesh",
     type: "home",
@@ -145,8 +143,7 @@ const AddressForm = () => {
     }
   }, [id, setValue]);
 
-  const onSubmit = async (data) => {
-    console.log(data);
+  const onSubmit = async (data) => { 
     setLoading(true);
     try {
       const updatedFormData = {
@@ -200,31 +197,21 @@ const AddressForm = () => {
   };
   const [isAddress,setIsAddress] = useState([]);
    const userAddresses = async () => {
-      try {
-        // setLoading(true);
-        const res = await privateRequest.get("user/address");
-        
-          setIsAddress(res?.data?.data?.length)
-          
-        // setAddress(res.data?.data);
-        // setLoading(false);
+      try { 
+        const res = await privateRequest.get("user/address"); 
+          setIsAddress(res?.data?.data?.length) 
       } catch (error) {
-        networkErrorHandeller(error);
-        // setLoading(false);
+        networkErrorHandeller(error); 
       }
     };
     useEffect(()=>{
-      userAddresses();
-      console.log("djfaksdfjasd")
+      userAddresses(); 
     },[])
-   useEffect(()=>{
-   console.log(router , isAddress);
+   useEffect(()=>{ 
     if(router?.query?.isAuth=="true" && isAddress>0 ){
      router.replace(`/my-cart?modal=${true}`  );  
-      console.log("find auth or not auth");
     }
-    
-   console.log(router , isAddress);
+     
    },[router,isAddress])
   return (
     <div className="  rounded-lg   flex items-center justify-center px-2 py-4 pb-10">
