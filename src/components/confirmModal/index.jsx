@@ -1,6 +1,7 @@
 import { privateRequest } from "@/config/axios.config";
 import { useCallback, useEffect, useState } from "react";
 import Spinner from "../spinner";
+import { getToken } from "@/utils/helpers";
 
 const { default: AddressForm } = require("@/pages/profile/addressForm");
 const { default: Link } = require("next/link");
@@ -32,7 +33,7 @@ const  ConfirmModal = ({
       setAddressData(addressItem);
       setSelected(id);
     };
-  
+  const token=getToken()
     if (!isOpen) return null;
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
