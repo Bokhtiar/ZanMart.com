@@ -33,7 +33,10 @@ const  ConfirmModal = ({
       setAddressData(addressItem);
       setSelected(id);
     };
+    
   const token=getToken()
+  
+  
     if (!isOpen) return null;
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -41,7 +44,7 @@ const  ConfirmModal = ({
           <div className="flex justify-between items-center bg-gray-100 rounded-md y-2 mb-4">
             <span className="block text-xs p-2">Please select address</span>
             <Link
-              href={`/profile/addressForm?modal=${true}`}
+             href={`/profile/addressForm?modal=${true}&isAuth=${token?false:true}`}
               className="flex items-center gap-1 bg-primary rounded-md px-2 py-1"
             >
               <FaPlusCircle/> Add New

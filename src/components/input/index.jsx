@@ -251,7 +251,9 @@ const customStyles = (error) => {
       "&:hover": { borderColor: "1px solid #fff" },
       border: error ? "1px solid red" : "1px solid #dfdfdf",
       borderRadius: 6,
+      // zIndex: 9999 
     }),
+    
   };
   return myStyles;
 };
@@ -285,7 +287,7 @@ export const SingleSelect = (props) => {
           </p>
         )} */}
  
-      <span className="text-sm mb-1 text-gray-500 flex gap-1">
+      <span className="text-sm mb-2 text-gray-500 flex gap-1">
         {props?.label}{" "}
         <span className="text-red-500">{props?.rules?.required ? "*" : ""}</span>
       </span>
@@ -305,6 +307,7 @@ export const SingleSelect = (props) => {
         isClearable={props.isClearable}
         defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
         placeholder={props.placeholder}
+          menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       />
        {props?.error && (
         <p className="text-xs text-red-500 pl-3.5">{props?.error}</p>

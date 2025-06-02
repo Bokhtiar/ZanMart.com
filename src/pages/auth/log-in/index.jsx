@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md"; 
+import { MdOutlineLock, MdOutlineMailOutline } from "react-icons/md";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { publicRequest } from "@/config/axios.config";
@@ -7,10 +7,10 @@ import { useRouter } from "next/router";
 import { Toastify } from "@/components/toastify";
 import { getToken, networkErrorHandeller, setToken } from "@/utils/helpers";
 import Image from "next/image";
-import { PasswordInput, TextInput } from "@/components/input"; 
+import { PasswordInput, TextInput } from "@/components/input";
 import { useProduct } from "@/hooks/useProducts";
 import Spinner from "@/components/spinner";
-import useStickyFetch from "@/hooks/sticky"; 
+import useStickyFetch from "@/hooks/sticky";
 const Login = () => {
   const userInfo = useProduct();
   const { isSticky } = useStickyFetch();
@@ -22,6 +22,14 @@ const Login = () => {
     trigger,
   } = useForm();
   const router = useRouter();
+  const value = router?.query;
+  let str = "";
+  for (let vl in value) {
+    if (vl !== "redirect") {
+      str += "&" + vl + "=" + value[vl];
+    }
+  }
+ 
   const { redirect } = router.query;
   const onSubmit = async (data) => {
     const newData = {
@@ -34,8 +42,8 @@ const Login = () => {
       if (response.data.data.token) {
         userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);
-        Toastify.Success("Successfully Login"); 
-        router.replace(redirect ? String(redirect) : "/");
+        Toastify.Success("Successfully Login");
+        router.replace(redirect ? String(redirect)+str : "/");
         setLoading(false);
       }
     } catch (error) {
@@ -48,15 +56,12 @@ const Login = () => {
   }, []);
   return (
     <div
-      className={`container  mx-auto ${
-        isSticky && " "
-      }    flex justify-center`}
+      className={`container  mx-auto ${isSticky && " "}    flex justify-center`}
     >
       {/* <button onClick={()=>{
         Toastify.Success("welcome to home")
       }}>hit the button</button> */}
       <div className="flex flex-col items-center text-gray-700">
-        
         <div className="bg-primary w-full sm:w-[550px] p-2  sm:p-5 rounded-xl flex flex-col items-center justify-center">
           <div className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] rounded-full bg-white">
             <Image
@@ -152,7 +157,7 @@ const Login = () => {
                 alt="Google logo"
               />
               <span>Continue with Google</span>
-            </button> 
+            </button>
           </div>
           <div className="mt-5 text-center">
             <Link
@@ -166,7 +171,7 @@ const Login = () => {
               <Link
                 href={
                   redirect
-                    ? `/auth/register?redirect=${redirect}`
+                    ? `/auth/register?redirect=${redirect + str}`
                     : "/auth/register"
                 }
                 className="hover:underline"

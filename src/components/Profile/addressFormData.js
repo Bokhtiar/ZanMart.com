@@ -6,14 +6,7 @@ export const addressFormData = [
     rules: "Full Name Required",
     placeholder: "Enter Your Full Name",
   },
-  // {
-  //   name: "email",
-  //   type: "email",
-  //   label: "Enter Email",
-  //   rules: "Email Required",
-  //   placeholder: "Enter Your Email",
-  // },
-
+    
   {
     name: "phone",
     type: "text",
@@ -21,7 +14,14 @@ export const addressFormData = [
     rules: "Phone Number Required",
     placeholder: "Enter Your Phone Number",
   },
-  
+  {
+    name: "address_line1",
+    type: "text",
+    label: "Address",
+    rules: "Address  Required",
+    placeholder: "Enter H.no, R. no, block/sector",
+    className:"col-span-2"
+  },
   {
     label: "Division",
     name: "division_id",
@@ -51,13 +51,7 @@ export const addressFormData = [
   //   placeholder: "Enter Union name",
   //   rules: "Union is required",
   // },
-  {
-    name: "address_line1",
-    type: "text",
-    label: "Full Address Line ",
-    rules: "Address  Required",
-    placeholder: "Enter Your Full Address",
-  },
+  
   // {
   //   name: "address_line2",
   //   type: "text",
