@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import Banner from "@/components/Banner";
-import ServiceQuality from "@/components/ServiceQuality"; 
-import PaymentOptions from "@/components/PaymentOptions"; 
+import ServiceQuality from "@/components/ServiceQuality";
+import PaymentOptions from "@/components/PaymentOptions";
 import { useEffect, useState } from "react";
-import { publicRequest } from "@/config/axios.config"; 
+import { publicRequest } from "@/config/axios.config";
 import HomePageCategorySkeletonLoader from "@/components/loader/homePageCategorySkeleton";
 import Link from "next/link";
 import { AllViewButton } from "@/components/button";
@@ -33,16 +33,16 @@ export default function Home() {
   useEffect(() => {
     categoryFetch();
   }, []);
- 
-  const viewAll = async (id) => { 
+
+  const viewAll = async (id) => {
     try {
       const categoryFilterd = await publicRequest.get(`category/product/${id}`);
       setProducts(categoryFilterd?.data?.data?.data);
     } catch (error) {}
-  }; 
-  const {isSticky} = useStickyFetch();
+  };
+  const { isSticky } = useStickyFetch();
   return (
-    <section className={`${poppins.className} px-2  ${isSticky&&'mt-14'}`}>
+    <section className={`${poppins.className} px-2  ${isSticky && "mt-14"}`}>
       <Banner></Banner>
       <ServiceQuality></ServiceQuality>
       {loading ? (
@@ -65,7 +65,10 @@ export default function Home() {
           ))} */}
 
           {categories.map((category, i) => (
-            <div key={i} className="container-custom pb-5 mx-auto mt-6 bg-gray-50 py-2 rounded">
+            <div
+              key={i}
+              className="container-custom pb-5 mx-auto mt-6 bg-gray-50 py-2 rounded"
+            >
               <h1 className="font-bold  my-1 md:text-[25px]  lg:text-[25px]  flex items-center justify-between text-primary capitalize">
                 {category?.category_name}
                 <Link
@@ -76,10 +79,9 @@ export default function Home() {
                 </Link>
               </h1>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-4 lg:gap-4">
-              {category?.products?.slice(0, 10).map((item) => (
-  <SingleCart item={item} key={item?.product_id}></SingleCart>
-))}
-
+                {category?.products?.slice(0, 10).map((item) => (
+                  <SingleCart item={item} key={item?.product_id}></SingleCart>
+                ))}
               </div>
             </div>
           ))}
