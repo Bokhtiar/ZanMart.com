@@ -6,8 +6,6 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
 import { FaCheck, FaCheckCircle, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
-import InnerImageZoom from "react-inner-image-zoom";
 import { networkErrorHandeller } from "@/utils/helpers";
 import SingleCart from "@/components/singleCart";
 import { PiDotsThreeVertical } from "react-icons/pi";
@@ -25,7 +23,7 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmModal from "@/components/confirmModal";
 import ProductReview from "./components/Review";
 import { useSearchParams } from "next/navigation";
-import { magnify } from "@/utils/magnify";
+import { magnify } from "./magnify";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -424,9 +422,14 @@ const ProductDetails = () => {
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-  useEffect(()=>{
-    magnify("myimage", 3);
-  },[])
+   useEffect(() => {
+    const img = document.getElementById("myimage");
+    if (img?.complete) {
+      magnify("myimage", 2);
+    } else {
+      img?.addEventListener("load", () => magnify("myimage", 3));
+    }
+  }, []);
   if (false) {
     return <ProductDetailsSkeleton />;
   }
@@ -439,7 +442,7 @@ const ProductDetails = () => {
             <div className=" relative group">
               <button
                 onClick={() => setIsOpen(true)}
-                className="absolute top-3 right-3 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"
+                className="absolute -top-0 -right-16 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"
               >
                 <MdOutlineFullscreen />
               </button>
@@ -494,25 +497,17 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <div className="aspect-square w-full relative">
-                <Image
-                  width={1000}
-                  height={1000}
-                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-                  alt={product?.title}
-                  id="myimage"
-                />
-                {/* <InnerImageZoom
-                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-                  zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-                  alt="Product Thumbnail"
-                  zoomType="hover"
-                  zoomPreload={true}
-                  zoomPosition="left"
-                  fillAvailableSpace={true}
-                  className="   rounded"
-                /> */}
-              </div>
+         <div className="relative max-w-md ">
+      <Image
+         src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+        alt={'title'}
+        width={1000}
+        height={1000}
+        id="myimage"
+        unoptimized
+        className="rounded-lg"
+      />
+    </div>
             </div>
           </div>
 
