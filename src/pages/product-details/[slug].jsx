@@ -25,6 +25,7 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmModal from "@/components/confirmModal";
 import ProductReview from "./components/Review";
 import { useSearchParams } from "next/navigation";
+import { magnify } from "@/utils/magnify";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -53,7 +54,7 @@ const ProductDetails = () => {
     setIsModalOpen(false);
     // setModalAction(null);
   };
-  const [addressData, setAddressData] = useState({}); 
+  const [addressData, setAddressData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchProduct = async () => {
@@ -147,7 +148,11 @@ const ProductDetails = () => {
         item?.attribute_id === selectdAtribute_id
     );
 
-    if (product?.product_variants.length !== 0 && (selectedVariant && avialableQty > 0)) {
+    if (
+      product?.product_variants.length !== 0 &&
+      selectedVariant &&
+      avialableQty > 0
+    ) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -184,8 +189,7 @@ const ProductDetails = () => {
         window.dispatchEvent(new Event("cartUpdated"));
         Toastify.Success("Product added successfully");
       }
-    }
-    else if (product?.product_variants?.length == 0) {
+    } else if (product?.product_variants?.length == 0) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -200,7 +204,7 @@ const ProductDetails = () => {
         title: product?.title,
         payment: product?.delivery_status,
         attribute_discount_price: selectedDiscount || 0,
-           product_variant_id: 0 , // Include the variant ID
+        product_variant_id: 0, // Include the variant ID
       };
 
       let cart = localStorage.getItem("cart");
@@ -218,8 +222,7 @@ const ProductDetails = () => {
         window.dispatchEvent(new Event("cartUpdated"));
         Toastify.Success("Product added successfully");
       }
-    }
-    else {
+    } else {
       Toastify.Warning(
         "Selected size and color is not available.Please select another color or size"
       );
@@ -232,7 +235,11 @@ const ProductDetails = () => {
         item?.color_id === selectdColor_id &&
         item?.attribute_id === selectdAtribute_id
     );
-    if (product?.product_variants.length !== 0 && (selectedVariant && avialableQty > 0)) {
+    if (
+      product?.product_variants.length !== 0 &&
+      selectedVariant &&
+      avialableQty > 0
+    ) {
       setIsModalOpen(true);
       const cartItem = {
         product_id: product?.product_id,
@@ -247,8 +254,7 @@ const ProductDetails = () => {
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
       setorderData(cartItem);
-    }
-    else if (product?.product_variants?.length == 0) {
+    } else if (product?.product_variants?.length == 0) {
       setIsModalOpen(true);
       const cartItem = {
         product_id: product?.product_id,
@@ -259,13 +265,12 @@ const ProductDetails = () => {
         attribute_weight: selectedWeight || null,
         attribute_price: selectedPrice,
         qty: quantity,
-        product_variant_id: 0 ,
+        product_variant_id: 0,
         attribute_discount_price: selectedDiscount || 0, // Include the variant ID
       };
 
-      setorderData(cartItem); 
-    }
-    else {
+      setorderData(cartItem);
+    } else {
       Toastify.Warning(
         "Selected size and color is not available.Please select another color or size"
       );
@@ -283,7 +288,7 @@ const ProductDetails = () => {
         const res = await privateRequest.post("user/orders", newMyOrder);
 
         if (res?.status === 200 || res?.status === 201) {
-          Toastify.Success(res.data?.message); 
+          Toastify.Success(res.data?.message);
           // const emptyCart = { ...cart, cart_items: [] };
           // setCart(emptyCart);
           // localStorage.setItem("cart", JSON.stringify(emptyCart));
@@ -367,7 +372,7 @@ const ProductDetails = () => {
     setSelectedDiscount(
       newAttribute?.discount_price || product?.discount_price
     ); // Updated line
-    setAvialableQty(newAttribute?.available_quantity); 
+    setAvialableQty(newAttribute?.available_quantity);
   };
 
   //change thumbnile image base on galllery
@@ -379,10 +384,13 @@ const ProductDetails = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
-  }; 
-  if (loading) {
+  };
+  useEffect(()=>{
+    magnify("myimage", 3);
+  },[])
+  if (false) {
     return <ProductDetailsSkeleton />;
-  } 
+  }
   return (
     <div className={`container-custom px-2 ${isSticky && "mt-14"} pt-5`}>
       {/* start single product design  */}
@@ -447,8 +455,15 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              <div className="aspect-auto">
-                <InnerImageZoom
+              <div className="aspect-square w-full relative">
+                <Image
+                  width={1000}
+                  height={1000}
+                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+                  alt={product?.title}
+                  id="myimage"
+                />
+                {/* <InnerImageZoom
                   src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
                   zoomSrc={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
                   alt="Product Thumbnail"
@@ -457,7 +472,7 @@ const ProductDetails = () => {
                   zoomPosition="left"
                   fillAvailableSpace={true}
                   className="   rounded"
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -502,10 +517,11 @@ const ProductDetails = () => {
                   .map((attribute, index) => (
                     <button
                       onClick={() => attributeHandle(attribute)}
-                      className={`font-medium text-xs leading-4  p-1 me-1 border rounded ${selectedAttribute === attribute?.attribute
-                        ? "bg-primary text-white"
-                        : "bg-transparent"
-                        }`}
+                      className={`font-medium text-xs leading-4  p-1 me-1 border rounded ${
+                        selectedAttribute === attribute?.attribute
+                          ? "bg-primary text-white"
+                          : "bg-transparent"
+                      }`}
                       key={index}
                     >
                       {attribute?.attribute.toLowerCase()}
@@ -521,7 +537,8 @@ const ProductDetails = () => {
                 {data
                   ?.filter(
                     (obj, index, self) =>
-                      index === self.findIndex((o) => o.color_id === obj.color_id)
+                      index ===
+                      self.findIndex((o) => o.color_id === obj.color_id)
                   )
                   .map((color, index) => (
                     <span
@@ -530,24 +547,23 @@ const ProductDetails = () => {
                     >
                       <button
                         onClick={() => handleColor(color)}
-                        className={`font-bold h-4 w-4 rounded-full shadow-md relative ${selectedColor === color?.color_name
-                          ? "bg-primary text-white h-5 w-5 border-2 border-blue-400"
-                          : ""
-                          }`}
+                        className={`font-bold h-4 w-4 rounded-full shadow-md relative ${
+                          selectedColor === color?.color_name
+                            ? "bg-primary text-white h-5 w-5 border-2 border-blue-400"
+                            : ""
+                        }`}
                         style={{
                           background: color?.color_name,
                         }}
                       ></button>
                       {selectedColor === color?.color_name && (
                         <span className="absolute   text-xs font-bold">
-                          <FaCheck calssName="h-4 w-4 "
-                           />
+                          <FaCheck calssName="h-4 w-4 " />
                         </span>
                       )}
                     </span>
                   ))}
               </p>
-
             )}
             <div className="flex gap-3 justify-between">
               <p className=" text-center    text-primary flex items-center gap-2">
@@ -585,7 +601,6 @@ const ProductDetails = () => {
                   <TbCurrencyTaka />
                 </span>
                 {Math.ceil(selectedPrice)}{" "}
-
               </span>
               <span className="flex items-center text-secondary text-xl  font-base ">
                 {selectedDiscount && (
@@ -600,13 +615,12 @@ const ProductDetails = () => {
                     -
                     {Math.ceil(
                       ((selectedDiscount - selectedPrice) * 100) /
-                      selectedDiscount
+                        selectedDiscount
                     )}
                     %
                   </span>
                 )}
               </span>
-
             </div>
             {/* quantity set  */}
             <div className="flex gap-8">
@@ -616,7 +630,7 @@ const ProductDetails = () => {
                   <button onClick={handelDiccriment} className="p-1">
                     -
                   </button>{" "}
-                 <span className="font-medium"> {quantity}</span>
+                  <span className="font-medium"> {quantity}</span>
                   <button onClick={handelIncriment} className="p-1">
                     +
                   </button>
@@ -686,13 +700,7 @@ const ProductDetails = () => {
       />
       {/* product design end  */}
       {/* product review section  */}
-      {
-        product?.review?.length > 0 ? (
-          <ProductReview product={product} />
-        ) : (
-          ''
-        )
-      }
+      {product?.review?.length > 0 ? <ProductReview product={product} /> : ""}
 
       <section>
         <div className="flex items-center justify-between bg-gray-50 px-2 my-2 rounded">
@@ -703,18 +711,21 @@ const ProductDetails = () => {
           <p className="flex items-center gap-2">
             <PiDotsNineBold
               onClick={() => setGridCount(5)}
-              className={`border border-primary text-2xl rounded-md ${gridCount === 5 ? "bg-primary text-white" : ""
-                } cursor-pointer`}
+              className={`border border-primary text-2xl rounded-md ${
+                gridCount === 5 ? "bg-primary text-white" : ""
+              } cursor-pointer`}
             />
             <PiDotsSixVerticalBold
               onClick={() => setGridCount(4)}
-              className={`border border-primary text-2xl ${gridCount === 4 ? "bg-primary text-white" : ""
-                } rounded-md cursor-pointer`}
+              className={`border border-primary text-2xl ${
+                gridCount === 4 ? "bg-primary text-white" : ""
+              } rounded-md cursor-pointer`}
             />
             <PiDotsThreeVertical
               onClick={() => setGridCount(3)}
-              className={`border border-primary text-2xl  ${gridCount === 3 ? "bg-primary text-white" : ""
-                } rounded-md cursor-pointer`}
+              className={`border border-primary text-2xl  ${
+                gridCount === 3 ? "bg-primary text-white" : ""
+              } rounded-md cursor-pointer`}
             />
           </p>
         </div>
