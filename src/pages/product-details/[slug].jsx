@@ -227,13 +227,52 @@ const ProductDetails = () => {
   };
   const [orderData, setorderData] = useState([]);
   const handleBuyNow = () => {
+      // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === selectdColor_id &&
         item?.attribute_id === selectdAtribute_id
     );
+
     if (product?.product_variants.length !== 0 && (selectedVariant && avialableQty > 0)) {
-      setIsModalOpen(true);
+      const cartItem = {
+        product_id: product?.product_id,
+        sell_price: selectedPrice,
+        weight: product?.weight || selectedWeight || 1,
+        attribute_id: selectdAtribute_id,
+        attribute: selectedAttribute,
+        color_id: selectdColor_id,
+        color: selectedColor,
+        attribute_weight: selectedWeight || null,
+        attribute_price: selectedPrice,
+        qty: quantity,
+        image: product?.thumbnail_image,
+        category: categoryName,
+        title: product?.title,
+        payment: product?.delivery_status,
+        product_variant_id: selectedVariant?.product_variant_id,
+        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+      };
+
+      let cart = localStorage.getItem("cart");
+      cart = cart ? JSON.parse(cart) : { cart_items: [] };
+
+      const isProductInCart = cart?.cart_items?.some(
+        (item) =>
+          item?.product_id === cartItem?.product_id &&
+          item?.product_variant_id === cartItem?.product_variant_id
+      );
+
+      if (isProductInCart) {
+        router.push('/my-cart?modal=true')
+      } else {
+        cart.cart_items.push(cartItem);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
+         router.push('/my-cart?modal=true')
+      }
+    }
+    else if (product?.product_variants?.length == 0) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -243,27 +282,29 @@ const ProductDetails = () => {
         attribute_weight: selectedWeight || null,
         attribute_price: selectedPrice,
         qty: quantity,
-        product_variant_id: selectedVariant?.product_variant_id,
-        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
-      };
-      setorderData(cartItem);
-    }
-    else if (product?.product_variants?.length == 0) {
-      setIsModalOpen(true);
-      const cartItem = {
-        product_id: product?.product_id,
-        sell_price: selectedPrice,
-        weight: product?.weight || selectedWeight || 1,
-        // attribute_id: selectdAtribute_id  || null,
-        // color_id: selectdColor_id || null,
-        attribute_weight: selectedWeight || null,
-        attribute_price: selectedPrice,
-        qty: quantity,
-        product_variant_id: 0 ,
-        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+        image: product?.thumbnail_image,
+        category: categoryName,
+        title: product?.title,
+        payment: product?.delivery_status,
+        attribute_discount_price: selectedDiscount || 0,
+           product_variant_id: 0 , // Include the variant ID
       };
 
-      setorderData(cartItem); 
+      let cart = localStorage.getItem("cart");
+      cart = cart ? JSON.parse(cart) : { cart_items: [] };
+
+      const isProductInCart = cart?.cart_items?.some(
+        (item) => item?.product_id === cartItem?.product_id
+      );
+
+      if (isProductInCart) {
+        Toastify.Warning("Already in Cart");
+      } else {
+        cart.cart_items.push(cartItem);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
+        Toastify.Success("Product added successfully");
+      }
     }
     else {
       Toastify.Warning(

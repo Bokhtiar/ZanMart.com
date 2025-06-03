@@ -38,6 +38,7 @@ setAddressModal(false)
       setCart(JSON.parse(cartData));
     }
   }, []);
+  console?.log(address)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
@@ -56,9 +57,10 @@ setAddressModal(false)
                 <strong className="font-medium whitespace-nowrap">
                   Address {index + 1}:
                 </strong>
-                {item.address_line1} {item.address_line2} {item.union?.name}{" "}
-                {item.upazila?.name}, {item.district?.name},{" "}
-                {item.division?.name}
+
+                {item?.address_line1} {item.address_line2} {item.union?.name}{" "}
+                {item?.upazila?.name}, {item.district?.name},{" "}
+                {item?.division?.name}
               </p>
              
             </div>
@@ -67,7 +69,7 @@ setAddressModal(false)
                 onClick={() => handelDefaultAdress(item?.address_id)}
                 className={`flex gap-5 items-center ${
                   cart?.shipping_address_id !== item?.address_id
-                    ? "text-[#666666] "
+                    ? "text-[#666666]"
                     : "font-bold text-primary"
                 }`}
               >

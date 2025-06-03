@@ -121,7 +121,7 @@ const ConfirmOrder = () => {
                 {" "}
                 {shippingAddressSet("upazila")?.name},{" "}
                 {shippingAddressSet("district")?.name},{" "}
-                {shippingAddressSet("district")?.name}{" "}
+                {shippingAddressSet("division")?.name}{" "}
               </p>
             </div>
           </div>
@@ -181,7 +181,7 @@ const ConfirmOrder = () => {
                   disabled={!buttonLoading}
                   onClick={() => handleConfirmOrder("confirm")}
                   // disabled={payment !== "cod"}
-                  className="px-4 w-32 text-white rounded hover:bg-blue-500 disabled:opacity-50   bg-blue-200 py-2 text-nowrap"
+                  className="px-4 w-32 text-white rounded hover:bg-blue-500   bg-primary py-2 text-nowrap"
                 >
                   {!buttonLoading ? <Spinner /> : "Confirm Order"}
                 </button>
@@ -228,7 +228,7 @@ const ConfirmOrder = () => {
 export default isAuth(ConfirmOrder);
 
 const CartAccordion = ({ order = [] }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div
