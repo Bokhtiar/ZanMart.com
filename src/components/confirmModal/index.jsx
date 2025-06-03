@@ -65,7 +65,10 @@ const  ConfirmModal = ({
                   } w-8 h-8`}
                 />
                 <div>
-                 {item?.postal_code}, {item?.address_line1} 
+                 {item?.postal_code}, 
+                {item?.address_line1} {item.address_line2} {item.union?.name}{" "}
+                {item?.upazila?.name}, {item.district?.name},{" "}
+                {item?.division?.name}
                 </div>
               </div>
             ))}
