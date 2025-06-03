@@ -49,6 +49,12 @@ const ConfirmOrder = () => {
   useEffect(() => {
     fetchOrder();
   }, [fetchOrder]);
+const payload = {
+  payment_method: payment,
+  delivery_charge:  orderDetails?.shipping_address?.district?.name?.toLowerCase() === "dhaka"
+      ? 70
+      : 120
+};
 
   const handleConfirmOrder = async (modalAction) => {
     if (modalAction === "cancel") {
@@ -66,10 +72,10 @@ const ConfirmOrder = () => {
         setButtonLoading(true);
       }
     } else if (modalAction === "confirm") {
-      setButtonLoading(false);
+      setButtonLoading(true);
       try {
         const res = await privateRequest.post(`user/payments/${id}`, {
-          payment_method: payment,
+          payload
         });
 
         if (res.status === 200) {
@@ -79,7 +85,7 @@ const ConfirmOrder = () => {
           } else {
             setButtonLoading(true);
             Toastify.Success("Order Placed Successfully");
-            router.replace("/profile/orders");
+             router.replace("/profile/orders");
           }
         }
       } catch (error) {

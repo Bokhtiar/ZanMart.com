@@ -127,11 +127,15 @@ const MyCart = () => {
     setModalAction("confirm");
   };
 
+   
   const handleConfirm = async () => {
     const newMyOrder = {
       ...cartForOrder,
       billing_address_id: addressData?.address_id,
       shipping_address_id: addressData?.address_id,
+        delivery_charge:addressData?.district?.name?.toLowerCase() === "dhaka"
+      ? 70
+      : 120
     };
     try {
       if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {

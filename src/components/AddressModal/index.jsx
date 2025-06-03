@@ -6,6 +6,7 @@ import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
 
 const AddressModal = ({setAddressModal}) => {
   const [address, setAddress] = useState([]);
+  console.log(address)
   const userAddresses = async () => {
     try {
       const res = await privateRequest.get("user/address");

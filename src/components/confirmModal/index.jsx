@@ -32,6 +32,8 @@ const  ConfirmModal = ({
     const handleChange = (id, addressItem) => {
       setAddressData(addressItem);
       setSelected(id);
+      
+     
     };
     
   const token=getToken()
