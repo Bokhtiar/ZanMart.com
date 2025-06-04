@@ -1,5 +1,5 @@
 // lib/magnifier.js
-export function magnify(imgID, zoom) {
+export function fagnify(imgID, zoom) {
   let img = document.getElementById(imgID);
   if (!img) return;
 

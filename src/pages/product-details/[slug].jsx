@@ -23,7 +23,7 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmModal from "@/components/confirmModal";
 import ProductReview from "./components/Review";
 import { useSearchParams } from "next/navigation";
-import { magnify } from "./magnify";
+import { magnify } from "../../utils/magnify";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
