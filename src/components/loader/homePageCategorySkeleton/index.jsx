@@ -20,7 +20,7 @@ const HomePageCategorySkeletonLoader = () => {
                 height={100}
                 width={100}
                 className="w-full"
-                src="/logo1.png"
+                src="/images/logo 1.png"
                 alt="Logo"
               />
             </div>
