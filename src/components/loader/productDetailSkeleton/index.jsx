@@ -2,79 +2,90 @@ import React from "react";
 
 const ProductDetailsSkeleton = () => {
   return (
-    <div className="container-custom px-2   pt-5 animate-pulse">
-      <div className="flex flex-col lg:flex-row gap-10">
-        {/* Left side: Image skeleton */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-gray-300 rounded-md w-[400px] h-[400px] lg:w-[540px] lg:h-[540px]" />
-
-          <div className="flex gap-4">
-            {Array(4)
-              .fill("")
-              .map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-300 rounded-md w-20 h-20"
-                />
-              ))}
+    <div className="container-custom px-2 pt-5 animate-pulse">
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Left: Image Skeleton */}
+        <div className="flex flex-col gap-5 w-full lg:w-1/2">
+          <div className="w-full h-[400px] bg-gray-300 rounded-lg" />
+          <div className="flex gap-3 overflow-x-auto">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="h-20 w-20 bg-gray-300 rounded" />
+            ))}
           </div>
         </div>
 
-        {/* Right side: Text skeleton */}
-        <div className="w-full lg:w-1/2 flex flex-col gap-4">
-          {/* Title Skeleton */}
-          <div className="bg-gray-300 h-10 w-3/4 rounded-md" />
-
-          {/* Category Skeleton */}
-          <div className="bg-gray-300 h-6 w-1/3 rounded-md mt-4" />
-
-          {/* Size and Color Selectors Skeleton */}
-          <div className="flex flex-col gap-3">
-            <div className="bg-gray-300 h-6 w-1/4 rounded-md" />
-            <div className="flex gap-2">
-              {Array(3)
-                .fill("")
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-300 h-8 w-16 rounded-md"
-                  />
-                ))}
-            </div>
+        {/* Right: Info Skeleton */}
+        <div className="flex flex-col space-y-4 w-full lg:w-1/2">
+          <div className="h-6 bg-gray-300 w-2/3 rounded" />
+          <div className="h-20 bg-gray-200 rounded" />
+          
+          {/* Size Skeleton */}
+          <div className="flex items-center gap-3">
+            <span className="h-4 w-12 bg-gray-300 rounded" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-6 w-10 bg-gray-300 rounded" />
+            ))}
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="bg-gray-300 h-6 w-1/4 rounded-md" />
-            <div className="flex gap-2">
-              {Array(3)
-                .fill("")
-                .map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-300 h-8 w-16 rounded-md"
-                  />
-                ))}
-            </div>
+          {/* Color Skeleton */}
+          <div className="flex items-center gap-3">
+            <span className="h-4 w-12 bg-gray-300 rounded" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-6 w-6 bg-gray-300 rounded-full"
+              />
+            ))}
           </div>
 
-          {/* Stock and Delivery Info */}
-          <div className="flex gap-3">
-            <div className="bg-gray-300 h-8 w-24 rounded-md" />
-            <div className="bg-gray-300 h-8 w-48 rounded-md" />
+          {/* Stock and Delivery */}
+          <div className="flex justify-between">
+            <div className="h-4 w-1/3 bg-gray-300 rounded" />
+            <div className="h-4 w-1/3 bg-gray-300 rounded" />
           </div>
 
           {/* Price Skeleton */}
-          <div className="flex items-center gap-3">
-            <div className="bg-gray-300 h-12 w-28 rounded-md" />
-            <div className="bg-gray-300 h-6 w-20 rounded-md" />
+          <div className="flex gap-4">
+            <div className="h-6 w-24 bg-gray-300 rounded" />
+            <div className="h-6 w-20 bg-gray-200 rounded" />
           </div>
 
-          {/* Quantity and Add to Cart Skeleton */}
-          <div className="flex gap-4 mt-4 items-center">
-            <div className="bg-gray-300 h-12 w-1/3 rounded-md" />
-            <div className="bg-gray-300 h-12 w-1/4 rounded-md" />
+          {/* Quantity */}
+          <div className="flex items-center gap-6">
+            <div className="h-8 w-32 bg-gray-300 rounded" />
+            <div className="h-5 w-24 bg-gray-200 rounded" />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-4 mt-4">
+            <div className="h-10 w-full bg-gray-300 rounded-lg" />
+            <div className="h-10 w-full bg-gray-300 rounded-lg" />
           </div>
         </div>
+      </div>
+
+      {/* Description */}
+      <div className="bg-gray-100 mt-4 px-2 py-2 rounded space-y-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-4 w-full bg-gray-300 rounded" />
+        ))}
+      </div>
+
+      {/* Related Product Header */}
+      <div className="flex items-center justify-between bg-gray-50 px-2 my-2 py-2 rounded">
+        <div className="h-6 w-1/3 bg-gray-300 rounded" />
+        <div className="flex gap-2">
+          <div className="h-6 w-6 bg-gray-300 rounded" />
+          <div className="h-6 w-6 bg-gray-300 rounded" />
+          <div className="h-6 w-6 bg-gray-300 rounded" />
+        </div>
+      </div>
+
+      {/* Related Product Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-40 bg-gray-200 rounded" />
+        ))}
       </div>
     </div>
   );
