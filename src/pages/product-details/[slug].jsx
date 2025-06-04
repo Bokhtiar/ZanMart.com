@@ -422,15 +422,8 @@ const ProductDetails = () => {
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-   useEffect(() => {
-    const img = document.getElementById("myimage");
-    if (img?.complete) {
-      magnify("myimage", 2);
-    } else {
-      img?.addEventListener("load", () => magnify("myimage", 3));
-    }
-  }, []);
-  if (false) {
+  
+  if (loading) {
     return <ProductDetailsSkeleton />;
   }
   return (
@@ -442,7 +435,7 @@ const ProductDetails = () => {
             <div className=" relative group">
               <button
                 onClick={() => setIsOpen(true)}
-                className="absolute -top-0 -right-16 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"
+                className="absolute top-3 right-3 z-10 cursor-zoom-in text-4xl text-gray-500  group-hover:block"
               >
                 <MdOutlineFullscreen />
               </button>
@@ -503,7 +496,6 @@ const ProductDetails = () => {
         alt={'title'}
         width={1000}
         height={1000}
-        id="myimage"
         unoptimized
         className="rounded-lg"
       />
