@@ -17,7 +17,7 @@
     "primereact": "^10.8.2",
     "react": "^19.1.0",
     "react-data-table-component": "^7.6.2",
-    "react-datepicker": "^4.25.0",
+    "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.54.2",
     "react-icons": "^4.12.0",
