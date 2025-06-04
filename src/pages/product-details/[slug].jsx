@@ -423,7 +423,7 @@ const ProductDetails = () => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
   
-  if (false) {
+  if (loading) {
     return <ProductDetailsSkeleton />;
   }
   return (

@@ -95,6 +95,7 @@ const Orders = () => {
       { shallow: true }
     );
   }, [selectedStatus]);
+
   return (
     <div className="space-y-3 mt-2">
       <div className="flex items-center justify-between bg-gray-100 shadow-md ">
@@ -121,7 +122,7 @@ const Orders = () => {
         )}
       </div> 
       {/* button releted data fetch area show  */}
-      {false ? (
+      {loading ? (
         <>
           {Array.from({ length: 10 }).map((_, index) => (
             <>
