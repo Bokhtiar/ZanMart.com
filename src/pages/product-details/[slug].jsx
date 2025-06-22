@@ -118,7 +118,11 @@ const ProductDetails = () => {
     [product?.category_id]
   );
 
-  const handelIncriment = () => setQuantity(quantity + 1);
+  const handelIncriment = () => {
+    if( avialableQty >= quantity) {
+      setQuantity(quantity + 1);
+    }
+  }
   const handelDiccriment = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -187,7 +191,7 @@ const ProductDetails = () => {
         window.dispatchEvent(new Event("cartUpdated"));
         Toastify.Success("Product added successfully");
       }
-    } else if (product?.product_variants?.length == 0) {
+    } else if (product?.product_variants?.length == 0 && product?.qty > 0) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
@@ -273,7 +277,7 @@ const ProductDetails = () => {
          router.push('/my-cart?modal=true')
       }
     }
-    else if (product?.product_variants?.length == 0) {
+    else if (product?.product_variants?.length == 0 && product?.qty > 0) {
       const cartItem = {
         product_id: product?.product_id,
         sell_price: selectedPrice,
