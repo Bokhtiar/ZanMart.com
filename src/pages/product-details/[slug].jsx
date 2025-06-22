@@ -24,6 +24,7 @@ import ConfirmModal from "@/components/confirmModal";
 import ProductReview from "./components/Review";
 import { useSearchParams } from "next/navigation";
 import { magnify } from "../../utils/magnify";
+import Spinner from "@/components/spinner";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -47,6 +48,7 @@ const ProductDetails = () => {
   const [modalLoading, setModalLoading] = useState(false);
   const [avialableQty, setAvialableQty] = useState(0);
   const [lastPage, setLastPage] = useState(1);
+  const [buyLoading, setBuyLoading] = useState(false);
   const router = useRouter();
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -233,6 +235,7 @@ const ProductDetails = () => {
   const [orderData, setorderData] = useState([]);
   const handleBuyNow = () => {
       // Find the selected variant based on the selected color and attribute
+      setBuyLoading(true);
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === selectdColor_id &&
@@ -316,6 +319,7 @@ const ProductDetails = () => {
         "Selected size and color is not available.Please select another color or size"
       );
     }
+     setBuyLoading(false);
   };
   const handleConfirm = async () => {
     const newMyOrder = {
@@ -692,7 +696,7 @@ const ProductDetails = () => {
                 className="flex-1 bg-gradient-to-l from-sky-400 to-sky-600 text-white font-bold py-3 transform -skew-x-[20deg]"
               >
                 <span className="skew-x-[20deg] block text-center">
-                  Buy Now
+                 {buyLoading ? <Spinner/> : "Buy Now"}
                 </span>
               </button>
 
