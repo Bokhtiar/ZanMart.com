@@ -20,6 +20,7 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { LuShoppingCart } from "react-icons/lu";
 import { useRouter } from "next/router";
 import useStickyFetch from "@/hooks/sticky";
+import { useCart } from "@/contex/CartContext";
 
 const navList = [
   { name: "Home", href: "/" },
@@ -37,13 +38,9 @@ export const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const [cart, setCart] = useState({
-    cart_items: [],
-    shipping_address_id: 1,
-    billing_address_id: 1,
-  });
-
+  const router = useRouter(); 
+  // cart item find
+  const { items: cartItem } = useCart();
   const [categories, setCategories] = useState([]);
   const categoryFetch = async () => {
     try {
@@ -84,36 +81,23 @@ export const Navbar = () => {
     } catch (error) {} // Close the drawer after selecting a category
   };
 
-    const [data, setData] = useState({
+  const [data, setData] = useState({
     webSetting: {},
- 
   });
-   const fetchWebSetting = async () => {
+  const fetchWebSetting = async () => {
     try {
-      const response = await publicRequest.get('web-setting');
+      const response = await publicRequest.get("web-setting");
       const fetchedData = response?.data?.data || {};
 
       setData(fetchedData);
     } catch (error) {}
   };
   useEffect(() => {
-    const updateCart = () => {
-      const cartData = localStorage.getItem("cart");
-      if (cartData) {
-        setCart(JSON.parse(cartData));
-      }
-    };
-fetchWebSetting()
-    updateCart();
+    fetchWebSetting(); 
     categoryFetch();
     handleSearch();
     handleSelect();
     setLoading(false);
-
-    window.addEventListener("cartUpdated", updateCart);
-    return () => {
-      window.removeEventListener("cartUpdated", updateCart);
-    };
   }, []);
 
   const handleCategory = () => {
@@ -140,6 +124,7 @@ fetchWebSetting()
   }, []);
   // sticky system here
   const { isSticky } = useStickyFetch();
+
   return (
     <div className="z-50 mb-5 shadow-md ">
       <div className="w-full h z-10 bg-white   ">
@@ -351,7 +336,7 @@ fetchWebSetting()
                     className="absolute text-xs -top-2 -right-1.5 bg-yellow-500 leading-0 px-1 py-.5 text-center 
                   rounded-full"
                   >
-                    {cart?.cart_items?.length}
+                    {cartItem?.length}
                   </span>
                   <LuShoppingCart className="h-7 w-7" />
                 </Link>

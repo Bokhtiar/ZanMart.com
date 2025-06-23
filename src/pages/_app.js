@@ -6,9 +6,10 @@ import { MyProvider } from "@/contex/ProductsContex";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import * as gtag from '../utils/gtag';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import * as gtag from "../utils/gtag";
+import { CartProvider } from "@/contex/CartContext";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -18,7 +19,6 @@ const poppins = Poppins({
 export default function App({ Component, pageProps }) {
   const getLayout = Component.getLayout || ((page) => page);
 
-
   // gogle analtic
   const router = useRouter();
 
@@ -26,20 +26,22 @@ export default function App({ Component, pageProps }) {
     const handleRouteChange = (url) => {
       gtag.pageview(url);
     };
-    router.events.on('routeChangeComplete', handleRouteChange);
+    router.events.on("routeChangeComplete", handleRouteChange);
     return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
+      router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, [router.events]);
-
-
 
   return (
     <div className={poppins.className}>
       <MyProvider>
-        <LayoutPageWrapper>
-          {getLayout(<Component {...pageProps} />)}
-        </LayoutPageWrapper>
+        <CartProvider>
+          {" "}
+          <LayoutPageWrapper>
+            {getLayout(<Component {...pageProps} />)}
+          </LayoutPageWrapper>
+        </CartProvider>
+
         <ToastContainer
           position="top-right"
           autoClose={5000}

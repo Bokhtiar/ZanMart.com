@@ -30,15 +30,14 @@ const  ConfirmModal = ({
   
     const [selected, setSelected] = useState(null);
     const handleChange = (id, addressItem) => {
+      console.log(id,"----------",address);
       setAddressData(addressItem);
       setSelected(id);
       
      
     };
     
-  const token=getToken()
-  
-  
+  const token=getToken() 
     if (!isOpen) return null;
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/helpers";
+import Spinner from "@/components/spinner";
 
 export default function isAuth(Component) {
   return function ProtectedPage(props) {
@@ -19,7 +20,7 @@ export default function isAuth(Component) {
       setLoading(false);
     }, [router]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className="flex h-screen fixed top-0 left-0 bg-black/10"> <Spinner/></div>;
     return authenticated ? <Component {...props} /> : null;
   };
 }

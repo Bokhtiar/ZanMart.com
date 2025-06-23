@@ -4,7 +4,7 @@ import { privateRequest, publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";
-import { FaCheck, FaCheckCircle, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { FaCheck, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { networkErrorHandeller } from "@/utils/helpers";
 import SingleCart from "@/components/singleCart";
@@ -12,18 +12,16 @@ import { PiDotsThreeVertical } from "react-icons/pi";
 import { PiDotsNineBold } from "react-icons/pi";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
-import ProductSkeleton from "@/components/loader/ProductSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import style from "./style.module.css";
 import { MdOutlineFullscreen } from "react-icons/md";
 import Paginations from "@/components/pagination";
-import useStickyFetch from "@/hooks/sticky";
 import { TbCurrencyTaka } from "react-icons/tb";
 import ConfirmModal from "@/components/confirmModal";
 import ProductReview from "./components/Review";
 import { useSearchParams } from "next/navigation";
-import { magnify } from "../../utils/magnify";
+import { useCart } from "@/contex/CartContext";
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -43,27 +41,18 @@ const ProductDetails = () => {
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [modalLoading, setModalLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); 
   const [avialableQty, setAvialableQty] = useState(0);
   const [lastPage, setLastPage] = useState(1);
-  const router = useRouter();
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    // setModalAction(null);
-  };
-  const [addressData, setAddressData] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const router = useRouter();  
+  const { addItem } = useCart();
   const fetchProduct = async () => {
     setLoading(true);
     try {
       // Fetch product by ID
       const res = await publicRequest.get(`product/${id}`);
       setProduct(res?.data?.data);
-
       setThumb(res?.data?.data?.thumbnail_image);
-
       // Fetch categories
       const categoryResponse = await publicRequest.get(`categories`);
       const categories = categoryResponse?.data?.data;
@@ -72,11 +61,9 @@ const ProductDetails = () => {
         (itm) => itm.category_id === productCategoryId
       )?.category_name;
       setCategoryName(categoryName);
-
       // Set default selected color and attribute if product_variants exist
       const productVariants = res?.data?.data?.product_variants;
       setvarient(productVariants);
-
       if (productVariants?.length > 0) {
         setSelectedColor(productVariants[0]?.color?.name);
         setSelectedAttribute(productVariants[0]?.attribute?.name);
@@ -103,7 +90,6 @@ const ProductDetails = () => {
         const response = await publicRequest.get(
           `category/product/${product?.category_id}?page=${page}`
         );
-
         if (response && response.status === 200) {
           setReletedProduct(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -138,212 +124,57 @@ const ProductDetails = () => {
     available_quantity: item?.available_quantity,
   }));
 
-  const handelCart = () => {
+  const handelCart = async () => {
+    const selectedVariant = product?.product_variants.find(
+      (item) =>
+        item?.color_id === selectdColor_id &&
+        item?.attribute_id === selectdAtribute_id
+    );
+    if (
+      product?.product_variants.length !== 0 &&
+      !selectedVariant?.product_variant_id
+    ) {
+      Toastify.Warning(
+        "Selected size and color is not available.Please select another color or size"
+      );
+    } else {
+      const cartItem = {
+        qty: quantity,
+        product_id: product?.product_id,
+        product_variant_id: selectedVariant?.product_variant_id || null,
+      };
+      addItem(cartItem);
+    }
+    return;
+  };
+  const handleBuyNow = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === selectdColor_id &&
         item?.attribute_id === selectdAtribute_id
     );
-
-    if (
-      product?.product_variants.length !== 0 &&
-      selectedVariant &&
-      avialableQty > 0
-    ) {
-      const cartItem = {
-        product_id: product?.product_id,
-        sell_price: selectedPrice,
-        weight: product?.weight || selectedWeight || 1,
-        attribute_id: selectdAtribute_id,
-        attribute: selectedAttribute,
-        color_id: selectdColor_id,
-        color: selectedColor,
-        attribute_weight: selectedWeight || null,
-        attribute_price: selectedPrice,
-        qty: quantity,
-        image: product?.thumbnail_image,
-        category: categoryName,
-        title: product?.title,
-        payment: product?.delivery_status,
-        product_variant_id: selectedVariant?.product_variant_id,
-        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
-      };
-
-      let cart = localStorage.getItem("cart");
-      cart = cart ? JSON.parse(cart) : { cart_items: [] };
-
-      const isProductInCart = cart?.cart_items?.some(
-        (item) =>
-          item?.product_id === cartItem?.product_id &&
-          item?.product_variant_id === cartItem?.product_variant_id
-      );
-
-      if (isProductInCart) {
-        Toastify.Warning("Already in Cart");
-      } else {
-        cart.cart_items.push(cartItem);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        window.dispatchEvent(new Event("cartUpdated"));
-        Toastify.Success("Product added successfully");
-      }
-    } else if (product?.product_variants?.length == 0) {
-      const cartItem = {
-        product_id: product?.product_id,
-        sell_price: selectedPrice,
-        weight: product?.weight || selectedWeight || 1,
-        attribute_id: selectdAtribute_id || null,
-        color_id: selectdColor_id || null,
-        attribute_weight: selectedWeight || null,
-        attribute_price: selectedPrice,
-        qty: quantity,
-        image: product?.thumbnail_image,
-        category: categoryName,
-        title: product?.title,
-        payment: product?.delivery_status,
-        attribute_discount_price: selectedDiscount || 0,
-        product_variant_id: 0, // Include the variant ID
-      };
-
-      let cart = localStorage.getItem("cart");
-      cart = cart ? JSON.parse(cart) : { cart_items: [] };
-
-      const isProductInCart = cart?.cart_items?.some(
-        (item) => item?.product_id === cartItem?.product_id
-      );
-
-      if (isProductInCart) {
-        Toastify.Warning("Already in Cart");
-      } else {
-        cart.cart_items.push(cartItem);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        window.dispatchEvent(new Event("cartUpdated"));
-        Toastify.Success("Product added successfully");
-      }
-    } else {
-      Toastify.Warning(
-        "Selected size and color is not available.Please select another color or size"
-      );
-    }
-  };
-  const [orderData, setorderData] = useState([]);
-  const handleBuyNow = () => {
-      // Find the selected variant based on the selected color and attribute
-    const selectedVariant = product?.product_variants.find(
-      (item) =>
-        item?.color_id === selectdColor_id &&
-        item?.attribute_id === selectdAtribute_id
-    );
-
-    if (product?.product_variants.length !== 0 && (selectedVariant && avialableQty > 0)) {
-      const cartItem = {
-        product_id: product?.product_id,
-        sell_price: selectedPrice,
-        weight: product?.weight || selectedWeight || 1,
-        attribute_id: selectdAtribute_id,
-        attribute: selectedAttribute,
-        color_id: selectdColor_id,
-        color: selectedColor,
-        attribute_weight: selectedWeight || null,
-        attribute_price: selectedPrice,
-        qty: quantity,
-        image: product?.thumbnail_image,
-        category: categoryName,
-        title: product?.title,
-        payment: product?.delivery_status,
-        product_variant_id: selectedVariant?.product_variant_id,
-        attribute_discount_price: selectedDiscount || 0, // Include the variant ID
-      };
-
-      let cart = localStorage.getItem("cart");
-      cart = cart ? JSON.parse(cart) : { cart_items: [] };
-
-      const isProductInCart = cart?.cart_items?.some(
-        (item) =>
-          item?.product_id === cartItem?.product_id &&
-          item?.product_variant_id === cartItem?.product_variant_id
-      );
-
-      if (isProductInCart) {
-        router.push('/my-cart?modal=true')
-      } else {
-        cart.cart_items.push(cartItem);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        window.dispatchEvent(new Event("cartUpdated"));
-         router.push('/my-cart?modal=true')
-      }
-    }
-    else if (product?.product_variants?.length == 0) {
-      const cartItem = {
-        product_id: product?.product_id,
-        sell_price: selectedPrice,
-        weight: product?.weight || selectedWeight || 1,
-        attribute_id: selectdAtribute_id || null,
-        color_id: selectdColor_id || null,
-        attribute_weight: selectedWeight || null,
-        attribute_price: selectedPrice,
-        qty: quantity,
-        image: product?.thumbnail_image,
-        category: categoryName,
-        title: product?.title,
-        payment: product?.delivery_status,
-        attribute_discount_price: selectedDiscount || 0,
-           product_variant_id: 0 , // Include the variant ID
-      };
-
-      let cart = localStorage.getItem("cart");
-      cart = cart ? JSON.parse(cart) : { cart_items: [] };
-
-      const isProductInCart = cart?.cart_items?.some(
-        (item) => item?.product_id === cartItem?.product_id
-      );
-
-      if (isProductInCart) {
-        Toastify.Warning("Already in Cart");
-      } else {
-        cart.cart_items.push(cartItem);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        window.dispatchEvent(new Event("cartUpdated"));
-        Toastify.Success("Product added successfully");
-      }
-    }
-    else {
-      Toastify.Warning(
-        "Selected size and color is not available.Please select another color or size"
-      );
-    }
-  };
-  const handleConfirm = async () => {
-    const newMyOrder = {
-      cart_items: [orderData],
-      billing_address_id: addressData?.address_id,
-      shipping_address_id: addressData?.address_id,
+    const cartItem = {
+      product_id: product?.product_id,
+      sell_price: selectedPrice,
+      weight: product?.weight || selectedWeight || 1,
+      attribute_id: selectdAtribute_id,
+      attribute: selectedAttribute,
+      color_id: selectdColor_id,
+      color: selectedColor,
+      attribute_weight: selectedWeight || null,
+      attribute_price: selectedPrice,
+      qty: quantity,
+      image: product?.thumbnail_image,
+      category: categoryName,
+      title: product?.title,
+      payment: product?.delivery_status,
+      product_variant_id: selectedVariant?.product_variant_id || 0,
+      attribute_discount_price: selectedDiscount || 0, // Include the variant ID
     };
-    try {
-      if (newMyOrder?.shipping_address_id && newMyOrder?.billing_address_id) {
-        setModalLoading(true);
-        const res = await privateRequest.post("user/orders", newMyOrder);
-
-        if (res?.status === 200 || res?.status === 201) {
-          Toastify.Success(res.data?.message);
-          // const emptyCart = { ...cart, cart_items: [] };
-          // setCart(emptyCart);
-          // localStorage.setItem("cart", JSON.stringify(emptyCart));
-          // window.dispatchEvent(new Event("cartUpdated"));
-          router.push(
-            `/profile/confirm-order/${res?.data?.order_id?.order_id}`
-          );
-          setModalLoading(false);
-        }
-      } else {
-        // Toastify.Error("Please select an address");
-      }
-    } catch (error) {
-      Toastify.Error(error.response?.data?.message);
-      setModalLoading(false);
-    }
+    localStorage?.setItem("orderItems", JSON.stringify([{ ...cartItem }]));
+    router?.push(`/checkout/?buy_now=${product?.title}`);
   };
-
   useEffect(() => {
     fetchProduct();
   }, [id]);
@@ -379,6 +210,7 @@ const ProductDetails = () => {
   }, [product?.gallery_image]); // Run when product.gallery_image changes
 
   const [have, setHave] = useState(true);
+  // color selected function
   const handleColor = (colordata) => {
     setSelectedColor(colordata?.color_name);
     setSelectedColor_id(colordata.color_id);
@@ -393,7 +225,7 @@ const ProductDetails = () => {
     setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
     setAvialableQty(newColor?.available_quantity); // Updated line
   };
-
+  // attribute handle section
   const attributeHandle = (attributedata) => {
     setSelectedAttribute(attributedata?.attribute);
     setSelectedAttribute_id(attributedata?.attribute_id);
@@ -417,17 +249,16 @@ const ProductDetails = () => {
     setThumb(img);
   };
   const [isOpen, setIsOpen] = useState(false);
-  const { isSticky } = useStickyFetch();
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-  
+
   if (loading) {
     return <ProductDetailsSkeleton />;
   }
   return (
-    <div className={`container-custom px-2 ${isSticky && "mt-14"} pt-5`}>
+    <div className={`container-custom px-2   pt-5`}>
       {/* start single product design  */}
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
@@ -490,16 +321,16 @@ const ProductDetails = () => {
                 </div>
               )}
 
-         <div className="relative max-w-md ">
-      <Image
-         src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
-        alt={'title'}
-        width={1000}
-        height={1000}
-        unoptimized
-        className="rounded-lg"
-      />
-    </div>
+              <div className="relative max-w-md ">
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${thumb}`}
+                  alt={"title"}
+                  width={1000}
+                  height={1000}
+                  unoptimized
+                  className="rounded-lg"
+                />
+              </div>
             </div>
           </div>
 
@@ -765,15 +596,6 @@ const ProductDetails = () => {
         </div>
         <Paginations page={1} setPage={currentPage} totalPage={lastPage} />
       </section>
-      <ConfirmModal
-        isOpen={isModalOpen}
-        loading={modalLoading}
-        onClose={handleModalClose}
-        onConfirm={handleConfirm}
-        message="Are you sure you want to confirm the order?"
-        title="Confirm Order"
-        setAddressData={setAddressData}
-      />
     </div>
   );
 };

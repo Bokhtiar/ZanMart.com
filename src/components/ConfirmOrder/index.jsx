@@ -1,114 +1,73 @@
 import { privateRequest } from "@/config/axios.config";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import { Toastify } from "../toastify";
+import React, { useEffect, useState } from "react";
 import isAuth from "@/middleware/auth.middleware";
-import { networkErrorHandeller } from "@/utils/helpers";
+import { Toastify } from "../toastify";
 import ConfirmOrderSkeleton from "../loader/ConfirmOrderSkeleton";
-import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import Image from "next/image";
 import Spinner from "../spinner";
+import { useCart } from "@/contex/CartContext";
 const ConfirmOrder = () => {
   const router = useRouter();
-  const id = router.query?.slug;
-  const [payment, setPayment] = useState("cod");
-  const [orders, setOrders] = useState([]);
-  const { "order Details": orderDetails } = orders || {};
+  const {clear:clearCart} = useCart();
   const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState(true);
-  const [cancelLoading, setCancelLoading] = useState(true);
-  const data = [
-    // {
-    //   name: "Pay Online",
-    //   img: "/images/payment1.png",
-    //   payment_method: "ssl_commerz",
-    // },
-    {
-      name: "Cash on delivery",
-      img: "/images/COD.svg",
-      payment_method: "cod",
-    },
-  ];
-
-  const fetchOrder = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const res = await privateRequest.get(`user/order/${id}`);
-      if (res.status == 200) {
-        setOrders(res?.data?.data);
-        setLoading(false);
-      }
-    } catch (error) {
-      networkErrorHandeller(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
+  const [orderItem, setOrderItem] = useState([]);
+  const [address, setAddress] = useState({});
+  const [btnLoading,setBtnLoading] = useState();
+  // address find for this page
   useEffect(() => {
-    fetchOrder();
-  }, [fetchOrder]);
-const payload = {
-  payment_method: payment,
-  delivery_charge:  orderDetails?.shipping_address?.district?.name?.toLowerCase() === "dhaka"
-      ? 70
-      : 120
-};
-
-  const handleConfirmOrder = async (modalAction) => {
-    if (modalAction === "cancel") {
+    const fetchAddress = async (item) => {
       try {
-        setCancelLoading(false);
-        const res = await privateRequest.get(`user/order/cancel/${id}`);
-        if (res.status == 200) {
-          Toastify.Success(res?.data?.message);
-          router.replace("/profile/orders");
-          setButtonLoading(true);
-          setCancelLoading(true);
-        }
+        const response = await privateRequest.get("user/address/default");
+        setLoading(false);
+        setAddress(response?.data?.data);
       } catch (error) {
-        networkErrorHandeller(error);
-        setButtonLoading(true);
+        Toastify.Error("Address Get Failed");
       }
-    } else if (modalAction === "confirm") {
-      setButtonLoading(true);
-      try {
-        const res = await privateRequest.post(`user/payments/${id}`, {
-          payload
-        });
+    };
+    fetchAddress();
+  }, []);
+  // order summary for find order item from localStorage
+  useEffect(() => {
+    setOrderItem(JSON?.parse(localStorage?.getItem("orderItems")));
+  }, []);
 
-        if (res.status === 200) {
-          const gatewayUrl = res?.data?.data?.gateway_url;
-          if (gatewayUrl) {
-            window.location.href = gatewayUrl;
-          } else {
-            setButtonLoading(true);
-            Toastify.Success("Order Placed Successfully");
-             router.replace("/profile/orders");
-          }
-        }
-      } catch (error) {
-        setButtonLoading(true);
-        networkErrorHandeller(error);
-      } finally {
-        setButtonLoading(true);
-        setLoading(true);
-      }
-    }
-  }; 
   // inside dhaka outside dhaka amount update
   const deliveryAmount = () =>
-    orderDetails?.shipping_address?.district?.name?.toLowerCase() === "dhaka"
-      ? 70
-      : 120;
+    address?.district?.name?.toLowerCase() === "dhaka" ? 70 : 120;
   const shippingAddressSet = (item) => {
-    return orderDetails?.shipping_address?.[item];
+    return address?.[item];
+  };
+  // total ammount count
+  const subtotalAmount = orderItem.reduce((acc, cur) => {
+    return acc + (cur?.sell_price || 0) * (cur?.qty || 0);
+  }, 0);
+  // order place api call
+  const handleOrderPlace = async () => {
+    setBtnLoading(true)
+    const newMyOrder = {
+      cart_items: orderItem,
+      billing_address_id: address?.address_id,
+      shipping_address_id: address?.address_id,
+      delivery_charge: deliveryAmount(),
+    };
+    try {
+      const res = await privateRequest.post("user/orders", newMyOrder);
+      if (res?.status === 200 || res?.status === 201) {
+        clearCart()
+        Toastify.Success(res?.data?.message); 
+        router.push(`/payment-options/${res?.data?.order_id?.order_id}`);
+        localStorage.setItem("orderItems", JSON.stringify([]));
+         setBtnLoading(false)
+      }
+    } catch (error) {
+      Toastify.Error("Order Place Failed");
+      setBtnLoading(false)
+    }
   };
   if (loading) return <ConfirmOrderSkeleton />;
-
   return (
-    <div className="container-custom mx-auto bg-gray-50 ">
+    <div className="container-custom mx-auto  ">
       <div className="grid md:grid-cols-3 gap-6">
         {/* Left Content */}
         <div className="md:col-span-2 space-y-6">
@@ -124,107 +83,87 @@ const payload = {
               <p>{shippingAddressSet("phone")}</p>
               <p> {shippingAddressSet("address_line1")}</p>
               <p>
-                {" "}
                 {shippingAddressSet("upazila")?.name},{" "}
                 {shippingAddressSet("district")?.name},{" "}
                 {shippingAddressSet("division")?.name}{" "}
               </p>
             </div>
           </div>
+          {/* here show product details  */}
+          <div>
+            <h1 className="text-black border-b-2 shadow-sm font-semibold px-4 pb-2 text-lg">
+              Order Summary - {orderItem?.length} items
+            </h1>
+            <div className="flex-1 space-y-4 mt-2">
+              {/* Headers - hidden on mobile */}
+              <div className="grid grid-cols-12 overflow-x-auto gap-2 bg-gray-200 px-2 py-2 rounded-lg">
+                <div className="col-span-6">Product Details</div>
+                <div className="col-span-2 text-center">Price</div>
+                <div className="col-span-2 text-center">QTY</div>
+                <div className="col-span-2 text-right">Total</div>
+              </div>
+              {/* product show  */}
+              {orderItem.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="grid grid-cols-12 overflow-x-auto gap-2"
+                >
+                  <div className=" col-span-6 flex items-start gap-4">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.image}`}
+                      alt={item?.product?.title}
+                      className="w-16 h-16 object-cover rounded"
+                      width={100}
+                      height={100}
+                    />
+                    <div>
+                      {" "}
+                      <p className="font-medium line-clamp-3">{item?.title}</p>
+                    </div>
+                  </div>
 
-          {/* Delivery Options */}
-          <div className="bg-white p-5 rounded shadow space-y-4">
-            <h2 className="text-lg font-semibold ">Delivery Options</h2>
-            {data.map((option, index) => (
-              <label
-                key={index}
-                className="flex items-center justify-between border p-4 rounded cursor-pointer"
-              >
-                <div className="flex items-baseline gap-1">
-                  <input
-                    type="radio"
-                    name="payment_method"
-                    value={option.payment_method}
-                    checked={payment === option?.payment_method}
-                    onChange={() => setPayment(option?.payment_method)}
-                    className="accent-blue-600 mt-1"
-                  />
-                  <div>
-                    <span className="font-medium">{option?.name}</span>
-                    <p className="text-sm text-gray-500  ">
-                      Delivery in 2–5 working days
+                  <div className=" col-span-2 text-center ">
+                    <p className="text-gray-800 font-semibold text-nowrap">
+                      ৳ {Math.ceil(item?.sell_price)}{" "}
                     </p>
                   </div>
+                  <p className="text-nowrap  col-span-2 text-center">
+                    {item?.qty}
+                  </p>
+                  <div className=" col-span-2 text-right font-medium text-nowrap">
+                    ৳ {Math.ceil(item?.sell_price) * item?.qty}
+                  </div>
                 </div>
-                <div className="text-blue-600 font-semibold">
-                  ৳ {deliveryAmount()}
-                </div>
-              </label>
-            ))}
-            {/* Place Order */}
-            <div className="flex  shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none justify-end fixed  md:sticky bottom-0  items-center z-10    gap-4 right-4 bg-white">
-              <p className="py-2 block md:hidden font-bold text-xl">
-                {" "}
-                ৳ {Math.ceil(orderDetails?.total_amount) + deliveryAmount()}
-              </p>
-              <button
-                disabled={!buttonLoading}
-                onClick={() => handleConfirmOrder("cancel")}
-                className="px-4 w-32 text-[#D9D9D9] rounded text-nowrap  border-2 py-2 hover:text-gray-600  bg-red-500 hover:bg-red-300 "
-              >
-                {!cancelLoading ? <Spinner /> : " Cancel Order"}
-              </button>
-              {payment === "ssl_commerz" ? (
-                <button
-                  disabled={!buttonLoading}
-                  onClick={() => handleConfirmOrder("confirm")}
-                  className="px-4 w-32 text-white rounded text-nowrap  hover:bg-secondary bg-primary py-2"
-                >
-                  {!buttonLoading ? <Spinner /> : "Pay Now"}
-                </button>
-              ) : (
-                <button
-                  disabled={!buttonLoading}
-                  onClick={() => handleConfirmOrder("confirm")}
-                  // disabled={payment !== "cod"}
-                  className="px-4 w-32 text-white rounded hover:bg-blue-500   bg-primary py-2 text-nowrap"
-                >
-                  {!buttonLoading ? <Spinner /> : "Confirm Order"}
-                </button>
-              )}
+              ))}
             </div>
           </div>
         </div>
-
         {/* Order Summary */}
         <div className="bg-white p-5 rounded   space-y-4">
           <h2 className="text-lg font-semibold">Order Summary</h2>
-          <div className="text-sm text-blue-600 cursor-pointer">
-            {" "}
-            {<CartAccordion order={orders?.["order item"]} />}
-          </div>
-
           <div className="border-t pt-4 text-sm space-y-2">
             <div className="flex justify-between">
-              <span>Subtotal ({orders?.["order item"]?.length} items)</span>
-              <span>৳ {Math.ceil(orderDetails?.total_amount)}</span>
+              <span>Subtotal ({orderItem?.length} items)</span>
+              <span className="text-nowrap">৳ {Math.ceil(subtotalAmount)}</span>
             </div>
-            {/* <div className="flex justify-between">
-          <span>Discount (Visa Mastercard Offer)</span>
-          <span>-৳ 1,000</span>
-        </div> */}
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <span>Shipping </span>
-              <span>৳ {deliveryAmount()}</span>
+              <span className="text-nowrap">৳ {deliveryAmount()}</span>
             </div>
           </div>
-
           <div className="border-t pt-4 text-base font-semibold flex justify-between">
             <span>Total</span>
-            <span className="text-blue-600">
-              ৳ {Math.ceil(orderDetails?.total_amount) + deliveryAmount()}
+            <span className="text-blue-600 text-nowrap">
+              ৳ {Math.ceil(subtotalAmount) + deliveryAmount()}
             </span>
           </div>
+          <button
+            className="fixed bottom-0 left-0 md:static w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold h-9 rounded hover:opacity-90 transition cursor-pointer "
+            onClick={handleOrderPlace}
+            disabled={btnLoading}
+          >
+            {btnLoading?<Spinner/>:"Place Order"}
+          </button>
         </div>
       </div>
     </div>
@@ -232,56 +171,3 @@ const payload = {
 };
 
 export default isAuth(ConfirmOrder);
-
-const CartAccordion = ({ order = [] }) => {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <div
-      className={`bg-white  rounded ${
-        isOpen ? "shadow-md" : ""
-      }  w-full transition-all duration-300`}
-    >
-      {/* Accordion Header */}
-      <div
-        className="flex justify-between items-center cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <h3 className="text-md font-semibold">Cart Items ({order?.length})</h3>
-        {isOpen ? (
-          <FaChevronUp className="text-gray-600" />
-        ) : (
-          <FaChevronDown className="text-gray-600" />
-        )}
-      </div>
-
-      {/* Accordion Content */}
-
-      <div
-        className={`flex flex-wrap transition-all duration-300 ease-in-out ${
-          isOpen
-            ? "max-h-96 opacity-100 translate-y-0 mt-2"
-            : "max-h-0 opacity-0 -translate-y-1"
-        } overflow-hidden`}
-      >
-        {order.map((item, idx) => (
-          <div key={idx} className="flex gap-1 pb-2">
-            <Image
-              width={100}
-              height={100}
-              src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.product?.thumbnail_image}`}
-              alt="Product"
-              className="w-20 h-20 object-contain rounded border"
-            />
-            <div>
-              <p className="text-sm font-medium">{item?.product?.title}</p>
-              <div className="mt-2 inline-block border rounded px-3 py-1 text-sm">
-                Qty: {item?.qty}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
