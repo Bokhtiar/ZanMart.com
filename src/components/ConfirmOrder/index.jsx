@@ -3,28 +3,34 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import isAuth from "@/middleware/auth.middleware";
 import { Toastify } from "../toastify";
+import Spinner from "../spinner";
 import ConfirmOrderSkeleton from "../loader/ConfirmOrderSkeleton";
 import Image from "next/image";
-import Spinner from "../spinner";
 import { useCart } from "@/contex/CartContext";
+import { CiEdit } from "react-icons/ci";
+import Drawer from "react-modern-drawer";
+import useLocationFetch from "@/hooks/api/useLocationApiFetch";
+import { IoArrowBack, IoClose } from "react-icons/io5";
+import CreateAddress from "../Address/CreateAddress";
 const ConfirmOrder = () => {
   const router = useRouter();
-  const {clear:clearCart} = useCart();
+  const { clear: clearCart } = useCart();
+  const { data: addressData, refetch } = useLocationFetch("user/address");
   const [loading, setLoading] = useState(true);
   const [orderItem, setOrderItem] = useState([]);
   const [address, setAddress] = useState({});
-  const [btnLoading,setBtnLoading] = useState();
-  // address find for this page
+  const [btnLoading, setBtnLoading] = useState();
+  // address default find for this page
+  const fetchAddress = async (item) => {
+    try {
+      const response = await privateRequest.get("user/address/default");
+      setLoading(false);
+      setAddress(response?.data?.data);
+    } catch (error) {
+      Toastify.Error("Address Get Failed");
+    }
+  };
   useEffect(() => {
-    const fetchAddress = async (item) => {
-      try {
-        const response = await privateRequest.get("user/address/default");
-        setLoading(false);
-        setAddress(response?.data?.data);
-      } catch (error) {
-        Toastify.Error("Address Get Failed");
-      }
-    };
     fetchAddress();
   }, []);
   // order summary for find order item from localStorage
@@ -44,7 +50,7 @@ const ConfirmOrder = () => {
   }, 0);
   // order place api call
   const handleOrderPlace = async () => {
-    setBtnLoading(true)
+    setBtnLoading(true);
     const newMyOrder = {
       cart_items: orderItem,
       billing_address_id: address?.address_id,
@@ -54,17 +60,24 @@ const ConfirmOrder = () => {
     try {
       const res = await privateRequest.post("user/orders", newMyOrder);
       if (res?.status === 200 || res?.status === 201) {
-        clearCart()
-        Toastify.Success(res?.data?.message); 
+        clearCart();
+        Toastify.Success(res?.data?.message);
         router.push(`/payment-options/${res?.data?.order_id?.order_id}`);
         localStorage.setItem("orderItems", JSON.stringify([]));
-         setBtnLoading(false)
+        setBtnLoading(false);
       }
     } catch (error) {
       Toastify.Error("Order Place Failed");
-      setBtnLoading(false)
+      setBtnLoading(false);
     }
   };
+  //  now working on setup in address default address edit address add address
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const handleOpenDrawer = () => {
+    setOpenDrawer(!openDrawer);
+  };
+  // modal logic
+  const [isModalOpen, setIsModalOpen] = useState(false);
   if (loading) return <ConfirmOrderSkeleton />;
   return (
     <div className="container-custom mx-auto  ">
@@ -74,12 +87,43 @@ const ConfirmOrder = () => {
           {/* Shipping Information */}
           <div className="bg-white p-5 rounded shadow">
             <h2 className="text-lg font-semibold mb-4">Shipping Information</h2>
-            <div className="border p-4 rounded text-sm space-y-1">
-              <p>
-                <span className="font-semibold">
-                  {shippingAddressSet("name")}
-                </span>
-              </p>
+            <div className="border p-4 rounded text-sm space-y-1 ">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-semibold">
+                    {shippingAddressSet("name")}
+                  </span>
+                  <span className="bg-blue-200 rounded-md ml-1 px-1">
+                    Default address
+                  </span>
+                </div>
+                {/* drawer design  */}
+                <Drawer
+                  open={openDrawer}
+                  onClose={handleOpenDrawer}
+                  direction="right"
+                  style={{
+                    width: "100%", // default for mobile
+                    maxWidth: "450px", // limit width on larger screens
+                  }}
+                  className="w-full sm:w-[450px]"
+                >
+                  {/* default address fetch  */}
+                  <AddressDefault
+                    fetchAddress={fetchAddress}
+                    setOpenDrawer={setOpenDrawer}
+                    setIsModalOpen={setIsModalOpen}
+                    addressData={addressData}
+                    refetch={refetch}
+                  />
+                </Drawer>
+                <button
+                  className="border rounded-md px-1 py-0.5 font-normal cursor-pointer bg-gray-100 text-nowrap flex gap-1 flex-nowrap item-center justify-center"
+                  onClick={handleOpenDrawer}
+                >
+                  <CiEdit /> edit
+                </button>
+              </div>
               <p>{shippingAddressSet("phone")}</p>
               <p> {shippingAddressSet("address_line1")}</p>
               <p>
@@ -87,6 +131,21 @@ const ConfirmOrder = () => {
                 {shippingAddressSet("district")?.name},{" "}
                 {shippingAddressSet("division")?.name}{" "}
               </p>
+              <button
+                className="border rounded-md px-1 py-0.5 font-normal cursor-pointer bg-gray-100 text-nowrap flex gap-1 flex-nowrap item-center justify-center"
+                onClick={() => {
+                  router.push({
+                    pathname: router.pathname,
+                    query: {
+                      ...router.query,
+                      id: address?.address_id,
+                    },
+                  });
+                  setIsModalOpen(true);
+                }}
+              >
+                <CiEdit /> edit address
+              </button>
             </div>
           </div>
           {/* here show product details  */}
@@ -162,12 +221,182 @@ const ConfirmOrder = () => {
             onClick={handleOrderPlace}
             disabled={btnLoading}
           >
-            {btnLoading?<Spinner/>:"Place Order"}
+            {btnLoading ? <Spinner /> : "Place Order"}
           </button>
         </div>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Your Modal Title"
+      >
+        <CreateAddress
+          isOrder={true}
+          setIsModalOpen={setIsModalOpen}
+          refetch={refetch}
+        />
+      </Modal>
     </div>
   );
 };
 
 export default isAuth(ConfirmOrder);
+const AddressDefault = ({
+  fetchAddress,
+  setOpenDrawer,
+  setIsModalOpen,
+  addressData,
+  refetch,
+}) => {
+  const [address, setAddress] = useState({});
+  const [selectedAddressId, setSelectedAddressId] = useState(
+    addressData.find((a) => a.default_address === 1)?.address_id
+  );
+  const handleDefaultAddressChange = async () => {
+    if (!selectedAddressId) return Toastify.Error("Please Select address");
+    try {
+      const response = await privateRequest.post(
+        "user/address/default/change",
+        { addressId: address?.address_id }
+      );
+      if (response?.status) {
+        Toastify.Success("Successfully Update Default address");
+        refetch();
+        fetchAddress();
+        setOpenDrawer(false);
+      }
+    } catch (error) {
+      Toastify.Error(error?.message);
+    }
+  };
+  return (
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow-sm h-full max-h-screen overflow-y-auto  ">
+      <div className="flex items-center gap-2 mb-6">
+        <button
+          onClick={() => setOpenDrawer(false)}
+          className="flex items-center text-gray-700 hover:text-blue-600 transition font-medium"
+        >
+          <IoArrowBack className="text-xl mr-1" />
+          <span>Back to Checkout</span>
+        </button>
+      </div>
+
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Shipping Address
+        </h2>
+        <button
+          onClick={() => {
+            setIsModalOpen(true);
+            setOpenDrawer(false);
+          }}
+          className="text-blue-600 hover:underline text-sm"
+        >
+          Add new address
+        </button>
+        {/* create modal  */}
+      </div>
+
+      {/* Address List */}
+      {addressData.map((address, index) => (
+        <div
+          key={index}
+          className={`border rounded-lg p-5 mb-4 cursor-pointer ${
+            selectedAddressId === address?.address_id ||
+            (!selectedAddressId && address?.default_address)
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-300"
+          }`}
+          onClick={() => {
+            setAddress(address);
+            setSelectedAddressId(address?.address_id);
+          }}
+        >
+          <div className="flex items-start gap-4">
+            <input
+              type="radio"
+              name="address"
+              className="mt-1 accent-blue-500 cursor-pointer"
+              checked={
+                selectedAddressId === address?.address_id ||
+                (!selectedAddressId && address?.default_address)
+              }
+              onChange={() => {
+                setAddress(address);
+                setSelectedAddressId(address?.address_id);
+              }}
+            />
+            <div className="flex-1">
+              <div className="flex justify-between items-center">
+                <div className="text-base font-medium text-gray-800">
+                  {address?.name}
+                  <span className="text-gray-500 text-sm">
+                    {address?.phone}
+                  </span>
+                </div>
+                <span className="text-xs font-bold bg-red-500 text-white px-2 py-0.5 rounded">
+                  {address?.type}
+                </span>
+              </div>
+              {!address?.default_address && (
+                <p className="text-sm text-gray-600 mt-1 bg-blue-100 px-1 py-0.5 rounded-md">
+                  Use as default shipping address
+                </p>
+              )}
+              <p className="text-sm text-gray-500 mt-1">
+                Region: {address?.address_line1},{address?.upazila?.name},
+                {address?.district?.name},{address?.division?.name}
+              </p>
+              {address?.default_address === 1 && (
+                <div className="mt-3 flex gap-2">
+                  <button className="text-xs px-3 py-1 border border-blue-500 text-blue-600 rounded hover:bg-blue-50">
+                    Default Shipping Address
+                  </button>
+                  <button className="text-xs px-3 py-1 border border-blue-500 text-blue-600 rounded hover:bg-blue-50">
+                    Default Billing Address
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {/* Buttons */}
+      <div className="flex justify-end gap-4 mt-6   bg-white">
+        <button
+          onClick={() => setOpenDrawer(false)}
+          className="px-6 py-2 border rounded text-gray-600 border-gray-300 hover:bg-gray-100"
+        >
+          CANCEL
+        </button>
+        <button
+          onClick={handleDefaultAddressChange}
+          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          SAVE
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const Modal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-xl max-h-screen mx-4 relative animate-fade-in overflow-hidden">
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-600 hover:text-red-500"
+        >
+          <IoClose className="text-2xl" />
+        </button>
+
+        {/* Scrollable Content Area */}
+        <div className="p-4 overflow-y-auto max-h-[80vh]">{children}</div>
+      </div>
+    </div>
+  );
+};

@@ -61,7 +61,7 @@ const Footer = () => {
     },
   ];
   return (
-    <footer className="bg-[#F5F5F5] pt-10 mt-5  ">
+    <footer className="bg-[#F5F5F5] pt-10 mt-5   ">
       <div className="container-custom grid  lg:grid-cols-2 gap-4  ">
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 px-5  lg:grid-cols-2  pb-5 ">
           <div className="flex lg:justify-center  justify-start  ">

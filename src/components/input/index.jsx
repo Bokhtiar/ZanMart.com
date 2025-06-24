@@ -307,7 +307,7 @@ export const SingleSelect = (props) => {
         isClearable={props.isClearable}
         defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
         placeholder={props.placeholder}
-          menuPortalTarget={typeof window !== "undefined" ? document.body : null}
+          // menuPortalTarget={typeof window !== "undefined" ? document.body : null}
       />
        {props?.error && (
         <p className="text-xs text-red-500 pl-3.5">{props?.error}</p>

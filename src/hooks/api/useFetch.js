@@ -14,7 +14,7 @@ const useDynamicIdFetch = (idOrSlug) => {
     setError(null);
 
     try {
-      const response = await privateRequest(`/banner-product/${idOrSlug}`); 
+      const response = await privateRequest.get(`/banner-product/${idOrSlug}`); 
       setData(response?.data?.data);
     } catch (err) {
       setError(err.message || 'Something went wrong');

@@ -5,6 +5,7 @@ import { useCart } from "@/contex/CartContext";
 import { Toastify } from "@/components/toastify";
 import CartSkeleton from "@/components/loader/CartSkeleton";
 import Spinner from "@/components/spinner";
+import Image from "next/image";
 const MyCart = () => {
   const router = useRouter();
   const [selectedProduct, setSelectedProduct] = useState([]);
@@ -95,6 +96,24 @@ const MyCart = () => {
   };
 
   if (loading && !productItem?.length) return <CartSkeleton />;
+  if (!productItem?.length)
+    return ( 
+        <div className="flex flex-col items-center justify-center text-center  "> 
+          <Image
+            height={250}
+            width={250}
+            className="mx-auto "
+            src="/empty_cart.png"
+            alt="Logo"
+          />
+          <button
+            className="mt-5 px-6 py-2 bg-primary text-white rounded-lg"
+            onClick={() => (window.location.href = "/products")}
+          >
+            Continue Shopping
+          </button>
+        </div> 
+    );
   return (
     <div className="container-custom">
       {productItem?.length && updateLoading && (
