@@ -10,6 +10,7 @@ import SingleCart from "@/components/singleCart";
 import useStickyFetch from "@/hooks/sticky";
 import Image from "next/image";
 import { BiCategory } from "@/icons";
+import ServiceQualitySkeleton from "@/components/loader/QualitySkeleton";
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
@@ -42,7 +43,7 @@ export default function Home() {
   return (
     <section className={`${poppins.className} px-2  ${isSticky && "mt-14"}`}>
       <Banner></Banner>
-      <ServiceQuality></ServiceQuality>
+      {loading ?  <ServiceQualitySkeleton/>:<ServiceQuality/> }
       {loading ? (
         <section>
           <HomePageCategorySkeletonLoader />

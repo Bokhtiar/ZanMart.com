@@ -21,7 +21,7 @@ const Banner = () => {
     fetchBanner();
   }, []);
   let campaignBanner = banner.filter((item) => item.is_campaign);
-  if (loading) {
+  if (loading  ) {
     return <BannerSkeleton></BannerSkeleton>;
   }
   return (
