@@ -10,7 +10,7 @@ import {
   HiClipboardDocumentList,
   PiDotsSixVerticalBold,
   MdOutlineFullscreen,
-  TbCurrencyTaka, 
+  TbCurrencyTaka,
 } from "@/icons";
 import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
 import { Toastify } from "@/components/toastify";
@@ -124,7 +124,8 @@ const ProductDetails = () => {
   }));
   // cart added function here
   const handelCart = async () => {
-    if(token) return router?.push("/auth/log-in")
+    if (!token) return router?.push("/auth/log-in");
+    if (productElement?.qty <= 0) return Toastify.Error("Product Out Of Stock");
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === productElement?.color_id &&
@@ -148,7 +149,8 @@ const ProductDetails = () => {
   };
   // single buy product
   const handleBuyNow = () => {
-    if(token) return router?.push("/auth/log-in")
+    if (!token) return router?.push("/auth/log-in");
+    if (productElement?.qty <= 0) return Toastify.Error("Product Out Of Stock");
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>
@@ -257,7 +259,7 @@ const ProductDetails = () => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
   console.log(productElement, "product element");
-  if (loading  ) {
+  if (loading) {
     return <ProductDetailsSkeleton />;
   }
   return (

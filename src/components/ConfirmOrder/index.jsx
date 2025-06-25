@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IoArrowBack, IoClose, FaHome, CiEdit } from "@/icons";
+import { IoArrowBack, IoClose, FaHome, CiEdit, MdLocationOff } from "@/icons";
 import { privateRequest } from "@/config/axios.config";
 import { useRouter } from "next/router";
 import isAuth from "@/middleware/auth.middleware";
@@ -26,7 +26,8 @@ const ConfirmOrder = () => {
       setLoading(false);
       setAddress(response?.data?.data);
     } catch (error) {
-      Toastify.Error("Address Get Failed");
+      setLoading(false);
+      // Toastify.Error("Address Get Failed");
     }
   };
   useEffect(() => {
@@ -49,6 +50,7 @@ const ConfirmOrder = () => {
   }, 0);
   // order place api call
   const handleOrderPlace = async () => {
+    if(!address?.address_id) return Toastify.Error("Please Create Address for order Product")
     setBtnLoading(true);
     const newMyOrder = {
       cart_items: orderItem,
@@ -88,14 +90,38 @@ const ConfirmOrder = () => {
             <h2 className="text-lg font-semibold mb-4">Shipping Information</h2>
             <div className="border p-4 rounded text-sm space-y-1 ">
               <div className="flex items-center justify-between">
-                <div>
-                  <span className="font-semibold">
-                    {shippingAddressSet("name")}
-                  </span>
-                  <span className="bg-blue-200/50 rounded-md ml-1 px-1">
-                    Default address
-                  </span>
-                </div>
+                {shippingAddressSet("address_line1") && (
+                  <div>
+                    <span className="font-semibold">
+                      {shippingAddressSet("name")}
+                    </span>
+                    <span className="bg-blue-200/50 rounded-md ml-1 px-1">
+                      Default address
+                    </span>
+                  </div>
+                )}
+                {!shippingAddressSet("address_line1") && (
+                  <div className="flex items-center justify-center   px-4  w-full">
+                    <div className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+                      <MdLocationOff className="text-red-500 text-6xl mx-auto mb-4" />
+                      <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+                        Address Not Found
+                      </h1>
+                      <p className="text-gray-600">
+                        No address is currently saved. Please add an address to
+                        continue.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setIsModalOpen(true); 
+                        }}
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        Add new address
+                      </button>
+                    </div>
+                  </div>
+                )}
                 {/* drawer design  */}
                 <Drawer
                   open={openDrawer}
@@ -116,35 +142,45 @@ const ConfirmOrder = () => {
                     refetch={refetch}
                   />
                 </Drawer>
-                <button
-                  className="border rounded-md px-1 py-0.5 font-normal cursor-pointer  bg-blue-200/50 text-nowrap flex gap-1 flex-nowrap items-center justify-center"
-                  onClick={handleOpenDrawer}
-                >
-                  <FaHome className="text-blue-600" /> address
-                </button>
+                {shippingAddressSet("address_line1") && (
+                  <button
+                    className="border rounded-md px-1 py-0.5 font-normal cursor-pointer  bg-blue-200/50 text-nowrap flex gap-1 flex-nowrap items-center justify-center"
+                    onClick={handleOpenDrawer}
+                  >
+                    <FaHome className="text-blue-600" /> address
+                  </button>
+                )}
               </div>
-              <p>{shippingAddressSet("phone")}</p>
-              <p> {shippingAddressSet("address_line1")}</p>
-              <p>
-                {shippingAddressSet("upazila")?.name},{" "}
-                {shippingAddressSet("district")?.name},{" "}
-                {shippingAddressSet("division")?.name}{" "}
-              </p>
-              <button
-                className="border rounded-md px-1 py-0.5 font-normal cursor-pointer bg-gray-100 text-nowrap flex gap-1 flex-nowrap item-center justify-center"
-                onClick={() => {
-                  router.push({
-                    pathname: router.pathname,
-                    query: {
-                      ...router.query,
-                      id: address?.address_id,
-                    },
-                  });
-                  setIsModalOpen(true);
-                }}
-              >
-                <CiEdit /> edit address
-              </button>
+              {shippingAddressSet("address_line1") ? (
+                <div>
+                  <p>{shippingAddressSet("phone")}</p>
+                  <p> {shippingAddressSet("address_line1")}</p>
+                  <p>
+                    {shippingAddressSet("upazila")?.name},{" "}
+                    {shippingAddressSet("district")?.name},{" "}
+                    {shippingAddressSet("division")?.name}{" "}
+                  </p>
+                </div>
+              ) : (
+                ""
+              )}
+              {shippingAddressSet("address_line1") && (
+                <button
+                  className="border rounded-md px-1 py-0.5 font-normal cursor-pointer bg-gray-100 text-nowrap flex gap-1 flex-nowrap item-center justify-center"
+                  onClick={() => {
+                    router.push({
+                      pathname: router.pathname,
+                      query: {
+                        ...router.query,
+                        id: address?.address_id,
+                      },
+                    });
+                    setIsModalOpen(true);
+                  }}
+                >
+                  <CiEdit /> edit address
+                </button>
+              )}
             </div>
           </div>
           {/* here show product details  */}

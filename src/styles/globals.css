@@ -120,41 +120,4 @@ body {
 
 
 /* toastify design change  */
-/* Container override (optional if needed) */
-.Toastify__toast-container {
-  left: 50px !important;
-  bottom: 20px !important;
-  width: auto;
-}
-
-/* Toast style */
-.custom-toast {
-  background-color: #333;
-  color: white;
-  padding: 5px 10px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  transform: scale(0.9);
-  transition: all 0.3s ease-in-out;
-  overflow: hidden;
-  max-width: 220px;
-  cursor: pointer;
-}
-
-/* On hover - make bigger and show full text */
-.Toastify__toast-container:hover .custom-toast {
-  transform: scale(1.05);
-  max-width: 320px;
-  padding: 10px 15px;
-  font-size: 16px;
-  background-color: #444;
-}
-
-/* Content */
-.custom-body {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 14px;
-  transition: all 0.3s ease-in-out;
-}
+ 
