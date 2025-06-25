@@ -1,6 +1,12 @@
 // src/hooks/useCartProvider.js
 import { useEffect, useReducer } from "react";
-import { addToCart, clearCart, fetchCart, removeFromCart, updateToCart } from "./api/cart";
+import {
+  addToCart,
+  clearCart,
+  fetchCart,
+  removeFromCart,
+  updateToCart,
+} from "./api/cart";
 import { Toastify } from "@/components/toastify";
 import { getToken } from "@/utils/helpers";
 
@@ -12,7 +18,7 @@ const initialState = {
 
 const cartReducer = (state, action) => {
   switch (action.type) {
-     case "SET_LOADING":
+    case "SET_LOADING":
       return {
         ...state,
         loading: action.payload.loading ?? state.loading,
@@ -26,7 +32,7 @@ const cartReducer = (state, action) => {
         productLoading: false,
       };
     case "ADD_ITEM":
-      return { ...state, items: [...state?.items, action.payload] }; 
+      return { ...state, items: [...state?.items, action.payload] };
     // case "UPDATE_ITEM":
     //   return { ...state, items: [...state?.items, action.payload] };
     case "REMOVE_ITEM":
@@ -58,7 +64,7 @@ export default function useCartProvider() {
         type: "SET_LOADING",
         payload: { loading: true, productLoading: true },
       });
-      const res = await fetchCart(); 
+      const res = await fetchCart();
       dispatch({ type: "LOAD_CART", payload: res.data?.data });
     } catch (err) {}
   };
@@ -67,6 +73,7 @@ export default function useCartProvider() {
     try {
       const res = await addToCart(data);
       dispatch({ type: "ADD_ITEM", payload: res.data.cart });
+      Toastify.Success("Successfully Added Cart");
     } catch (err) {
       Toastify.Error(err?.response?.data?.message);
     }
@@ -102,7 +109,7 @@ export default function useCartProvider() {
       await clearCart();
       dispatch({ type: "CLEAR_CART" });
     } catch (err) {
-     Toastify.Error("clear successfully")
+      Toastify.Error("clear successfully");
     }
   };
 

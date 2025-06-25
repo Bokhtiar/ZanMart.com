@@ -29,7 +29,7 @@ const Login = () => {
       str += "&" + vl + "=" + value[vl];
     }
   }
- 
+
   const { redirect } = router.query;
   const onSubmit = async (data) => {
     const newData = {
@@ -43,7 +43,7 @@ const Login = () => {
         userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);
         Toastify.Success("Successfully Login");
-        router.replace(redirect ? String(redirect)+str : "/");
+        router.replace(redirect ? String(redirect) + str : "/");
         setLoading(false);
       }
     } catch (error) {

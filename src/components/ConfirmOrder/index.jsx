@@ -50,7 +50,7 @@ const ConfirmOrder = () => {
   }, 0);
   // order place api call
   const handleOrderPlace = async () => {
-    setBtnLoading(true);
+    setBtnLoading(true); 
     const newMyOrder = {
       cart_items: orderItem,
       billing_address_id: address?.address_id,

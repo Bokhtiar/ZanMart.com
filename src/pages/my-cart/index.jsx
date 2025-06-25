@@ -6,6 +6,7 @@ import { Toastify } from "@/components/toastify";
 import CartSkeleton from "@/components/loader/CartSkeleton";
 import Spinner from "@/components/spinner";
 import Image from "next/image";
+import isAuth from "@/middleware/auth.middleware";
 const MyCart = () => {
   const router = useRouter();
   const [selectedProduct, setSelectedProduct] = useState([]);
@@ -25,7 +26,8 @@ const MyCart = () => {
       }
       const orderItem = selectedProduct?.map((product) => {
         return {
-          sell_price: product?.product?.sell_price,
+          sell_price:
+            product?.product_variant?.price || product?.product?.sell_price,
           product_id: product?.product?.product_id,
           weight:
             product?.product?.weight || product?.product_variant?.weight || 1,
@@ -34,14 +36,19 @@ const MyCart = () => {
           color_id: product?.product_variant?.color_id,
           color: product?.product_variant?.color?.name,
           attribute_weight: product?.product_variant?.weight || null,
-          attribute_price: product?.product_variant?.discount_price,
-          qty: product?.qty,
+          attribute_price:
+            product?.product_variant?.discount_price ||
+            product?.product?.sell_price,
+          qty: product?.qty || 0,
           image: product?.product?.thumbnail_image,
           category: product?.product?.category?.category_name,
           title: product?.product?.title,
           payment: "paid",
-          product_variant_id: product?.product_variant?.product_variant_id,
-          attribute_discount_price: product?.product_variant?.sell_price || 0,
+          product_variant_id: product?.product_variant?.product_variant_id || 0,
+          attribute_discount_price:
+            product?.product_variant?.sell_price ||
+            product?.product?.sell_price ||
+            0,
         };
       });
       localStorage.setItem("orderItems", JSON.stringify(orderItem));
@@ -97,22 +104,22 @@ const MyCart = () => {
 
   if (loading && !productItem?.length) return <CartSkeleton />;
   if (!productItem?.length)
-    return ( 
-        <div className="flex flex-col items-center justify-center text-center  "> 
-          <Image
-            height={250}
-            width={250}
-            className="mx-auto "
-            src="/empty_cart.png"
-            alt="Logo"
-          />
-          <button
-            className="mt-5 px-6 py-2 bg-primary text-white rounded-lg"
-            onClick={() => (window.location.href = "/products")}
-          >
-            Continue Shopping
-          </button>
-        </div> 
+    return (
+      <div className="flex flex-col items-center justify-center text-center  ">
+        <Image
+          height={250}
+          width={250}
+          className="mx-auto "
+          src="/empty_cart.png"
+          alt="Logo"
+        />
+        <button
+          className="mt-5 px-6 py-2 bg-primary text-white rounded-lg"
+          onClick={() => (window.location.href = "/products")}
+        >
+          Continue Shopping
+        </button>
+      </div>
     );
   return (
     <div className="container-custom">
@@ -252,7 +259,7 @@ const MyCart = () => {
   );
 };
 
-export default MyCart;
+export default isAuth(MyCart);
 const CartItem = ({ item, updateItem }) => {
   const handleQty = (type) => {
     if (type === "dec") {

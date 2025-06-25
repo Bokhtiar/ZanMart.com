@@ -1,25 +1,29 @@
+import React, { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import {
+  FaCheck,
+  FaStar,
+  FaStarHalfAlt,
+  IoMdCheckmarkCircleOutline,
+  PiDotsThreeVertical,
+  PiDotsNineBold,
+  HiClipboardDocumentList,
+  PiDotsSixVerticalBold,
+  MdOutlineFullscreen,
+  TbCurrencyTaka,
+  IoClose,
+} from "@/icons";
 import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
 import { Toastify } from "@/components/toastify";
-import { privateRequest, publicRequest } from "@/config/axios.config";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import { FaCheck, FaStar, FaStarHalfAlt } from "react-icons/fa";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { networkErrorHandeller } from "@/utils/helpers";
+import ProductReview from "./components/Review";
 import SingleCart from "@/components/singleCart";
-import { PiDotsThreeVertical } from "react-icons/pi";
-import { PiDotsNineBold } from "react-icons/pi";
-import { HiClipboardDocumentList } from "react-icons/hi2";
-import { PiDotsSixVerticalBold } from "react-icons/pi";
+import Paginations from "@/components/pagination";
+import { publicRequest } from "@/config/axios.config";
+import style from "./style.module.css";
+import Image from "next/image";
+import { getToken, networkErrorHandeller } from "@/utils/helpers";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import style from "./style.module.css";
-import { MdOutlineFullscreen } from "react-icons/md";
-import Paginations from "@/components/pagination";
-import { TbCurrencyTaka } from "react-icons/tb";
-import ConfirmModal from "@/components/confirmModal";
-import ProductReview from "./components/Review";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "@/contex/CartContext";
 const ProductDetails = () => {
@@ -29,23 +33,18 @@ const ProductDetails = () => {
   const [product, setProduct] = useState({});
   const id = searchParams.get("id");
   const [categoryName, setCategoryName] = useState("");
-  const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedAttribute, setSelectedAttribute] = useState(null);
-  const [selectedPrice, setSelectedPrice] = useState(product?.sell_price);
   const [variant, setvarient] = useState();
-  const [selectdColor_id, setSelectedColor_id] = useState();
-  const [selectdAtribute_id, setSelectedAttribute_id] = useState();
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
-  const [selectedDiscount, setSelectedDiscount] = useState(null);
   const [reletedProduct, setReletedProduct] = useState([]);
   const [gridCount, setGridCount] = useState(5);
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1); 
-  const [avialableQty, setAvialableQty] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
-  const router = useRouter();  
+  const [productElement, setProductElement] = useState({});
+  const router = useRouter();
   const { addItem } = useCart();
+  const token = getToken();
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -62,21 +61,22 @@ const ProductDetails = () => {
       )?.category_name;
       setCategoryName(categoryName);
       // Set default selected color and attribute if product_variants exist
-      const productVariants = res?.data?.data?.product_variants;
+      const productVariants = res?.data?.data?.product_variants || [];
       setvarient(productVariants);
-      if (productVariants?.length > 0) {
-        setSelectedColor(productVariants[0]?.color?.name);
-        setSelectedAttribute(productVariants[0]?.attribute?.name);
-        setSelectedPrice(productVariants[0]?.price);
-        setSelectedAttribute_id(productVariants[0]?.attribute?.attribute_id);
-        setSelectedColor_id(productVariants[0]?.color_id);
-        setSelectedWeight(productVariants[0]?.weight);
-        setSelectedDiscount(productVariants[0]?.discount_price);
-        setAvialableQty(productVariants[0]?.available_quantity);
-      } else {
-        setSelectedPrice(res?.data?.data?.sell_price);
-        setSelectedWeight(res?.data?.data?.weight);
-      }
+      const product = res?.data?.data;
+      // start  set up all element for product
+      const variant = productVariants[0];
+      console.log(variant);
+      setProductElement({
+        color: variant?.color?.name || null,
+        color_id: variant?.color_id || null,
+        attribute: variant?.attribute?.name || null,
+        attribute_id: variant?.attribute?.attribute_id || null,
+        price: variant?.price || product?.sell_price,
+        weight: variant?.weight || null,
+        discount: variant?.discount_price || product?.flat_discount,
+        qty: variant?.available_quantity || product?.stock_qty,
+      });
     } catch (error) {
       Toastify.Error(error);
     }
@@ -123,12 +123,12 @@ const ProductDetails = () => {
     discount_price: item?.discount_price,
     available_quantity: item?.available_quantity,
   }));
-
+  // cart added function here
   const handelCart = async () => {
     const selectedVariant = product?.product_variants.find(
       (item) =>
-        item?.color_id === selectdColor_id &&
-        item?.attribute_id === selectdAtribute_id
+        item?.color_id === productElement?.color_id &&
+        item?.attribute_id === productElement?.attribute_id
     );
     if (
       product?.product_variants.length !== 0 &&
@@ -145,36 +145,37 @@ const ProductDetails = () => {
       };
       addItem(cartItem);
     }
-    return;
   };
+  // single buy product
   const handleBuyNow = () => {
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>
-        item?.color_id === selectdColor_id &&
-        item?.attribute_id === selectdAtribute_id
+        item?.color_id === productElement?.color_id &&
+        item?.attribute_id === productElement?.attribute_id
     );
     const cartItem = {
       product_id: product?.product_id,
-      sell_price: selectedPrice,
+      sell_price: productElement?.price,
       weight: product?.weight || selectedWeight || 1,
-      attribute_id: selectdAtribute_id,
-      attribute: selectedAttribute,
-      color_id: selectdColor_id,
-      color: selectedColor,
+      attribute_id: productElement?.attribute_id,
+      attribute: productElement?.attribute,
+      color_id: productElement?.color_id,
+      color: productElement?.color,
       attribute_weight: selectedWeight || null,
-      attribute_price: selectedPrice,
+      attribute_price: productElement?.price,
       qty: quantity,
       image: product?.thumbnail_image,
       category: categoryName,
       title: product?.title,
       payment: product?.delivery_status,
       product_variant_id: selectedVariant?.product_variant_id || 0,
-      attribute_discount_price: selectedDiscount || 0, // Include the variant ID
+      attribute_discount_price: productElement?.discount || 0, // Include the variant ID
     };
     localStorage?.setItem("orderItems", JSON.stringify([{ ...cartItem }]));
     router?.push(`/checkout/?buy_now=${product?.title}`);
   };
+  // fetch single product
   useEffect(() => {
     fetchProduct();
   }, [id]);
@@ -212,36 +213,37 @@ const ProductDetails = () => {
   const [have, setHave] = useState(true);
   // color selected function
   const handleColor = (colordata) => {
-    setSelectedColor(colordata?.color_name);
-    setSelectedColor_id(colordata.color_id);
-
     const newColor = data?.find(
       (item) =>
         item?.color_name === colordata?.color_name &&
         item?.attribute === selectedAttribute
     );
-    setSelectedPrice(newColor?.price || product?.sell_price);
     setSelectedWeight(newColor?.weight || product?.weight);
-    setSelectedDiscount(newColor?.discount_price || product?.discount_price); // Updated line
-    setAvialableQty(newColor?.available_quantity); // Updated line
+    setProductElement({
+      ...productElement,
+      color: colordata?.color_name,
+      color_id: colordata.color_id,
+      discount: newColor?.discount_price || product?.discount_price,
+      qty: newColor?.available_quantity,
+      price: newColor?.price || product?.sell_price,
+    });
   };
   // attribute handle section
   const attributeHandle = (attributedata) => {
-    setSelectedAttribute(attributedata?.attribute);
-    setSelectedAttribute_id(attributedata?.attribute_id);
-
     const newAttribute = data?.find(
       (item) =>
         item?.attribute === attributedata?.attribute &&
         item?.color_name === selectedColor
     );
-
-    setSelectedPrice(newAttribute?.price || product?.sell_price);
     setSelectedWeight(newAttribute?.weight || product?.weight);
-    setSelectedDiscount(
-      newAttribute?.discount_price || product?.discount_price
-    ); // Updated line
-    setAvialableQty(newAttribute?.available_quantity);
+    setProductElement({
+      ...productElement,
+      attribute: attributedata?.attribute,
+      attribute_id: attributedata?.attribute_id,
+      price: newAttribute?.price || product?.sell_price,
+      discount: newAttribute?.discount_price || product?.flat_discount,
+      qty: newColor?.available_quantity,
+    });
   };
 
   //change thumbnile image base on galllery
@@ -253,8 +255,8 @@ const ProductDetails = () => {
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-
-  if (loading) {
+  console.log(productElement, "product element");
+  if (loading && false) {
     return <ProductDetailsSkeleton />;
   }
   return (
@@ -375,7 +377,7 @@ const ProductDetails = () => {
                     <button
                       onClick={() => attributeHandle(attribute)}
                       className={`font-medium text-xs leading-4  p-1 me-1 border rounded ${
-                        selectedAttribute === attribute?.attribute
+                        productElement?.attribute === attribute?.attribute
                           ? "bg-primary text-white"
                           : "bg-transparent"
                       }`}
@@ -405,7 +407,7 @@ const ProductDetails = () => {
                       <button
                         onClick={() => handleColor(color)}
                         className={`font-bold h-4 w-4 rounded-full shadow-md relative ${
-                          selectedColor === color?.color_name
+                          productElement?.color === color?.color_name
                             ? "bg-primary text-white h-5 w-5 border-2 border-blue-400"
                             : ""
                         }`}
@@ -413,7 +415,7 @@ const ProductDetails = () => {
                           background: color?.color_name,
                         }}
                       ></button>
-                      {selectedColor === color?.color_name && (
+                      {productElement?.color === color?.color_name && (
                         <span className="absolute   text-xs font-bold">
                           <FaCheck calssName="h-4 w-4 " />
                         </span>
@@ -423,11 +425,12 @@ const ProductDetails = () => {
               </p>
             )}
             <div className="flex gap-3 justify-between">
+              {/* stock available check here  */}
               <p className=" text-center    text-primary flex items-center gap-2">
                 <span className="font-bold  leading-6   text-[#494949]">
                   Stock:
                 </span>
-                {avialableQty > 0 ? (
+                {productElement?.qty > 0 ? (
                   <span className="flex items-center gap-1 ">
                     <IoMdCheckmarkCircleOutline />
                     In stock
@@ -453,26 +456,27 @@ const ProductDetails = () => {
             </div>
             {/* price field implement  */}
             <div className="flex gap-4  w-full lg:w-3/5  ">
-              <span className="text-primary leading-5 text-nowrap  flex text-2xl   font-semibold flex items-center ">
+              <span className="text-primary leading-5 text-nowrap text-2xl   font-semibold flex items-center ">
                 <span className="  font-semibold text-primary leading-5 -ml-1 ">
                   <TbCurrencyTaka />
                 </span>
-                {Math.ceil(selectedPrice)}{" "}
+                {Math.ceil(productElement?.price)}{" "}
               </span>
               <span className="flex items-center text-secondary text-xl  font-base ">
-                {selectedDiscount && (
+                {productElement?.discount && (
                   <span className="text-secondary  line-through flex  items-center">
                     <TbCurrencyTaka />
-                    {Math.ceil(selectedDiscount)}
+                    {Math.ceil(productElement?.discount)}
                   </span>
                 )}
-                {selectedDiscount && (
+                {productElement?.discount && (
                   <span className="text-secondary text-sm bg-gray-100 p-1 ms-5">
                     {" "}
                     -
                     {Math.ceil(
-                      ((selectedDiscount - selectedPrice) * 100) /
-                        selectedDiscount
+                      ((productElement?.discount - productElement?.price) *
+                        100) /
+                        productElement?.discount
                     )}
                     %
                   </span>
