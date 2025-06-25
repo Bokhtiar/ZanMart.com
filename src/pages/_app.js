@@ -17,11 +17,9 @@ const poppins = Poppins({
 });
 
 export default function App({ Component, pageProps }) {
-  const getLayout = Component.getLayout || ((page) => page);
-
+  const getLayout = Component.getLayout || ((page) => page); 
   // gogle analtic
-  const router = useRouter();
-
+  const router = useRouter(); 
   useEffect(() => {
     const handleRouteChange = (url) => {
       gtag.pageview(url);

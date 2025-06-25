@@ -1,4 +1,4 @@
- import { Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import Banner from "@/components/Banner";
 import ServiceQuality from "@/components/ServiceQuality";
 import { useEffect, useState } from "react";
@@ -8,7 +8,8 @@ import Link from "next/link";
 import { AllViewButton } from "@/components/button";
 import SingleCart from "@/components/singleCart";
 import useStickyFetch from "@/hooks/sticky";
-
+import Image from "next/image";
+import { BiCategory } from "@/icons";
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
@@ -21,7 +22,7 @@ export default function Home() {
     try {
       setLoading(true);
       const response = await publicRequest.get("home-page-category");
-      setCategories(response?.data); 
+      setCategories(response?.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -67,7 +68,21 @@ export default function Home() {
               className="container-custom pb-5 mx-auto mt-6 bg-gray-50 py-2 rounded"
             >
               <h1 className="font-bold  my-1 md:text-[25px]  lg:text-[25px]  flex items-center justify-between text-primary capitalize">
-                {category?.category_name}
+                <div className="flex items-center gap-1">
+                  {category?.thumbnail ? (
+                    <Image
+                      height={400}
+                      width={4000}
+                      className="w-5 h-5 rounded-lg"
+                      src={`${process.env.NEXT_PUBLIC_API_SERVER}${category?.thumbnail}`}
+                      alt=""
+                    />
+                  ) : (
+                    <BiCategory />
+                  )}
+
+                  <span> {category?.category_name}</span>
+                </div>
                 <Link
                   href={`/category-products/?category_id=${category?.category_id}&category_name=${category?.category_name}`}
                   onClick={() => viewAll(category?.category_id)}

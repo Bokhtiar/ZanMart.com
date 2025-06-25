@@ -124,6 +124,7 @@ const ProductDetails = () => {
   }));
   // cart added function here
   const handelCart = async () => {
+    if(token) return router?.push("/auth/log-in")
     const selectedVariant = product?.product_variants.find(
       (item) =>
         item?.color_id === productElement?.color_id &&
@@ -147,6 +148,7 @@ const ProductDetails = () => {
   };
   // single buy product
   const handleBuyNow = () => {
+    if(token) return router?.push("/auth/log-in")
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>

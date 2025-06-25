@@ -10,3 +10,4 @@ export { TbCurrencyTaka } from "react-icons/tb";
 export { IoClose ,IoArrowBack } from "react-icons/io5";
 export { MdOutlineFullscreen } from "react-icons/md"; 
 export { CiEdit } from "react-icons/ci";
+export { BiCategory } from "react-icons/bi";
