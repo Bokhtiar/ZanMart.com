@@ -68,9 +68,8 @@ const PaymentOption = () => {
               <span className="text-xl text-gray-400">&gt;</span>
             </div>
           </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Other Methods</h2>
-            {/* Add other payment methods here */}
+          {/* <div>
+            <h2 className="text-lg font-semibold mb-2">Other Methods</h2> 
             <div className="bg-white rounded-lg p-4 text-gray-500 shadow-sm text-xl">
               Coming soon...
             </div>
@@ -97,7 +96,7 @@ const PaymentOption = () => {
                 height={100}
               />
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Order Summary */}
@@ -107,7 +106,7 @@ const PaymentOption = () => {
           <div className="flex justify-between text-sm mb-2 gap-2 flex-shrink-0">
             <span className="flex">
               Subtotal{" "}
-              <span className="text-blue-600 text-nowrap">
+              <span className="  text-nowrap">
                 ( {orderItem?.["order item"]?.length} Items)
               </span>
             </span>

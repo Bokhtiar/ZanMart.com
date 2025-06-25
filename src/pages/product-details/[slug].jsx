@@ -10,8 +10,7 @@ import {
   HiClipboardDocumentList,
   PiDotsSixVerticalBold,
   MdOutlineFullscreen,
-  TbCurrencyTaka,
-  IoClose,
+  TbCurrencyTaka, 
 } from "@/icons";
 import ProductDetailsSkeleton from "@/components/loader/productDetailSkeleton";
 import { Toastify } from "@/components/toastify";
@@ -256,7 +255,7 @@ const ProductDetails = () => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
   console.log(productElement, "product element");
-  if (loading && false) {
+  if (loading  ) {
     return <ProductDetailsSkeleton />;
   }
   return (

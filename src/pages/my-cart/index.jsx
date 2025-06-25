@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart } from "@/icons";
 import { useCart } from "@/contex/CartContext";
 import { Toastify } from "@/components/toastify";
 import CartSkeleton from "@/components/loader/CartSkeleton";
 import Spinner from "@/components/spinner";
-import Image from "next/image";
 import isAuth from "@/middleware/auth.middleware";
 const MyCart = () => {
   const router = useRouter();
@@ -128,7 +128,7 @@ const MyCart = () => {
           <Spinner />
         </div>
       )}
-      <h2 className="text-2xl font-semibold mb-4 flex items-center gap-1">
+      <h2 className="text-2xl font-normal mb-4 flex items-center gap-1 bg-gray-200/50 rounded-md px-2 py-1">
         {" "}
         <FaShoppingCart /> Cart List
       </h2>
@@ -166,10 +166,12 @@ const MyCart = () => {
                   checked={isChecked(item)}
                   className="form-checkbox mt-1 h-5 w-5 text-pink-500"
                 />
-                <img
+                <Image
                   src={`${process.env.NEXT_PUBLIC_API_SERVER}${item?.product?.thumbnail_image}`}
                   alt={item?.product?.title}
                   className="w-16 h-16 object-cover rounded"
+                  width={100}
+                  height={100}
                 />
                 <div>
                   <p className="font-medium">{item?.title}</p>
@@ -242,7 +244,7 @@ const MyCart = () => {
               <span className="flex bg-gray-200 text-black/40 px-1 rounded-lg">
                 Cash On Delivery
               </span>
-              <span className="flex   text-black/80 text-xl  rounded-lg mt-2">
+              {/* <span className="flex   text-black/80 text-xl  rounded-lg mt-2">
                 Comming Soon
               </span>
               <div className="flex flex-wrap gap-2 items-center py-2">
@@ -250,7 +252,7 @@ const MyCart = () => {
                 <img src="/images/bkash.svg" alt="Bkash" className="h-6" />
                 <img src="/images/nagad.svg" alt="Nagad" className="h-6" />
                 <img src="/images/rocket.svg" alt="Rocket" className="h-6" />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

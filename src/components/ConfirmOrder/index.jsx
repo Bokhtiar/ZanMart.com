@@ -1,16 +1,15 @@
+import React, { useEffect, useState } from "react";
+import { IoArrowBack, IoClose, FaHome, CiEdit } from "@/icons";
 import { privateRequest } from "@/config/axios.config";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
 import isAuth from "@/middleware/auth.middleware";
 import { Toastify } from "../toastify";
 import Spinner from "../spinner";
 import ConfirmOrderSkeleton from "../loader/ConfirmOrderSkeleton";
 import Image from "next/image";
 import { useCart } from "@/contex/CartContext";
-import { CiEdit } from "react-icons/ci";
 import Drawer from "react-modern-drawer";
 import useLocationFetch from "@/hooks/api/useLocationApiFetch";
-import { IoArrowBack, IoClose } from "react-icons/io5";
 import CreateAddress from "../Address/CreateAddress";
 const ConfirmOrder = () => {
   const router = useRouter();
@@ -50,7 +49,7 @@ const ConfirmOrder = () => {
   }, 0);
   // order place api call
   const handleOrderPlace = async () => {
-    setBtnLoading(true); 
+    setBtnLoading(true);
     const newMyOrder = {
       cart_items: orderItem,
       billing_address_id: address?.address_id,
@@ -60,7 +59,7 @@ const ConfirmOrder = () => {
     try {
       const res = await privateRequest.post("user/orders", newMyOrder);
       if (res?.status === 200 || res?.status === 201) {
-        clearCart();
+        router?.query?.bestApplied && clearCart();
         Toastify.Success(res?.data?.message);
         router.push(`/payment-options/${res?.data?.order_id?.order_id}`);
         localStorage.setItem("orderItems", JSON.stringify([]));
@@ -93,7 +92,7 @@ const ConfirmOrder = () => {
                   <span className="font-semibold">
                     {shippingAddressSet("name")}
                   </span>
-                  <span className="bg-blue-200 rounded-md ml-1 px-1">
+                  <span className="bg-blue-200/50 rounded-md ml-1 px-1">
                     Default address
                   </span>
                 </div>
@@ -118,10 +117,10 @@ const ConfirmOrder = () => {
                   />
                 </Drawer>
                 <button
-                  className="border rounded-md px-1 py-0.5 font-normal cursor-pointer bg-gray-100 text-nowrap flex gap-1 flex-nowrap item-center justify-center"
+                  className="border rounded-md px-1 py-0.5 font-normal cursor-pointer  bg-blue-200/50 text-nowrap flex gap-1 flex-nowrap items-center justify-center"
                   onClick={handleOpenDrawer}
                 >
-                  <CiEdit /> edit
+                  <FaHome className="text-blue-600" /> address
                 </button>
               </div>
               <p>{shippingAddressSet("phone")}</p>

@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as gtag from "../utils/gtag";
 import { CartProvider } from "@/contex/CartContext";
-import 'react-modern-drawer/dist/index.css'
+
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
