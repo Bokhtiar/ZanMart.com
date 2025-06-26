@@ -1,21 +1,25 @@
 import { privateRequest } from "@/config/axios.config";
 import React, { useEffect, useState } from "react";
-import { AiFillEdit } from "react-icons/ai";
-import { FaCheckCircle, FaPlusCircle } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import {
+  FaAddressBook,
+  FaPlusCircle,
+  IoArrowBack,
+  AiFillEdit,
+  RiDeleteBin6Line,
+  MdLocationOff,
+} from "@/icons";
+import Drawer from "react-modern-drawer";
 import { Toastify } from "../toastify";
-import { FaAddressBook } from "react-icons/fa";
 import AddressSkeleton from "../loader/AddressSkeleton";
 import { networkErrorHandeller } from "@/utils/helpers";
-import { MdLocationOff } from "react-icons/md";
-import Link from "next/link";
 import Spinner from "../spinner";
-
-
+import CreateAddress from "./CreateAddress";
+import EditAddress from "./EditAddress";
+import { useRouter } from "next/router";
 const Address = () => {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState([]);
-  
+  const router = useRouter();
   // Get all addresses
   const userAddresses = async () => {
     try {
@@ -28,17 +32,15 @@ const Address = () => {
       setLoading(false);
     }
   };
- 
+
   // Delete an address
   const handleDelete = async (id) => {
-    
     try {
-      setLoading(true)
+      setLoading(true);
       const res = await privateRequest.delete(`user/address/${id}`);
       if (res.status === 200) {
         setAddress((prevAddresses) =>
           prevAddresses.filter((item) => item.address_id !== id)
-        
         );
         Toastify.Success(res.data.message);
         setLoading(false);
@@ -52,21 +54,63 @@ const Address = () => {
     // handleDivision();
     userAddresses();
   }, []);
-
+  //  now working on setup in address default address edit address add address
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openType, setOpenType] = useState("");
+  const handleOpenDrawer = () => {
+    setOpenType("default");
+    setOpenDrawer(!openDrawer);
+  };
   return (
     <div>
       <div className="flex items-center justify-between bg-gray-100 px-2 mb-3 ">
         <h1 className="text-xl md:text-2xl font-bold  py-1 rounded-md flex items-center gap-2 text-gray-700">
           <FaAddressBook /> Address List
         </h1>
-        <Link href={'/profile/addressForm'}
-         
+        <button
+          onClick={() => {
+            setOpenType("create");
+            setOpenDrawer(true);
+          }}
           className="flex  items-center gap-2 md:text-xl bg-primary px-2 md:px-9 py-1 text-white rounded-3xl"
         >
           <FaPlusCircle /> Add New
-        </Link>
+        </button>
       </div>
-
+      <Drawer
+        open={openDrawer}
+        onClose={handleOpenDrawer}
+        direction="right"
+        style={{
+          width: "100%", // default for mobile
+          maxWidth: "450px", // limit width on larger screens
+        }}
+        className="w-full sm:w-[450px]"
+      >
+        <div className="max-w-2xl mx-auto p-4 bg-white rounded shadow-sm h-full max-h-screen overflow-y-auto ">
+          <div className="flex items-center gap-2 pb-2  ">
+            <button
+              onClick={() => setOpenDrawer(false)}
+              className="flex items-center text-gray-700 hover:text-blue-600 transition font-medium"
+            >
+              <IoArrowBack className="text-xl mr-1" />
+              <span>Back to Checkout</span>
+            </button>
+          </div>
+          {openType === "create" && (
+            <CreateAddress
+              refetch={userAddresses}
+              setOpenDrawer={setOpenDrawer}
+            />
+          )}
+          {openType === "edit" && (
+            <EditAddress
+              refetch={userAddresses}
+              setOpenDrawer={setOpenDrawer}
+            />
+          )}
+        </div>
+      </Drawer>
       {/* Existing Addresses */}
       <div>
         {loading &&
@@ -83,28 +127,33 @@ const Address = () => {
                     <strong className="font-medium whitespace-nowrap">
                       Address {index + 1}:
                     </strong>
-                    {item?.postal_code },
-                    {item?.address_line1}
+                    {item?.postal_code},{item?.address_line1}
                     {/* {item?.union?.name} {item?.upazila?.name},{" "}
                     {item?.district?.name}, {item?.division?.name} */}
                   </p>
                 </div>
                 <div className="flex w-full justify-start md:justify-center items-center gap-2"></div>
                 <div className="flex justify-start md:justify-center gap-2">
-                  <Link href={`/profile/addressForm?id=${item?.address_id}`}
-                   
+                  <button
+                    onClick={() => {
+                      router.push(`?id=${item?.address_id}`);
+                      setOpenType("edit");
+                      setOpenDrawer(true);
+                    }}
                     className="self-start mt-2 md:mt-0 bg-primary text-white px-2 rounded-md py-1 "
                   >
                     <AiFillEdit className=" h-5 w-5" />
-                  </Link>
+                  </button>
 
                   <button
                     onClick={() => handleDelete(item.address_id)}
                     className="flex font-semibold items-center text-base md:text-lg gap-3 md:gap-5 bg-red-500 px-2 rounded-md py-1  text-white"
                   >
-                     {
-                      loading ?<Spinner/>:<RiDeleteBin6Line className="font-semibold" />
-                    }
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <RiDeleteBin6Line className="font-semibold" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -127,9 +176,6 @@ const Address = () => {
           </>
         )}
       </div>
-
-
-    
     </div>
   );
 };

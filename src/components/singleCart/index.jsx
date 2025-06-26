@@ -52,30 +52,29 @@ const SingleCart = ({ item, page }) => {
                 <TbCurrencyTaka />
               </span>
               {Math.ceil(item?.variants[0]?.price || item?.sell_price)}
-             
+
               {(item?.variants[0]?.discount_price || item?.price) && (
                 <span className=" text-secondary font-medium ms-2 flex  items-center line-through text-sm lg:text-lg md:base  ">
-                
-                 <span className="  text-gray-500 ">
+                  <span className="  text-gray-500 ">
                     <TbCurrencyTaka />
-                  </span>  {Math.ceil(item?.variants[0]?.discount_price || item?.price)}
-                 
+                  </span>{" "}
+                  {Math.ceil(item?.variants[0]?.discount_price || item?.price)}
                 </span>
               )}
             </span>
           ) : (
             <span className="text-primary flex  items-center text-lg lg:text-xl   font-semibold">
-               <span className="  text-gray-500 ">
+              <span className="  text-gray-500 ">
                 <TbCurrencyTaka />
               </span>
-               {Math.ceil(item?.sell_price)}
-            
+              {Math.ceil(item?.sell_price)}
+
               {parseInt(item?.flat_discount) ? (
                 <span className=" text-secondary ms-2 flex  items-center line-through text-sm  lg:text-xl md:base  font-medium">
-                   <span className="  text-gray-500 ">
+                  <span className="  text-gray-500 ">
                     <TbCurrencyTaka />
-                  </span> {Math.ceil(item?.flat_discount)}
-                
+                  </span>{" "}
+                  {Math.ceil(item?.flat_discount)}
                 </span>
               ) : (
                 ""

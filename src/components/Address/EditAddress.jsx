@@ -7,7 +7,8 @@ import { networkErrorHandeller } from "@/utils/helpers";
 import Spinner from "@/components/spinner";
 import { SingleSelect, TextInput } from "@/components/input";
 import { addressFormData } from "./data";
-const CreateAddress = ({ 
+const EditAddress = ({
+  isOrder = false,
   setOpenDrawer = () => {},
   refetch = () => {},
 }) => {
@@ -25,7 +26,9 @@ const CreateAddress = ({
 
   const [showExample, setShowExample] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();  
+  const router = useRouter();
+  const id = router.query.id;
+
   const [locationOptions, setLocationOptions] = useState({
     divisions: [],
     districts: [],
@@ -85,7 +88,62 @@ const CreateAddress = ({
       fetchUpazilas(localLocationId.district_id);
     }
   }, [localLocationId.district_id]);
-  //  submit address 
+
+  // Fetch existing address details for editing
+  useEffect(() => {
+    const fetchDetailAddress = async () => {
+      if (!id) return;
+      try {
+        const res = await privateRequest.get(`user/address/${id}`);
+        if (res.status === 200) {
+          const address = res.data.data;
+          const fields = [
+            "name",
+            "email",
+            "phone",
+            "address_line1",
+            "address_line2",
+            "postal_code",
+            "division_id",
+            "district_id",
+            "upazila_id",
+            "union_id",
+          ];
+          fields.forEach((field) => {
+            setValue(field, address?.[field] || "");
+          });
+          setFormData({
+            country: address?.country || "Bangladesh",
+            type: address?.type || "home",
+          });
+          setValue("division_id", {
+            label: address.division?.name, // make sure API provides this
+            value: address.division_id,
+          });
+          setValue("district_id", {
+            label: address.district?.name,
+            value: address.district_id,
+          });
+          setValue("upazila_id", {
+            label: address.upazila?.name,
+            value: address.upazila_id,
+          });
+          setLocalLocationId({
+            division_id: address?.division_id,
+            district_id: address?.district_id,
+            upazila_id: address?.upazila_id,
+            // union_id: address?.union_id,
+          });
+        }
+      } catch (error) {
+        networkErrorHandeller(error);
+      }
+    };
+    if (id) {
+      fetchDetailAddress();
+    }
+  }, [id, setValue]);
+
   const onSubmit = async (data) => {
     setLoading(true);
     try {
@@ -97,14 +155,23 @@ const CreateAddress = ({
         district_id: data?.district_id?.value,
         upazila_id: data?.upazila_id?.value,
       };
-      const response = await privateRequest.post(
-        "user/address",
-        updatedFormData
-      );
-      if (response.status === 201) {
-        Toastify.Success(response.data.message);
+
+      const res = await privateRequest.post(`user/address/${id}`, {
+        ...updatedFormData,
+        _method: "PUT",
+      });
+
+      if (res.status === 200) {
+        Toastify.Success(res.data.message);
         setOpenDrawer(false);
         refetch();
+        const updatedQuery = { ...router.query };
+        delete updatedQuery.id;
+        isOrder &&
+          router.push({
+            pathname: router.pathname,
+            query: updatedQuery,
+          });
       }
     } catch (error) {
       networkErrorHandeller(error);
@@ -238,7 +305,7 @@ const CreateAddress = ({
               type="submit"
               className="bg-secondary text-white w-20 h-10  rounded"
             >
-              {loading ? <Spinner /> : "Add"}
+              {loading ? <Spinner /> : "Update"}
             </button>
           </div>
         </form>
@@ -247,4 +314,4 @@ const CreateAddress = ({
   );
 };
 
-export default CreateAddress;
+export default EditAddress;

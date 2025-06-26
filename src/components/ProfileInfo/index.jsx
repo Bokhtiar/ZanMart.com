@@ -2,11 +2,8 @@ import { privateRequest } from "@/config/axios.config";
 import React, { useState, useEffect } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { Toastify } from "../toastify";
-import Image from "next/image";
-import { MdAccountCircle } from "react-icons/md";
-import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
+import Image from "next/image"; 
+import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa"; 
 import { useForm } from "react-hook-form";
 import { ImageUpload, TextInput } from "../input";
 import { useProduct } from "@/hooks/useProducts";
@@ -145,19 +142,11 @@ const ProfileInfo = () => {
                 Adress List
               </h1>
               {address?.length > 0 &&
-                address?.map((addressInfo, index) => (
+                address?.filter(item=>item?.default_address===1)?.map((addressInfo, index) => (
                   <div
                     className="space-y-1.5 border px-2 py-4 rounded-lg text-sm"
                     key={addressInfo?.address_id}
-                  >
-                    <div className="flex flex-col md:flex md:flex-row  ">
-                      <p className="w-1/2 text-gray-600 font-medium  ">
-                        Country
-                      </p>
-                      <p className="w-1/2 text-gray-500  ">
-                        {addressInfo?.country}
-                      </p>
-                    </div>
+                  > 
                     <div className="flex flex-col md:flex md:flex-row  ">
                       <p className="w-1/2 text-gray-600 font-medium  ">
                         Division
@@ -181,13 +170,7 @@ const ProfileInfo = () => {
                       <p className="w-1/2 text-gray-500 mt-0 ">
                         {addressInfo?.upazila?.name}
                       </p>
-                    </div>
-                    <div className="flex flex-col md:flex md:flex-row   ">
-                      <p className="w-1/2 text-gray-600 font-medium  ">Union</p>
-                      <p className="w-1/2 text-gray-500 mt-0 ">
-                        {addressInfo?.union?.name}
-                      </p>
-                    </div>
+                    </div> 
                     <div className="flex flex-col md:flex md:flex-row   ">
                       <p className="w-1/2 text-gray-600 font-medium  ">
                         Postal Code
@@ -198,20 +181,12 @@ const ProfileInfo = () => {
                     </div>
                     <div className="flex flex-col md:flex md:flex-row   ">
                       <p className="w-1/2 text-gray-600 font-medium  ">
-                        Address 1
+                        Address 
                       </p>
                       <p className="w-1/2 text-gray-500 mt-0 ">
                         {addressInfo?.address_line1}
                       </p>
-                    </div>
-                    <div className="flex flex-col md:flex md:flex-row   ">
-                      <p className="w-1/2 text-gray-600 font-medium  ">
-                        Addres 2
-                      </p>
-                      <p className="w-1/2 text-gray-500 mt-0 ">
-                        {addressInfo?.address_line2}
-                      </p>
-                    </div>
+                    </div> 
                   </div>
                 ))}
             </section>

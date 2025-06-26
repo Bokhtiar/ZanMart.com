@@ -11,6 +11,7 @@ import { useCart } from "@/contex/CartContext";
 import Drawer from "react-modern-drawer";
 import useLocationFetch from "@/hooks/api/useLocationApiFetch";
 import CreateAddress from "../Address/CreateAddress";
+import EditAddress from "../Address/EditAddress";
 const ConfirmOrder = () => {
   const router = useRouter();
   const { clear: clearCart } = useCart();
@@ -50,7 +51,8 @@ const ConfirmOrder = () => {
   }, 0);
   // order place api call
   const handleOrderPlace = async () => {
-    if(!address?.address_id) return Toastify.Error("Please Create Address for order Product")
+    if (!address?.address_id)
+      return Toastify.Error("Please Create Address for order Product");
     setBtnLoading(true);
     const newMyOrder = {
       cart_items: orderItem,
@@ -74,11 +76,11 @@ const ConfirmOrder = () => {
   };
   //  now working on setup in address default address edit address add address
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [openType, setOpenType] = useState("");
   const handleOpenDrawer = () => {
+    setOpenType("default");
     setOpenDrawer(!openDrawer);
   };
-  // modal logic
-  const [isModalOpen, setIsModalOpen] = useState(false);
   if (loading) return <ConfirmOrderSkeleton />;
   return (
     <div className="container-custom mx-auto  ">
@@ -88,9 +90,55 @@ const ConfirmOrder = () => {
           {/* Shipping Information */}
           <div className="bg-white p-5 rounded shadow">
             <h2 className="text-lg font-semibold mb-4">Shipping Information</h2>
-            <div className="border p-4 rounded text-sm space-y-1 ">
-              <div className="flex items-center justify-between">
-                {shippingAddressSet("address_line1") && (
+            {/* drawer design  */}
+            <Drawer
+              open={openDrawer}
+              onClose={handleOpenDrawer}
+              direction="right"
+              style={{
+                width: "100%", // default for mobile
+                maxWidth: "450px", // limit width on larger screens
+              }}
+              className="w-full sm:w-[450px]"
+            >
+              <div className="max-w-2xl mx-auto p-4 bg-white rounded shadow-sm h-full max-h-screen overflow-y-auto ">
+                <div className="flex items-center gap-2 pb-2  ">
+                  <button
+                    onClick={() => setOpenDrawer(false)}
+                    className="flex items-center text-gray-700 hover:text-blue-600 transition font-medium"
+                  >
+                    <IoArrowBack className="text-xl mr-1" />
+                    <span>Back to Checkout</span>
+                  </button>
+                </div>
+                {openType === "create" && (
+                  <CreateAddress
+                    refetch={fetchAddress}
+                    setOpenDrawer={setOpenDrawer}
+                  />
+                )}
+                {openType === "edit" && (
+                  <EditAddress
+                    refetch={fetchAddress}
+                    setOpenDrawer={setOpenDrawer}
+                  />
+                )}
+                {/* default address fetch  */}
+                {openType === "default" && (
+                  <AddressDefault
+                    fetchAddress={fetchAddress}
+                    setOpenDrawer={setOpenDrawer}
+                    setOpenType={setOpenType}
+                    addressData={addressData}
+                    refetch={refetch}
+                  />
+                )}
+              </div>
+            </Drawer>
+            {/* shipping information show  */}
+            {shippingAddressSet("address_line1") ? (
+              <div className="border p-4 rounded text-sm space-y-1 ">
+                <div className="flex items-center justify-between">
                   <div>
                     <span className="font-semibold">
                       {shippingAddressSet("name")}
@@ -99,59 +147,13 @@ const ConfirmOrder = () => {
                       Default address
                     </span>
                   </div>
-                )}
-                {!shippingAddressSet("address_line1") && (
-                  <div className="flex items-center justify-center   px-4  w-full">
-                    <div className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
-                      <MdLocationOff className="text-red-500 text-6xl mx-auto mb-4" />
-                      <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-                        Address Not Found
-                      </h1>
-                      <p className="text-gray-600">
-                        No address is currently saved. Please add an address to
-                        continue.
-                      </p>
-                      <button
-                        onClick={() => {
-                          setIsModalOpen(true); 
-                        }}
-                        className="text-blue-600 hover:underline text-sm"
-                      >
-                        Add new address
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {/* drawer design  */}
-                <Drawer
-                  open={openDrawer}
-                  onClose={handleOpenDrawer}
-                  direction="right"
-                  style={{
-                    width: "100%", // default for mobile
-                    maxWidth: "450px", // limit width on larger screens
-                  }}
-                  className="w-full sm:w-[450px]"
-                >
-                  {/* default address fetch  */}
-                  <AddressDefault
-                    fetchAddress={fetchAddress}
-                    setOpenDrawer={setOpenDrawer}
-                    setIsModalOpen={setIsModalOpen}
-                    addressData={addressData}
-                    refetch={refetch}
-                  />
-                </Drawer>
-                {shippingAddressSet("address_line1") && (
                   <button
                     className="border rounded-md px-1 py-0.5 font-normal cursor-pointer  bg-blue-200/50 text-nowrap flex gap-1 flex-nowrap items-center justify-center"
                     onClick={handleOpenDrawer}
                   >
                     <FaHome className="text-blue-600" /> address
                   </button>
-                )}
-              </div>
-              {shippingAddressSet("address_line1") ? (
+                </div>
                 <div>
                   <p>{shippingAddressSet("phone")}</p>
                   <p> {shippingAddressSet("address_line1")}</p>
@@ -161,10 +163,7 @@ const ConfirmOrder = () => {
                     {shippingAddressSet("division")?.name}{" "}
                   </p>
                 </div>
-              ) : (
-                ""
-              )}
-              {shippingAddressSet("address_line1") && (
+
                 <button
                   className="border rounded-md px-1 py-0.5 font-normal cursor-pointer bg-gray-100 text-nowrap flex gap-1 flex-nowrap item-center justify-center"
                   onClick={() => {
@@ -175,13 +174,36 @@ const ConfirmOrder = () => {
                         id: address?.address_id,
                       },
                     });
-                    setIsModalOpen(true);
+                    setOpenType("edit");
+                    setOpenDrawer(true);
                   }}
                 >
                   <CiEdit /> edit address
                 </button>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center   px-4  w-full">
+                <div className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center">
+                  <MdLocationOff className="text-red-500 text-6xl mx-auto mb-4" />
+                  <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+                    Address Not Found
+                  </h1>
+                  <p className="text-gray-600">
+                    No address is currently saved. Please add an address to
+                    continue.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setOpenType("create");
+                      setOpenDrawer(true);
+                    }}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Add new address
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           {/* here show product details  */}
           <div>
@@ -260,17 +282,6 @@ const ConfirmOrder = () => {
           </button>
         </div>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Your Modal Title"
-      >
-        <CreateAddress
-          isOrder={true}
-          setIsModalOpen={setIsModalOpen}
-          refetch={refetch}
-        />
-      </Modal>
     </div>
   );
 };
@@ -279,7 +290,7 @@ export default isAuth(ConfirmOrder);
 const AddressDefault = ({
   fetchAddress,
   setOpenDrawer,
-  setIsModalOpen,
+  setOpenType,
   addressData,
   refetch,
 }) => {
@@ -305,25 +316,15 @@ const AddressDefault = ({
     }
   };
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow-sm h-full max-h-screen overflow-y-auto  ">
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setOpenDrawer(false)}
-          className="flex items-center text-gray-700 hover:text-blue-600 transition font-medium"
-        >
-          <IoArrowBack className="text-xl mr-1" />
-          <span>Back to Checkout</span>
-        </button>
-      </div>
-
+    <>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-800">
           Shipping Address
         </h2>
         <button
           onClick={() => {
-            setIsModalOpen(true);
-            setOpenDrawer(false);
+            setOpenType("create");
+            setOpenDrawer(true);
           }}
           className="text-blue-600 hover:underline text-sm"
         >
@@ -399,12 +400,12 @@ const AddressDefault = ({
 
       {/* Buttons */}
       <div className="flex justify-end gap-4 mt-6   bg-white">
-        <button
+        {/* <button
           onClick={() => setOpenDrawer(false)}
           className="px-6 py-2 border rounded text-gray-600 border-gray-300 hover:bg-gray-100"
         >
           CANCEL
-        </button>
+        </button> */}
         <button
           onClick={handleDefaultAddressChange}
           className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -412,26 +413,6 @@ const AddressDefault = ({
           SAVE
         </button>
       </div>
-    </div>
-  );
-};
-
-const Modal = ({ isOpen, onClose, title, children }) => {
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-xl max-h-screen mx-4 relative animate-fade-in overflow-hidden">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-600 hover:text-red-500"
-        >
-          <IoClose className="text-2xl" />
-        </button>
-
-        {/* Scrollable Content Area */}
-        <div className="p-4 overflow-y-auto max-h-[80vh]">{children}</div>
-      </div>
-    </div>
+    </>
   );
 };

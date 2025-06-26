@@ -219,13 +219,13 @@ const ProductDetails = () => {
     const newColor = data?.find(
       (item) =>
         item?.color_name === colordata?.color_name &&
-        item?.attribute === selectedAttribute
+        item?.attribute === productElement?.attribute
     );
-    setSelectedWeight(newColor?.weight || product?.weight);
+    setSelectedWeight(newColor?.weight || product?.weight); 
     setProductElement({
       ...productElement,
       color: colordata?.color_name,
-      color_id: colordata.color_id,
+      color_id: colordata?.color_id,
       discount: newColor?.discount_price || product?.discount_price,
       qty: newColor?.available_quantity,
       price: newColor?.price || product?.sell_price,
@@ -235,9 +235,9 @@ const ProductDetails = () => {
   const attributeHandle = (attributedata) => {
     const newAttribute = data?.find(
       (item) =>
-        item?.attribute === attributedata?.attribute &&
-        item?.color_name === selectedColor
-    );
+        item?.attribute === attributedata?.attribute_name &&
+        item?.color_name === productElement?.color
+    ); 
     setSelectedWeight(newAttribute?.weight || product?.weight);
     setProductElement({
       ...productElement,
@@ -245,10 +245,10 @@ const ProductDetails = () => {
       attribute_id: attributedata?.attribute_id,
       price: newAttribute?.price || product?.sell_price,
       discount: newAttribute?.discount_price || product?.flat_discount,
-      qty: newColor?.available_quantity,
+      qty: newAttribute?.available_quantity,
     });
   };
-
+ console.log(productElement,"welcome------------");
   //change thumbnile image base on galllery
   const handleThumb = (img) => {
     setThumb(img);
@@ -259,7 +259,7 @@ const ProductDetails = () => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
   console.log(productElement, "product element");
-  if (loading) {
+  if (loading && false) {
     return <ProductDetailsSkeleton />;
   }
   return (

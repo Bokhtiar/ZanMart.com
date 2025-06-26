@@ -88,11 +88,11 @@ const Login = () => {
                 label={
                   <div className="flex gap-2 pb-2 pl-3.5 text-white">
                     <MdOutlineMailOutline className="h-5 w-5" />
-                    E-mail
+                    E-mail Or Phone
                   </div>
                 }
                 rules={{
-                  required: "Email required",
+                  required: "Email Or Phone required",
                   pattern: {
                     message: "Invalid phone number or email",
                   },
