@@ -39,6 +39,7 @@ const Login = () => {
     try {
       setLoading(true);
       const response = await publicRequest.post("login", newData);
+      console.log(response);
       if (response.data.data.token) {
         userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);

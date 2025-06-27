@@ -4,13 +4,15 @@ import { setToken } from "@/utils/helpers";
 import { Toastify } from "@/components/toastify";
 import { useProduct } from "@/hooks/useProducts";
 import Link from "next/link";
+import Signup from "./Signup";
 
-const Login = ({ showModal, setShowModal }) => {
+const Login = ({ showModal, setShowModal ,onSuccess=()=>{}}) => {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [animate, setAnimate] = useState(false);
-const userInfo = useProduct();
+   const [showSignup, setShowSignup] = useState(false);
+  const userInfo = useProduct();
   useEffect(() => {
     if (showModal) {
       // Trigger animation after mounting
@@ -29,22 +31,24 @@ const userInfo = useProduct();
     setError("");
 
     const newData = {
-      email_or_phone: emailOrPhone,
+      email: emailOrPhone,
       password,
     };
 
     try {
       const response = await publicRequest.post("login", newData);
       console.log("Login success:", response.data);
-      handleClose();
+     
       if (response.data.data.token) {
+         onSuccess && onSuccess();
         userInfo.setToken(response.data.data.token);
         setToken(response.data.data.token);
         Toastify.Success("Successfully Login");
+         handleClose();
       }
     } catch (err) {
-      console.error("Login failed:", err);
-      setError("Invalid email/phone or password");
+    
+      Toastify.Error("Invalid email/phone or password");
     }
   };
 
@@ -98,33 +102,42 @@ const userInfo = useProduct();
 
               <div className="text-center text-sm text-gray-500">or</div>
 
-               <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
-            <button
-              onClick={() => {
-                window.location.href = `${
-                  process.env.NEXT_PUBLIC_API_SERVER
-                }api/auth/google?route=${"/products"}`;
-              }}
-              class="w-full   flex items-center justify-center gap-3 "
-            >
-              <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                class="w-7 h-7"
-                alt="Google logo"
-              />
-              <span>Continue with Google</span>
-            </button>
-          </div>
+              <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
+                <button
+                  onClick={() => {
+                    window.location.href = `${
+                      process.env.NEXT_PUBLIC_API_SERVER
+                    }api/auth/google?route=${"/products"}`;
+                  }}
+                  class="w-full flex items-center justify-center gap-3 "
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    class="w-7 h-7"
+                    alt="Google logo"
+                  />
+                  <span>Continue with Google</span>
+                </button>
+              </div>
 
               <p className="text-sm text-center">
                 Don’t have an account?{" "}
-                <Link href="/auth/register" className="text-blue-600 hover:underline">
+                <button
+                    className="text-blue-600 hover:underline"
+                     onClick={() => {
+                    setShowModal(false);
+                    setShowSignup(true);
+                  }}
+                >
                   Sign up
-                </Link>
+                </button>
               </p>
             </div>
           </div>
         </div>
+      )}
+       {showSignup && (
+        <Signup setShowSignup={setShowSignup} setShowLogin={setShowModal} />
       )}
     </>
   );

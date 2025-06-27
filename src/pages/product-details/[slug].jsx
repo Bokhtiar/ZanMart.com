@@ -24,8 +24,8 @@ import { getToken, networkErrorHandeller } from "@/utils/helpers";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useSearchParams } from "next/navigation";
-import { useCart } from "@/contex/CartContext"; 
-import dynamic from "next/dynamic"; 
+import { useCart } from "@/contex/CartContext";
+import dynamic from "next/dynamic";
 const Login = dynamic(() => import("./components/auth/Login"), {
   ssr: false, // ⛔ prevent server-side rendering (recommended for modals)
 });
@@ -128,8 +128,8 @@ const ProductDetails = () => {
     available_quantity: item?.available_quantity,
   }));
   // cart added function here
+  const [pendingCartItem, setPendingCartItem] = useState(null);
   const handelCart = async () => {
-    if (!token) return router?.push("/auth/log-in");
     if (productElement?.qty <= 0) return Toastify.Error("Product Out Of Stock");
     const selectedVariant = product?.product_variants.find(
       (item) =>
@@ -149,13 +149,20 @@ const ProductDetails = () => {
         product_id: product?.product_id,
         product_variant_id: selectedVariant?.product_variant_id || null,
       };
-      addItem(cartItem);
+      // check authentic user or not
+      if (!token) {
+        setPendingCartItem(cartItem);
+        setShowModal(true);
+      } else {
+        addItem(cartItem);
+      }
     }
   };
   // single buy product
+  const [pendingBuyNow, setPendingBuyNow] = useState(false);
   const handleBuyNow = () => {
-    if (!token) return setShowModal(true);
     if (productElement?.qty <= 0) return Toastify.Error("Product Out Of Stock");
+
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
       (item) =>
@@ -181,7 +188,13 @@ const ProductDetails = () => {
       attribute_discount_price: productElement?.discount || 0, // Include the variant ID
     };
     localStorage?.setItem("orderItems", JSON.stringify([{ ...cartItem }]));
-    router?.push(`/checkout/?buy_now=${product?.title}`);
+    if (!token) {
+      setPendingBuyNow(true);
+      setShowModal(true);
+    } else {
+        setPendingBuyNow(true);
+       router?.push(`/checkout/?buy_now=${product?.title}`);
+    }
   };
   // fetch single product
   useEffect(() => {
@@ -268,7 +281,21 @@ const ProductDetails = () => {
   }
   return (
     <div className={`container-custom px-2   pt-5`}>
-      <Login showModal={showModal} setShowModal={setShowModal}/>
+      <Login
+        showModal={showModal}
+        setShowModal={setShowModal}
+        onSuccess={() => {
+          if (pendingCartItem) {
+            addItem(pendingCartItem);
+            setPendingCartItem(null);
+          }
+          if (pendingBuyNow) {
+            // goToCheckout(pendingBuyNow);
+            setPendingBuyNow(false);
+            router?.push(`/checkout/?buy_now=${product?.title}`);
+          }
+        }}
+      />
       {/* start single product design  */}
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
