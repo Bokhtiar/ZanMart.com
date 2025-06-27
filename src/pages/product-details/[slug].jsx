@@ -24,7 +24,11 @@ import { getToken, networkErrorHandeller } from "@/utils/helpers";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useSearchParams } from "next/navigation";
-import { useCart } from "@/contex/CartContext";
+import { useCart } from "@/contex/CartContext"; 
+import dynamic from "next/dynamic"; 
+const Login = dynamic(() => import("./components/auth/Login"), {
+  ssr: false, // ⛔ prevent server-side rendering (recommended for modals)
+});
 const ProductDetails = () => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -32,7 +36,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState({});
   const id = searchParams.get("id");
   const [categoryName, setCategoryName] = useState("");
-  const [variant, setvarient] = useState();
+  const [variant, setvarient] = useState([]);
   const [selectedWeight, setSelectedWeight] = useState();
   const [thumb, setThumb] = useState();
   const [reletedProduct, setReletedProduct] = useState([]);
@@ -41,6 +45,7 @@ const ProductDetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [productElement, setProductElement] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const { addItem } = useCart();
   const token = getToken();
@@ -149,7 +154,7 @@ const ProductDetails = () => {
   };
   // single buy product
   const handleBuyNow = () => {
-    if (!token) return router?.push("/auth/log-in");
+    if (!token) return setShowModal(true);
     if (productElement?.qty <= 0) return Toastify.Error("Product Out Of Stock");
     // Find the selected variant based on the selected color and attribute
     const selectedVariant = product?.product_variants.find(
@@ -221,7 +226,7 @@ const ProductDetails = () => {
         item?.color_name === colordata?.color_name &&
         item?.attribute === productElement?.attribute
     );
-    setSelectedWeight(newColor?.weight || product?.weight); 
+    setSelectedWeight(newColor?.weight || product?.weight);
     setProductElement({
       ...productElement,
       color: colordata?.color_name,
@@ -237,7 +242,7 @@ const ProductDetails = () => {
       (item) =>
         item?.attribute === attributedata?.attribute_name &&
         item?.color_name === productElement?.color
-    ); 
+    );
     setSelectedWeight(newAttribute?.weight || product?.weight);
     setProductElement({
       ...productElement,
@@ -248,7 +253,6 @@ const ProductDetails = () => {
       qty: newAttribute?.available_quantity,
     });
   };
- console.log(productElement,"welcome------------");
   //change thumbnile image base on galllery
   const handleThumb = (img) => {
     setThumb(img);
@@ -258,12 +262,13 @@ const ProductDetails = () => {
   const handleSlideChange = (swiper) => {
     setCurrentIndex(swiper.realIndex); // Update current index when slide changes
   };
-  console.log(productElement, "product element");
+
   if (loading && false) {
     return <ProductDetailsSkeleton />;
   }
   return (
     <div className={`container-custom px-2   pt-5`}>
+      <Login showModal={showModal} setShowModal={setShowModal}/>
       {/* start single product design  */}
       <div className="flex md:justify-between flex-col lg:flex-row lg:justify-between gap-4">
         <div className="flex flex-col contents-between ">
