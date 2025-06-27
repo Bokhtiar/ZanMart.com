@@ -197,7 +197,7 @@ const ConfirmOrder = () => {
                       setOpenType("create");
                       setOpenDrawer(true);
                     }}
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-white hover:underline text-sm bg-blue-500/80 px-3 py-2 rounded-md mt-1 hover:bg-blue-500/50 "
                   >
                     Add new address
                   </button>
