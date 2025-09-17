@@ -83,6 +83,7 @@ const SingleCart = ({ item, page }) => {
           )}
         </p>
       </div>
+      <button className="bg-blue-600 text-white w-full text-center py-2 font-semibold px-1 rounded-md">Order Now</button>
     </Link>
   );
 };

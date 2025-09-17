@@ -26,7 +26,7 @@ const navList = [
   { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "Best Selling", href: "/best-selling" },
-  { name: "Track Order", href: "/track-order" },
+  // { name: "Track Order", href: "/track-order" },
 ];
 
 export const Navbar = () => {
@@ -171,9 +171,9 @@ export const Navbar = () => {
                       : "after:left-1/2"
                   }`}
               >
-                <button className="nav_link pb-2 leading-5 capitalize">
+                {/* <button className="nav_link pb-2 leading-5 capitalize">
                   Log In
-                </button>
+                </button> */}
               </Link>
             )}
           </div>
@@ -329,7 +329,7 @@ export const Navbar = () => {
                 Search <IoSearch className="h-4 w-4" />
               </button>
             </div>
-            <div>
+            {/* <div>
               <p className="flex items-center md:gap-4  lg:gap-5 gap-2">
                 <Link href="/my-cart" className="relative">
                   <span
@@ -344,7 +344,7 @@ export const Navbar = () => {
                   <RxAvatar className="h-7 w-7" />
                 </Link>
               </p>
-            </div>
+            </div> */}
           </div>
         </section>
       </div>
@@ -378,7 +378,7 @@ export const Navbar = () => {
               </Link>
             ))}
 
-            {!token && (
+            {/* {!token && (
               <Link
                 href={"/auth/log-in"}
                 className={`text-md flex flex-col md:hover:after:ml-0  after:ml-4 pl-4  py-2 leading-7 font-normal relative hover:border-none 
@@ -389,9 +389,9 @@ export const Navbar = () => {
               >
                 Log In
               </Link>
-            )}
+            )} */}
           </ul>
-          {/* mobile phone category */}
+      
           <h1 className="font-bold">Categoriss</h1>
 
           <div className="">
@@ -403,7 +403,7 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Overlay */}
+    
       {isDrawerOpen && (
         <div
           className="fixed inset-0 z-10 bg-black opacity-50"

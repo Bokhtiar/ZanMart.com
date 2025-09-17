@@ -102,18 +102,18 @@ const Login = ({ showModal, setShowModal ,onSuccess=()=>{}}) => {
 
               <div className="text-center text-sm text-gray-500">or</div>
 
-              <div class="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
+              <div className="flex items-center justify-center mt-4 w-full bg-white text-gray-700 font-medium py-2 px-4 rounded-lg shadow-md hover:bg-gray-100 transition duration-200 ">
                 <button
                   onClick={() => {
                     window.location.href = `${
                       process.env.NEXT_PUBLIC_API_SERVER
                     }api/auth/google?route=${"/products"}`;
                   }}
-                  class="w-full flex items-center justify-center gap-3 "
+                  className="w-full flex items-center justify-center gap-3 "
                 >
                   <img
                     src="https://www.svgrepo.com/show/475656/google-color.svg"
-                    class="w-7 h-7"
+                    className="w-7 h-7"
                     alt="Google logo"
                   />
                   <span>Continue with Google</span>
