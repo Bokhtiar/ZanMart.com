@@ -128,9 +128,9 @@ export const Navbar = () => {
   return (
     <div className="z-50 mb-5 shadow-md ">
       <div className="w-full h z-10 bg-white   ">
-        <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
+        {/* <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
           <div className="flex items-center gap-2">
-            {/* Drawer Toggle Button for Small Devices */}
+            
 
             <Link href="/" passHref>
               <Image
@@ -171,9 +171,7 @@ export const Navbar = () => {
                       : "after:left-1/2"
                   }`}
               >
-                {/* <button className="nav_link pb-2 leading-5 capitalize">
-                  Log In
-                </button> */}
+
               </Link>
             )}
           </div>
@@ -194,8 +192,8 @@ export const Navbar = () => {
               </a>
             </div>
           </div>
-        </nav>
-        {/* bottom navbar start  */}
+        </nav> */}
+       
         <section
           className={`bg-primary transition-all duration-300 ${
             isSticky && "fixed top-0 bg-primary shadow-md"
