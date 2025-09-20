@@ -128,7 +128,7 @@ export const Navbar = () => {
   return (
     <div className="z-50 mb-5 shadow-md ">
       <div className="w-full h z-10 bg-white   ">
-        {/* <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
+        <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
           <div className="flex items-center gap-2">
             
 
@@ -192,7 +192,7 @@ export const Navbar = () => {
               </a>
             </div>
           </div>
-        </nav> */}
+        </nav>
        
         <section
           className={`bg-primary transition-all duration-300 ${

@@ -97,7 +97,7 @@ const SingleCart = ({ item, page }) => {
       {/* Order Button (separate link) */}
       <div className="px-3 pb-3">
         <Link href={orderLink}>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded-md font-medium transition">
+          <button className="bg-green-600  hover:bg-green-700  text-white w-full py-2 rounded-md font-medium transition">
             Order Now
           </button>
         </Link>

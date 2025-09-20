@@ -181,7 +181,10 @@ const OrderPage = () => {
       if (res?.status === 200 || res?.status === 201) {
        
         Toastify.Success("Order successful! We will contact you soon.");
-         router.push("/products")
+        router.push({pathname:"/congrats",
+          query:{product: JSON.stringify(product)}
+          
+        })
       }
     } catch {
       Toastify.Error("Order Place Failed");
