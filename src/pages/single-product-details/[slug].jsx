@@ -41,7 +41,7 @@ const ProductDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  console.log("product", product);
+  // console.log("reletedProduct", reletedProduct);
 
   /** Fetch product details */
   const fetchProduct = async () => {

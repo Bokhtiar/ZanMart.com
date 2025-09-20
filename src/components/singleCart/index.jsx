@@ -80,12 +80,13 @@ const SingleCart = ({ item, page }) => {
             ) : (
               <span className="text-primary flex items-center text-lg font-semibold">
                 <TbCurrencyTaka className="text-gray-600" />
-                {Math.ceil(item?.sell_price)}
+                
+                  {Math.ceil(item?.flat_discount)}
 
-                {parseInt(item?.flat_discount) ? (
+                {parseInt(item?.sell_price) ? (
                   <span className="text-gray-400 ms-2 line-through text-sm font-medium flex items-center">
                     <TbCurrencyTaka />
-                    {Math.ceil(item?.flat_discount)}
+                    {Math.ceil(item?.sell_price)}
                   </span>
                 ) : null}
               </span>

@@ -30,7 +30,7 @@ const Banner = () => {
         {/* Main Swiper Container */}
         <div className="w-full md:w-4/5  bg-[#F5F5F5] rounded-lg overflow-hidden">
           <Swiper
-            spaceBetween={0}
+            spaceBetween={2}
             centeredSlides={true}
             autoplay={{
               delay: 5000,
@@ -70,7 +70,7 @@ const Banner = () => {
         </div>
 
         {/* Side Images Container */}
-        <div className="w-full md:w-2/5 flex flex-row md:flex-col gap-1">
+        <div className="w-full md:w-2/5 lg:flex flex-row md:flex-col gap-1 hidden">
           {campaignBanner.slice(0, 2).map((banner) => (
             <div
               key={banner?.banner_id}
