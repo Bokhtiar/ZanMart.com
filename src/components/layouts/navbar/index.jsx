@@ -24,8 +24,12 @@ import { useCart } from "@/contex/CartContext";
 
 const navList = [
   { name: "Home", href: "/" },
-  { name: "Products", href: "/products" },
-  { name: "Best Selling", href: "/best-selling" },
+  { name: "Gadget Item", href: "/gadget-item" },
+  { name: "Backpack", href: "/backpack" },
+  { name: "Educational", href: "/educational" },
+  { name: "Medical Equipment", href: "/medical-equipment" },
+  { name: "Utensils", href: "/utensils" },
+  { name: "Stationery", href: "/stationery" },
   // { name: "Track Order", href: "/track-order" },
 ];
 
@@ -38,7 +42,7 @@ export const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
   // cart item find
   const { items: cartItem } = useCart();
   const [categories, setCategories] = useState([]);
@@ -93,7 +97,7 @@ export const Navbar = () => {
     } catch (error) {}
   };
   useEffect(() => {
-    fetchWebSetting(); 
+    fetchWebSetting();
     categoryFetch();
     handleSearch();
     handleSelect();
@@ -107,100 +111,68 @@ export const Navbar = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const dropdownRef = useRef(null);
+  // const dropdownRef = useRef(null);
 
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setOpenCategory(false);
-    }
-  };
+  // const handleClickOutside = (event) => {
+  //   if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+  //     setOpenCategory(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    // Cleanup the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   // Cleanup the event listener on component unmount
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
   // sticky system here
-  const { isSticky } = useStickyFetch();
+  // const { isSticky } = useStickyFetch();
 
   return (
     <div className="z-50 mb-5 shadow-md ">
-      <div className="w-full h z-10 bg-white   ">
-        <nav className="py-3  flex container-custom mx-auto justify-between items-center ">
-          <div className="flex items-center gap-2">
-            
-
+      <div className="w-full h z-10 bg-white fixed  ">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 p-1 lg:p-2">
             <Link href="/" passHref>
               <Image
                 height={400}
                 width={400}
-                className="h-14 w-14 ml-4 cursor-pointer"
+                className="h-14 w-14 ml-2 lg:ml-4 cursor-pointer"
                 src="/logo.png"
                 alt="Logo"
               />
             </Link>
           </div>
-          <div className="hidden md:flex gap-5 lg:gap-10 ">
-            {navList.map((item, index) => (
-              <Link
-                href={item?.href}
-                className={`text-sm leading-7 font-normal relative hover:border-none after:absolute after:w-0 
-                  after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-
-                  in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
-                    pathName === item?.href
-                      ? "after:w-full after:left-0"
-                      : "after:left-1/2"
-                  }`}
-                key={index}
-              >
-                <button className="nav_link pb-2 leading-5 capitalize">
-                  {item?.name}
-                </button>
-              </Link>
-            ))}
-            {!token && (
-              <Link
-                href={"/auth/log-in"}
-                className={`text-sm leading-7 font-normal relative hover:border-none after:absolute after:w-0 
-                  after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-
-                  in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
-                    pathName === "/auth/log-in"
-                      ? "after:w-full after:left-0"
-                      : "after:left-1/2"
-                  }`}
-              >
+          <div className="flex rounded-full md:w-[658px] w-80 h-14 relative items-center lg:mr-[320px] ">
+            <input
+              onChange={handleSearchQuery}
+              className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2 w-full
+                 h-9   lg:h-10 outline-none border border-primary"
+              type="text"
+              placeholder="Search product here"
+            />
+            <button
+              onClick={() => handleSearch()}
+              className="flex absolute right-0 hover:text-secondary rounded-full bg-black md:text-sm lg:text-sm text-xs h-9   lg:h-10 text-white 
+                w-[70px] lg:w-40 md:w-32 items-center justify-center sm:px-2 gap-1 md:gap-2 "
+            >
+              Search <IoSearch className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
 
-              </Link>
-            )}
-          </div>
-          <div className="flex items-center gap-1">
-            <div>
-              <Image
-                height={28}
-                width={28}
-                src="/support.svg"
-                alt="Support"
-                className="object-fill"
-              />
-            </div>
-            <div className="text-sm font-normal leading-5">
-              <p>{data?.phone}</p>
-              <a className="text-primary" href="mailto:zanvisionlabs@gmail.com">
-                {data?.email}
-              </a>
-            </div>
-          </div>
-        </nav>
-       
         <section
-          className={`bg-primary transition-all duration-300 ${
-            isSticky && "fixed top-0 bg-primary shadow-md"
-          } w-full shadow-lg`}
+          className={`bg-primary transition-all duration-300  w-full shadow-lg`}
         >
           <div className="flex gap-3 justify-between items-center container-custom container mx-auto  ">
-            <div
+            <button
+              onClick={toggleDrawer}
+              className="lg:hidden md:hidden text-xl mr-2 text-white"
+            >
+              <TbAlignLeft />
+            </button>
+            {/* <div
               ref={dropdownRef}
               className="relative lg:flex md:flex hidden  "
             >
@@ -249,7 +221,7 @@ export const Navbar = () => {
                         <MdKeyboardArrowRight />
                       </Link>
 
-                      {/* Child Menu - Will appear when hovering over Parent */}
+                    
                       <div className="child-menu  shadow-md opacity-0 pointer-events-none ms-6 flex flex-col absolute top-0 -right-[155px] bg-white transition-all duration-2000">
                         {category?.children?.map((child) => (
                           <div
@@ -273,7 +245,7 @@ export const Navbar = () => {
                               <MdKeyboardArrowRight />
                             </Link>
 
-                            {/* Grandchild Menu - Will appear when hovering over Child */}
+                           
                             <div className="grandchild-menu  shadow-md opacity-0 pointer-events-none absolute top-0 -right-[155px] bg-white transition-all duration-2000">
                               {child?.children?.map((subChild) => (
                                 <Link
@@ -304,29 +276,61 @@ export const Navbar = () => {
                   ))}
                 </ul>
               </div>
-            </div>
-            <div className="flex rounded-full md:w-[658px] w-80 h-14 relative items-center">
-              <button
-                onClick={toggleDrawer}
-                className="lg:hidden md:hidden text-xl mr-2"
-              >
-                <TbAlignLeft />
-              </button>
-              <input
-                onChange={handleSearchQuery}
-                className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2 w-full
-                 h-9   lg:h-10 outline-none"
-                type="text"
-                placeholder="Search product here"
-              />
-              <button
-                onClick={() => handleSearch()}
-                className="flex absolute right-0 hover:text-secondary rounded-full bg-black md:text-sm lg:text-sm text-xs h-9   lg:h-10 text-white 
-                w-[70px] lg:w-40 md:w-32 items-center justify-center sm:px-2 gap-1 md:gap-2"
-              >
-                Search <IoSearch className="h-4 w-4" />
-              </button>
-            </div>
+            </div> */}
+            <nav className="py-2  flex container-custom mx-auto justify-between items-center ">
+              <div className="hidden md:flex gap-5 lg:gap-10 ">
+                {navList.map((item, index) => (
+                  <Link
+                    href={item?.href}
+                    className={`text-sm text-white leading-7 font-normal relative hover:border-none after:absolute after:w-0 
+                  after:h-[5px] after:bottom-0 after:bg-white after:transition-all after:duration-200 after:ease-
+                  in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+                    pathName === item?.href
+                      ? "after:w-full after:left-0"
+                      : "after:left-1/2"
+                  }`}
+                    key={index}
+                  >
+                    <button className="nav_link pb-2 leading-5 capitalize">
+                      {item?.name}
+                    </button>
+                  </Link>
+                ))}
+                {!token && (
+                  <Link
+                    href={"/auth/log-in"}
+                    className={`text-sm leading-7 font-normal relative hover:border-none after:absolute after:w-0 
+                  after:h-[5px] after:bottom-0 after:bg-primary after:transition-all after:duration-200 after:ease-
+                  in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+                    pathName === "/auth/log-in"
+                      ? "after:w-full after:left-0"
+                      : "after:left-1/2"
+                  }`}
+                  ></Link>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                <div>
+                  <Image
+                    height={28}
+                    width={28}
+                    src="/support.svg"
+                    alt="Support"
+                    className="object-fill"
+                  />
+                </div>
+                <div className="text-sm font-normal leading-5">
+                  <p>{data?.phone}</p>
+                  <a
+                    className="text-primary"
+                    href="mailto:zanvisionlabs@gmail.com"
+                  >
+                    {data?.email}
+                  </a>
+                </div>
+              </div>
+            </nav>
+
             {/* <div>
               <p className="flex items-center md:gap-4  lg:gap-5 gap-2">
                 <Link href="/my-cart" className="relative">
@@ -389,7 +393,7 @@ export const Navbar = () => {
               </Link>
             )} */}
           </ul>
-      
+
           <h1 className="font-bold">Categoriss</h1>
 
           <div className="">
@@ -401,7 +405,6 @@ export const Navbar = () => {
         </div>
       </div>
 
-    
       {isDrawerOpen && (
         <div
           className="fixed inset-0 z-10 bg-black opacity-50"
