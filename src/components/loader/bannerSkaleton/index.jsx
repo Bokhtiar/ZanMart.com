@@ -2,7 +2,7 @@
 import Image from "next/image";
 const BannerSkeleton = () => {
   return (
-    <div className="container-custom shadow-sm ">
+    <div className="container-custom shadow-sm mt-28">
       <div className="flex flex-col md:flex-row gap-2">
         {/* Main Swiper Placeholder */}
         <div className="w-full md:w-4/5 bg-[#F5F5F5] rounded-lg overflow-hidden">

@@ -19,6 +19,8 @@ const poppins = Poppins({
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  console.log("categoriesdddd",categories)
   const categoryFetch = async () => {
     try {
       setLoading(true);

@@ -18,6 +18,8 @@ const MyProvider = ({ children }) => {
   const [originalProducts, setOriginalProducts] = useState([]); // New state for original products
 
   const [token, setToken] = useState(false);
+
+  console.log()
   useEffect(() => {
     if (typeof window !== "undefined") {
       setToken(getToken() ? true : false);

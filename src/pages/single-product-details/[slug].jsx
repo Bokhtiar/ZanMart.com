@@ -40,6 +40,9 @@ const ProductDetails = () => {
   const [reletedProductLoading, setReletedProductLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("description");
+
+  const cleanText = (text) => text?.replace(/<\/?[^>]+(>|$)/g, "");
 
   // console.log("reletedProduct", reletedProduct);
 
@@ -310,7 +313,7 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {product?.description && (
+      {/* {product?.description && (
         <>
           <h1 className="text-xl font-bold mt-10">Description</h1>
           <p className="text-gray-600 mt-2">
@@ -318,6 +321,60 @@ const ProductDetails = () => {
           </p>
         </>
       )}
+      {product?.description && (
+        <>
+          <h1 className="text-xl font-bold mt-10">Specification</h1>
+          <p className="text-gray-600 mt-2">
+            {product.description.replace(/<\/?[^>]+(>|$)/g, "")}
+          </p>
+        </>
+      )} */}
+      <div className="mt-10">
+        {/* Tab Buttons */}
+        <div className="flex gap-4 ">
+          <button
+            onClick={() => setActiveTab("description")}
+            className={`px-5 py-3 font-medium rounded ${
+              activeTab === "description"
+                ? " bg-green-600 text-white"
+                : "bg-white shadow-lg"
+            }`}
+          >
+            Description
+          </button>
+          <button
+            onClick={() => setActiveTab("specification")}
+            className={`px-5 py-3 font-medium rounded ${
+              activeTab === "specification"
+                ? " bg-green-600 text-white"
+                : "bg-white shadow-lg"
+            }`}
+          >
+            Specification
+          </button>
+        </div>
+
+        {/* Tab Content */}
+        <div className="mt-6">
+          {activeTab === "description" && (
+            <>
+              <h1 className="text-xl font-bold">Description</h1>
+              <p className="text-gray-600 mt-2">
+                {cleanText(product?.description)}
+              </p>
+            </>
+          )}
+
+          {activeTab === "specification" && (
+            <>
+              <h1 className="text-xl font-bold">Specification</h1>
+              <p className="text-gray-600 mt-2">
+                {cleanText(product?.Specification)}
+              </p>
+            </>
+          )}
+        </div>
+      </div>
 
       {/* Related Products */}
       {reletedProduct?.length > 0 && (

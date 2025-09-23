@@ -22,16 +22,16 @@ import { useRouter } from "next/router";
 import useStickyFetch from "@/hooks/sticky";
 import { useCart } from "@/contex/CartContext";
 
-const navList = [
-  { name: "Home", href: "/" },
-  { name: "Gadget Item", href: "/gadget-item" },
-  { name: "Backpack", href: "/backpack" },
-  { name: "Educational", href: "/educational" },
-  { name: "Medical Equipment", href: "/medical-equipment" },
-  { name: "Utensils", href: "/utensils" },
-  { name: "Stationery", href: "/stationery" },
-  // { name: "Track Order", href: "/track-order" },
-];
+// const navList = [
+//   { name: "Home", href: "/" },
+//   { name: "Gadget Item", href: "/gadget-item" },
+//   { name: "Backpack", href: "/backpack" },
+//   { name: "Educational", href: "/educational" },
+//   { name: "Medical Equipment", href: "/medical-equipment" },
+//   { name: "Utensils", href: "/utensils" },
+//   { name: "Stationery", href: "/stationery" },
+//   // { name: "Track Order", href: "/track-order" },
+// ];
 
 export const Navbar = () => {
   const userInfo = useProduct();
@@ -46,6 +46,8 @@ export const Navbar = () => {
   // cart item find
   const { items: cartItem } = useCart();
   const [categories, setCategories] = useState([]);
+
+  console.log("categories", categories);
   const categoryFetch = async () => {
     try {
       setLoading(true);
@@ -73,6 +75,11 @@ export const Navbar = () => {
       }
     } catch (error) {}
   };
+
+  const navList = categories.map((category) => ({
+    name: category.category_name,
+    href: `/category-products/?category_id=${category.category_id}`,
+  }));
 
   const handleSelect = async (data, id) => {
     setSelected(data);
@@ -131,7 +138,7 @@ export const Navbar = () => {
 
   return (
     <div className="z-50 mb-5 shadow-md ">
-      <div className="w-full h z-10 bg-white fixed  ">
+      <div className="w-full h z-10 bg-white fixed top-0 ">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 p-1 lg:p-2">
             <Link href="/" passHref>
@@ -144,11 +151,11 @@ export const Navbar = () => {
               />
             </Link>
           </div>
-          <div className="flex rounded-full md:w-[658px] w-80 h-14 relative items-center lg:mr-[320px] ">
+          <div className="flex rounded-full md:w-[658px] w-80 h-14 relative items-center  ">
             <input
               onChange={handleSearchQuery}
               className="rounded-full  text-xs md:text-sm  text-start md:text-start lg:text-center px-2 w-full
-                 h-9   lg:h-10 outline-none border border-primary"
+                 h-9   lg:h-10 outline-none border border-primary "
               type="text"
               placeholder="Search product here"
             />
@@ -159,6 +166,9 @@ export const Navbar = () => {
             >
               Search <IoSearch className="h-4 w-4" />
             </button>
+          </div>
+          <div className="hidden lg:flex items-center gap-4 pr-4">
+            {/* Example: <UserIcon /> <CartIcon /> */}
           </div>
         </div>
 
@@ -361,9 +371,9 @@ export const Navbar = () => {
           <button onClick={toggleDrawer} className="text-xl">
             <MdClose />
           </button>
-          <h1 className="font-bold">Menu</h1>
+          {/* <h1 className="font-bold">Menu</h1> */}
           <ul className="bg-white">
-            {navList.map((nav) => (
+            {/* {navList.map((nav) => (
               <Link
                 key={nav.name}
                 onClick={() => handleSelect(nav.name)}
@@ -378,7 +388,7 @@ export const Navbar = () => {
               >
                 {nav.name}
               </Link>
-            ))}
+            ))} */}
 
             {/* {!token && (
               <Link
