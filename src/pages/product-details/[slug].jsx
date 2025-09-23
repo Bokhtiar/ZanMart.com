@@ -96,8 +96,8 @@ const OrderPage = () => {
     if (!selectedDivision) newErrors.division = "Select a division";
     if (!selectedCity) newErrors.city = "Select a city";
     if (!selectedArea) newErrors.area = "Select an area";
-    // if (!zip.trim()) newErrors.zip = "Post code is required";
-    // else if (!validateZip(zip)) newErrors.zip = "Post code must be 4 digits";
+    if (!zip.trim()) newErrors.zip = "Post code is required";
+    else if (!validateZip(zip)) newErrors.zip = "Post code must be 4 digits";
     if (!address.trim()) newErrors.address = "Address is required";
 
     setErrors(newErrors);
