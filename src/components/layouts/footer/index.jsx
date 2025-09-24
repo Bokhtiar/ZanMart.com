@@ -1,6 +1,9 @@
 import PrivacyPolicy from "@/components/PrivecyPolicy/Index";
 import TermsAndConditions from "@/components/termAndConiton";
+import AboutModal from "@/components/termAndConiton/AboutModal";
+import BlogModal from "@/components/termAndConiton/Blog";
 import Policy from "@/components/termAndConiton/policy";
+import RefundModal from "@/components/termAndConiton/Refund";
 import { publicRequest } from "@/config/axios.config";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,8 +22,12 @@ const Footer = () => {
     webSetting: {},
     category: [],
   });
+  const [showAbout, setShowAbout] = useState(false);
+  const [showRefund, setShowRefund] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showBlog, setShowBlog] = useState(false);
+
   const fetchWebSetting = async (apiUrl, val) => {
     try {
       const response = await publicRequest.get(apiUrl);
@@ -107,7 +114,7 @@ const Footer = () => {
               {footerData?.category?.map((item) => (
                 <Link
                   href={`/category-products/?category_id=${item?.category_id}&category_name=${item?.category_name}`}
-                  className="font-medium text-xs leading-8 text-[#AAAAAA] block hover:underline"
+                  className="font-medium text-xs leading-5 text-[#AAAAAA] block hover:underline"
                   key={item?.category_id}
                 >
                   {item?.category_name}
@@ -123,8 +130,15 @@ const Footer = () => {
               Information
             </h1>
             <p
+              onClick={() => setShowAbout(true)}
+              className="font-medium text-xs leading-5 text-[#AAAAAA] cursor-pointer  hover:underline"
+            >
+              About Us
+            </p>
+            <AboutModal showAbout={showAbout} setShowAbout={setShowAbout}></AboutModal>
+            <p
               onClick={() => setShowTerms(true)}
-              className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer  hover:underline"
+              className="font-medium text-xs leading-5 text-[#AAAAAA] cursor-pointer  hover:underline"
             >
               Terms & Condition
             </p>
@@ -134,11 +148,25 @@ const Footer = () => {
             />
             <p
               onClick={() => setShowPrivacy(true)}
-              className="font-medium text-xs leading-8 text-[#AAAAAA] cursor-pointer  hover:underline"
+              className="font-medium text-xs leading-5 text-[#AAAAAA] cursor-pointer  hover:underline"
             >
               Privacy Policy
             </p>
             <Policy showTerms={showPrivacy} setShowTerms={setShowPrivacy} />
+            <p
+              onClick={() => setShowRefund(true)}
+              className="font-medium text-xs leading-5 text-[#AAAAAA] cursor-pointer  hover:underline"
+            >
+              Refund and Return Policy
+            </p>
+            <RefundModal showRefund={showRefund} setShowRefund={setShowRefund} />
+            <p
+              onClick={() => setShowBlog(true)}
+              className="font-medium text-xs leading-5 text-[#AAAAAA] cursor-pointer  hover:underline"
+            >
+              Blog
+            </p>
+            <BlogModal showBlog={showBlog} setShowBlog={setShowBlog} />
             {/* <p className="font-medium text-xs leading-8 text-[#AAAAAA]">
                 Customer Service
               </p>
@@ -154,7 +182,7 @@ const Footer = () => {
         <div className="flex flex-col items-center space-y-3 ">
           {/* Title */}
           <h1 className="text-xs leading-[14px] pb-5 font-bold text-black">
-            Categories
+            Links
           </h1>
 
           {/* Social Icons */}
@@ -183,7 +211,7 @@ const Footer = () => {
         </div>
       </div>
       {/* social link connected area footer  */}
-      <hr />
+      <hr className="mt-3 " />
       <div className="px-5 md:px-20 bg-[#F5F5F5] ">
         <div className="container-custom px-40  flex  items-center justify-between">
           <p className="text-xs text-[#AAAAAA] py-4">
