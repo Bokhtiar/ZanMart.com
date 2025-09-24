@@ -32,6 +32,8 @@ const Footer = () => {
     } catch (error) {}
   };
 
+  console.log("footerData",footerData)
+
   useEffect(() => {
     const apiConfigs = [
       { url: "web-setting", key: "webSetting" },
@@ -63,12 +65,12 @@ const Footer = () => {
   return (
     <footer className="bg-[#F5F5F5] pt-10 mt-5   ">
       <div className="container-custom grid  sm:grid-cols-3 gap-4  ">
-        <div className="flex lg:justify-center  justify-start  ">
+        <div className="flex lg:justify-center  justify-start pb-5  ">
           <div className="text-start">
             <div className="flex justify-start">
               {footerData?.webSetting?.logo && (
                 <Image
-                  height={400}
+                  height={350}
                   width={400}
                   className="md:h-32 md:w-32 w-16 h-16"
                   src={`${process.env.NEXT_PUBLIC_API_SERVER}${footerData?.webSetting?.logo}`}
@@ -77,7 +79,7 @@ const Footer = () => {
               )}{" "}
               {/* Ensure logo exists */}
             </div>
-            <p className="font-medium text-xs leading-[14px] text-[#AAAAAA]">
+            <p className="font-medium text-xs leading-[14px] text-[#AAAAAA] pt-2">
               Your Trusted Online Shop. Shop with Comfort
             </p>
             <p className="text-sm font-bold py-2 leading-[14px] text-black">
