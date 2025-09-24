@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   MdKeyboardArrowDown,
   MdOutlineKeyboardArrowUp,
@@ -37,6 +37,7 @@ export const Navbar = () => {
   const userInfo = useProduct();
   const { token } = userInfo;
   const pathName = usePathname();
+  const searchParams = useSearchParams();
   const [openCategory, setOpenCategory] = useState(false);
   const [selected, setSelected] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -46,8 +47,9 @@ export const Navbar = () => {
   // cart item find
   const { items: cartItem } = useCart();
   const [categories, setCategories] = useState([]);
+  const currentCategoryId = searchParams.get("category_id");
 
-  console.log("categories", categories);
+  console.log("pathName", pathName);
   const categoryFetch = async () => {
     try {
       setLoading(true);
@@ -79,6 +81,7 @@ export const Navbar = () => {
   const navList = categories.map((category) => ({
     name: category.category_name,
     href: `/category-products/?category_id=${category.category_id}`,
+    id: String(category.category_id),
   }));
 
   const handleSelect = async (data, id) => {
@@ -288,7 +291,7 @@ export const Navbar = () => {
               </div>
             </div> */}
             <nav className="py-2  flex container-custom mx-auto justify-between items-center ">
-              <div className="hidden md:flex gap-5 lg:gap-10 ">
+              {/* <div className="hidden md:flex gap-5 lg:gap-10 ">
                 {navList.map((item, index) => (
                   <Link
                     href={item?.href}
@@ -318,7 +321,40 @@ export const Navbar = () => {
                   }`}
                   ></Link>
                 )}
+              </div> */}
+              <div className="hidden md:flex gap-5 lg:gap-10 ">
+                <Link
+                  href="/"
+                  className={`text-sm text-white leading-7 font-normal relative hover:border-none after:absolute after:w-0 
+      after:h-[5px] after:bottom-0 after:bg-white after:transition-all after:duration-200 after:ease-
+      in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+        pathName === "/" ? "after:w-full after:left-0" : "after:left-1/2"
+      }`}
+                >
+                  <button className="nav_link pb-2 leading-5 capitalize">
+                    Home
+                  </button>
+                </Link>
+
+                {navList.map((item, index) => (
+                  <Link
+                    href={item?.href}
+                    key={index}
+                    className={`text-sm text-white leading-7 font-normal relative hover:border-none after:absolute after:w-0 
+        after:h-[5px] after:bottom-0 after:bg-white after:transition-all after:duration-200 after:ease-
+        in-out after:rounded-full hover:after:w-full hover:after:left-0 ${
+          currentCategoryId === item?.id
+            ? "after:w-full after:left-0"
+            : "after:left-1/2"
+        }`}
+                  >
+                    <button className="nav_link pb-2 leading-5 capitalize">
+                      {item?.name}
+                    </button>
+                  </Link>
+                ))}
               </div>
+
               <div className="flex items-center gap-1">
                 <div>
                   <Image
@@ -330,7 +366,6 @@ export const Navbar = () => {
                   />
                 </div>
                 <div className="text-sm font-normal leading-5">
-                  <p>{data?.phone}</p>
                   <a
                     className="text-primary"
                     href="mailto:zanvisionlabs@gmail.com"

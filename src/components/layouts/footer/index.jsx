@@ -10,6 +10,7 @@ import {
   FaLinkedinIn,
   FaTwitter,
   FaInstagram,
+  FaYoutube,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -32,7 +33,7 @@ const Footer = () => {
     } catch (error) {}
   };
 
-  console.log("footerData",footerData)
+  console.log("footerData", footerData);
 
   useEffect(() => {
     const apiConfigs = [
@@ -64,7 +65,7 @@ const Footer = () => {
   ];
   return (
     <footer className="bg-[#F5F5F5] pt-10 mt-5   ">
-      <div className="container-custom grid  sm:grid-cols-3 gap-4  ">
+      <div className="container-custom grid  sm:grid-cols-4 gap-4  ">
         <div className="flex lg:justify-center  justify-start pb-5  ">
           <div className="text-start">
             <div className="flex justify-start">
@@ -99,7 +100,7 @@ const Footer = () => {
         <div className="flex  lg:justify-center sm:justify-start  ">
           <div className="flex justify-start">
             <div className="text-start">
-              <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
+              <h1 className="text-xs leading-[14px] pb-5 font-bold text-black">
                 Categories
               </h1>
 
@@ -118,7 +119,7 @@ const Footer = () => {
 
         <div className="flex lg:justify-center  justify-start">
           <div className="text-start">
-            <h1 className="text-xs leading-[14px] pb-8 font-bold text-black">
+            <h1 className="text-xs leading-[14px] pb-5 font-bold text-black">
               Information
             </h1>
             <p
@@ -149,35 +150,44 @@ const Footer = () => {
               </p> */}
           </div>
         </div>
-         
-      </div>
-      {/* social link connected area footer  */}
-      <div className="px-5 md:px-20 bg-white ">
-        <div className="container-custom px-40  flex  items-center justify-between">
-          <p className="text-xs text-[#AAAAAA] py-4">
-            &copy; {new Date().getFullYear()} Zanmart - All rights Reserved.
-          </p>
-          <p className="flex text-xs gap-2 text-[#AAAAAA]">
+
+        <div className="flex flex-col items-center space-y-3 ">
+          {/* Title */}
+          <h1 className="text-xs leading-[14px] pb-5 font-bold text-black">
+            Categories
+          </h1>
+
+          {/* Social Icons */}
+          <div className="flex items-center space-x-5 text-2xl text-black">
             {footerData?.webSetting?.facebook && (
-              <Link href={footerData?.webSetting?.facebook}>
-                <FaFacebookF />
-              </Link>
-            )}
-            {footerData?.webSetting?.linkedin && (
-              <Link href={footerData?.webSetting?.linkedin}>
-                <FaLinkedinIn />
+              <Link href={footerData?.webSetting?.facebook} target="_blank">
+                <FaFacebookF className="hover:text-blue-600 transition-colors" />
               </Link>
             )}
             {footerData?.webSetting?.instagram && (
-              <Link href={footerData?.webSetting?.instagram}>
-                <FaInstagram />
+              <Link href={footerData?.webSetting?.instagram} target="_blank">
+                <FaInstagram className="hover:text-pink-600 transition-colors" />
               </Link>
             )}
             {footerData?.webSetting?.twitter && (
-              <Link href={footerData?.webSetting?.twitter}>
-                <FaTwitter />
+              <Link href={footerData?.webSetting?.twitter} target="_blank">
+                <FaTwitter className="hover:text-sky-500 transition-colors" />
               </Link>
             )}
+            {footerData?.webSetting?.youtube && (
+              <Link href={footerData?.webSetting?.youtube} target="_blank">
+                <FaYoutube className="hover:text-red-600 transition-colors" />
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* social link connected area footer  */}
+      <hr />
+      <div className="px-5 md:px-20 bg-[#F5F5F5] ">
+        <div className="container-custom px-40  flex  items-center justify-between">
+          <p className="text-xs text-[#AAAAAA] py-4">
+            &copy; {new Date().getFullYear()} Zanmart - All rights Reserved.
           </p>
         </div>
       </div>
