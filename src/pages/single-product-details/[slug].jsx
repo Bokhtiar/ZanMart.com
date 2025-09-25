@@ -41,6 +41,7 @@ const ProductDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("description");
+  
 
   const cleanText = (text) => text?.replace(/<\/?[^>]+(>|$)/g, "");
 
@@ -131,7 +132,7 @@ const ProductDetails = () => {
   if (loading || reletedProductLoading) return <ProductDetailsSkeleton />;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container-custom mx-auto px-4 py-8 ">
       {/* Main product section */}
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left: Images */}
@@ -329,6 +330,42 @@ const ProductDetails = () => {
           </p>
         </>
       )} */}
+      {/* Related Products */}
+      {reletedProduct?.length  > 0 && (
+        <section className="mt-10">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <HiClipboardDocumentList /> Related Products
+            </h2>
+            <div className="flex gap-2">
+              <PiDotsNineBold
+                onClick={() => setGridCount(5)}
+                className={`cursor-pointer ${
+                  gridCount === 5 ? "bg-primary text-white" : ""
+                }`}
+              />
+              <PiDotsSixVerticalBold
+                onClick={() => setGridCount(4)}
+                className={`cursor-pointer ${
+                  gridCount === 4 ? "bg-primary text-white" : ""
+                }`}
+              />
+              <PiDotsThreeVerticalBold
+                onClick={() => setGridCount(3)}
+                className={`cursor-pointer ${
+                  gridCount === 3 ? "bg-primary text-white" : ""
+                }`}
+              />
+            </div>
+          </div>
+
+          <div className={`grid grid-cols-2 md:grid-cols-${gridCount} gap-4`}>
+            {reletedProduct.map((p) => (
+              <SingleCart key={p.product_id} item={p} />
+            ))}
+          </div>
+        </section>
+      )}
       <div className="mt-10">
         {/* Tab Buttons */}
         <div className="flex gap-4 ">
@@ -375,43 +412,6 @@ const ProductDetails = () => {
           )}
         </div>
       </div>
-
-      {/* Related Products */}
-      {reletedProduct?.length > 0 && (
-        <section className="mt-10">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <HiClipboardDocumentList /> Related Products
-            </h2>
-            <div className="flex gap-2">
-              <PiDotsNineBold
-                onClick={() => setGridCount(5)}
-                className={`cursor-pointer ${
-                  gridCount === 5 ? "bg-primary text-white" : ""
-                }`}
-              />
-              <PiDotsSixVerticalBold
-                onClick={() => setGridCount(4)}
-                className={`cursor-pointer ${
-                  gridCount === 4 ? "bg-primary text-white" : ""
-                }`}
-              />
-              <PiDotsThreeVerticalBold
-                onClick={() => setGridCount(3)}
-                className={`cursor-pointer ${
-                  gridCount === 3 ? "bg-primary text-white" : ""
-                }`}
-              />
-            </div>
-          </div>
-
-          <div className={`grid grid-cols-2 md:grid-cols-${gridCount} gap-4`}>
-            {reletedProduct.map((p) => (
-              <SingleCart key={p.product_id} item={p} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 };

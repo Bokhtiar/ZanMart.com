@@ -5,7 +5,7 @@ const RefundModal = ({ showRefund, setShowRefund }) => {
     <>
       {showRefund && (
         <PolicyModal setOpen={setShowRefund}>
-          <div className="ms-center z-50">
+          <div className="ms-center text-left z-50">
             <div className="bg-white p-5 rounded-lg overflow-auto max-h-[80vh]">
               <h2 className="text-xl font-bold mb-4 border-b pb-2">
                 Refund and Return Policy

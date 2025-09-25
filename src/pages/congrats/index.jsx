@@ -1,64 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { AiFillCheckCircle } from "react-icons/ai";
 import Link from "next/link";
-import { FaCheckCircle, FaGift, FaStar } from "react-icons/fa";
+import RefundModal from "@/components/termAndConiton/Refund";
 
 const CongratsPage = () => {
+  const [showRefund, setShowRefund] = useState(false);
   const router = useRouter();
-  const { product } = router.query;
-
-  const productData = product ? JSON.parse(product) : null;
-  console.log("productData",productData)
+  const { productTitle, productImage, quantity, total } = router.query;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br  p-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-10 text-center max-w-md w-full relative overflow-hidden">
-        {/* Decorative floating icons */}
-        <div className="absolute top-4 left-4 text-yellow-400 text-2xl animate-bounce">
-          <FaStar />
-        </div>
-        <div className="absolute top-8 right-6 text-pink-400 text-2xl animate-bounce delay-100">
-          <FaGift />
-        </div>
-        <div className="absolute bottom-4 right-8 text-blue-400 text-2xl animate-bounce delay-200">
-          <FaStar />
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 -mt-4">
+      <div className="bg-white rounded-lg shadow-md p-8 max-w-2xl w-full text-center">
+        {/* Success Icon */}
+        <AiFillCheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
 
-        {/* Main success icon */}
-        <FaCheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4 animate-pulse" />
+        {/* Title */}
+        <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
+          Your order has been received. Thank you for staying with us.
+        </h2>
 
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">Congratulations!</h1>
-        <p className="text-gray-600 mb-6">Your order has been successfully placed.</p>
-
-        {/* Product info card */}
-        {productData && (
-          <div className="bg-green-50 border  border-green-200 rounded-xl p-2 mb-6 flex flex-col items-center gap-3 shadow-inner">
-            {productData.thumbnail_image && (
-              <div className="w-32 h-32 relative">
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${productData.thumbnail_image}`}
-                  alt={productData.title}
-                  fill
-                  className="object-contain rounded-lg"
-                />
-              </div>
-            )}
-            <p className="font-semibold text-lg text-gray-700">{productData.title}</p>
-            {productData.flat_discount && (
-              <p className="text-xl font-bold text-green-600">
-                Discounted Price: ৳ {productData.flat_discount}
-              </p>
-            )}
+        {/* Product Info */}
+        {productImage && (
+          <div className="flex justify-center mb-4">
+            <Image
+              src={productImage}
+              alt={productTitle}
+              width={120}
+              height={120}
+              className="rounded"
+            />
           </div>
         )}
+        {productTitle && (
+          <p className="font-semibold text-lg mb-1">
+            {productTitle} x {quantity}
+          </p>
+        )}
+        {total && (
+          <p className="text-gray-700 font-bold mb-4">Total: ৳ {total}</p>
+        )}
 
-        {/* Continue Shopping Button */}
-        <Link href="/products">
-          <button className="bg-green-600 text-white px-8 py-3 rounded-xl hover:bg-green-700 transition text-lg font-medium flex items-center justify-center gap-2 mx-auto">
-            Continue Shopping <FaGift />
-          </button>
-        </Link>
+        {/* Policy text */}
+        <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+          For defective products, we provide a return facility. Please report
+          the issue within 7 days to get a replacement or refund. To learn more,
+          visit our{" "}
+          <p onClick={() => setShowRefund(true)} className="text-blue-600 underline">
+            Return Policy
+          </p>
+          .
+        </p>
+
+        <RefundModal showRefund={showRefund} setShowRefund={setShowRefund} />
+
+        {/* Buttons */}
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link
+            href="/"
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-semibold transition"
+          >
+            Go back home
+          </Link>
+          <Link
+            href="/order-details"
+            className="border bg-green-600 hover:bg-green-700 px-6 py-3 rounded-md font-semibold text-white transition"
+          >
+            Check order details
+          </Link>
+        </div>
       </div>
     </div>
   );

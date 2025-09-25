@@ -179,12 +179,11 @@ const OrderPage = () => {
     try {
       const res = await publicRequest.post("user/orders", newMyOrder);
       if (res?.status === 200 || res?.status === 201) {
-       
         Toastify.Success("Order successful! We will contact you soon.");
-        router.push({pathname:"/congrats",
-          query:{product: JSON.stringify(product)}
-          
-        })
+        router.push({
+          pathname: "/congrats",
+          query: { product: JSON.stringify(product) },
+        });
       }
     } catch {
       Toastify.Error("Order Place Failed");
@@ -193,9 +192,9 @@ const OrderPage = () => {
 
   if (loading) return <ProductDetailsSkeleton />;
 
-  const subtotal = product.sell_price * quantity;
-  const discount = product.flat_discount  || 0;
-  const total = subtotal ;
+  const subtotal = product.flat_discount * quantity;
+  const discount = product.flat_discount || 0;
+  const total = subtotal;
 
   const inputClass = (field) =>
     `border p-2 rounded w-full ${
@@ -203,11 +202,11 @@ const OrderPage = () => {
     }`;
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left: Form */}
-        <div className="lg:w-2/3 flex flex-col gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="px-4 py-6 container-custom ">
+      <div className="flex flex-col lg:flex-row gap-6 w-full container-custom mx-auto justify-center">
+        {/* Shipping Address */}
+        <div className="w-full lg:w-2/3 ">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
             <h2 className="font-bold text-xl mb-4">Shipping Address</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Name */}
@@ -393,30 +392,35 @@ const OrderPage = () => {
               </label>
             </div>
           </div>
+        </div>
 
-          {/* Product Items */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
+        {/* Product Items */}
+        <div className="w-full lg:w-2/5 ">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
             <h2 className="font-bold text-xl mb-4">Product Items</h2>
-            <div className="flex items-center gap-4 border-b pb-4">
-              <div className="relative w-24 h-24">
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_API_SERVER}${product.thumbnail_image}`}
-                  alt={product.title}
-                  fill
-                  className="object-contain rounded"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold">{product.title}</p>
-                <p>Unit Price: ৳ {product.sell_price}</p>
-                <p>
-                  Amount: ৳ {subtotal}{" "}
-                  {discount > 0 && (
-                    <span className="text-red-500 line-through ml-2">
-                      { discount  }
-                    </span>
-                  )}
-                </p>
+            <div className="flex items-center gap-4 border-b pb-4 justify-between">
+              <div className="flex flex-col md:flex-row gap-4">
+                {" "}
+                <div className="relative w-24 h-24">
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_API_SERVER}${product.thumbnail_image}`}
+                    alt={product.title}
+                    fill
+                    className="object-contain rounded border"
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold">{product.title}</p>
+                  <p>Unit Price: ৳ {product.flat_discount}</p>
+                  <p>
+                    Amount: ৳ {subtotal}{" "}
+                    {discount > 0 && (
+                      <span className="text-red-500 line-through ml-2">
+                        {product.sell_price}
+                      </span>
+                    )}
+                  </p>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -434,30 +438,26 @@ const OrderPage = () => {
                 </button>
               </div>
             </div>
+            <h2 className="font-bold text-xl mt-3">Your Bill</h2>
+            <div className="flex justify-between">
+              <span>Sub-Total</span>
+              <span>৳ {subtotal}</span>
+            </div>
+            <div className="flex justify-between text-red-500">
+              <span>Discount Price</span>
+              <span>৳ {discount}</span>
+            </div>
+            <div className="flex justify-between font-bold text-lg">
+              <span>Total</span>
+              <span>৳ {total}</span>
+            </div>
+            <button
+              onClick={handleOrder}
+              className="mt-4 bg-green-600 text-white font-bold text-xl py-3 px-2 rounded hover:bg-green-700 transition"
+            >
+              Continue to Shipping
+            </button>
           </div>
-        </div>
-
-        {/* Right: Bill */}
-        <div className="lg:w-1/3 bg-white p-6 rounded-lg shadow-md flex flex-col gap-4">
-          <h2 className="font-bold text-xl">Your Bill</h2>
-          <div className="flex justify-between">
-            <span>Sub-Total</span>
-            <span>৳ {subtotal}</span>
-          </div>
-          <div className="flex justify-between text-red-500">
-            <span>Discount Price</span>
-            <span>৳ {discount}</span>
-          </div>
-          <div className="flex justify-between font-bold text-lg">
-            <span>Total</span>
-            <span>৳ {total}</span>
-          </div>
-          <button
-            onClick={handleOrder}
-            className="mt-4 bg-green-600 text-white font-bold text-xl py-3 rounded hover:bg-green-700 transition"
-          >
-            Continue to Shipping
-          </button>
         </div>
       </div>
     </div>
